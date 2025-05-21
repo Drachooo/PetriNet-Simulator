@@ -1,5 +1,3 @@
-package application;
-
 import application.logic.PetriNet;
 import application.logic.Place;
 import application.logic.Transition;
