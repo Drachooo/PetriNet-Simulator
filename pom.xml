@@ -13,8 +13,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>24</maven.compiler.source>
+        <maven.compiler.target>24</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -115,9 +115,6 @@
             <scope>test</scope>
         </dependency>
 
-
-
-
     </dependencies>
 
     <build>
@@ -142,8 +139,6 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-
-                            <!-- Cambia il nome della classe principale secondo il tuo progetto -->
                             <mainClass>PetriNetApp</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

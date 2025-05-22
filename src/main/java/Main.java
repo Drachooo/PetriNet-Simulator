@@ -1,3 +1,4 @@
+import application.controllers.LoginViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,17 +12,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
-       // Controller controller = loader.getController();
+       LoginViewController loginViewController = loader.getController();
         Scene scene = new Scene(root);
 
-        scene.setFill(Color.TRANSPARENT);
+        scene.setFill(Color.LIGHTGRAY);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
         primaryStage.setScene(scene);
 
-      //  controller.setStage(primaryStage);
+      loginViewController.setStage(primaryStage);
         primaryStage.show();
     }
 
