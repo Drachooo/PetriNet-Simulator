@@ -8,12 +8,13 @@
     <children>
         <AnchorPane layoutX="224.0" layoutY="76.0" prefHeight="249.0" prefWidth="310.0" style="-fx-background-radius: 25; -fx-background-color: white;">
             <children>
-                <TextField layoutX="72.0" layoutY="53.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Login" />
+                <TextField layoutX="72.0" layoutY="53.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Email" />
                 <TextField layoutX="72.0" layoutY="109.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Password" />
-                <Button fx:id="loginButton" layoutX="112.0" layoutY="176.0" prefHeight="41.0" prefWidth="87.0" styleClass="colorBackground" stylesheets="@/styles/color.css" text="Login" />
+                <Button fx:id="loginButton" layoutX="39.0" layoutY="175.0" onAction="#goToMainView" prefHeight="41.0" prefWidth="87.0" styleClass="colorBackground" stylesheets="@/styles/color.css" text="Login" />
+            <Button fx:id="registerButton" layoutX="187.0" layoutY="175.0" onAction="#goToRegisterView" prefHeight="41.0" prefWidth="87.0" styleClass="colorBackground" stylesheets="@/styles/color.css" text="Register" />
             </children>
         </AnchorPane>
         <AnchorPane fx:id="sideBar" layoutX="31.0" layoutY="53.0" prefHeight="295.0" prefWidth="220.0" style="-fx-background-radius: 25;" styleClass="colorBackground" stylesheets="@/styles/color.css" />
-          <Button fx:id="loginExitButton" layoutX="574.0" layoutY="2.0" onAction="#closeProgram" styleClass="colorBackground" stylesheets="@/styles/color.css" text="X" />
+          <Button fx:id="loginExitButton" layoutX="574.0" layoutY="2.0" onAction="#closeProgram" stylesheets="@/styles/color.css" text="X" />
     </children>
 </AnchorPane>

@@ -1,4 +1,5 @@
 package application.logic;
+
 import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -10,31 +11,46 @@ public class User {
 
     private String id;
     private String email;
-    private String hashedpw; //Password
-    private Type type; //Admin o user
+    private String hashedpw; // password hashata
+    private Type type;
 
-    public User(String email, String password, Type type) {
-        this.id="U"+UUID.randomUUID().toString();
-        this.email=email;
-        this.hashedpw=hashPassword(password);
-        this.type=type;
-    }
-
-    /*metodo per hashare una password. La libreria bcrypt fa automaticamente anche il salt,
-     * ossia aggiunge una stringa random alla fine dell'hash per renderlo unico (se ho capito bene)
+    /**
+     * Costruttore per creare un nuovo utente da password in chiaro.
+     * La password verrà hashata automaticamente.
      */
-    private String hashPassword(String password) {
-        return BCrypt.hashpw(password,BCrypt.gensalt());
+    public User(String email, String plainPassword, Type type) {
+        this.email = email;
+        this.hashedpw = hashPassword(plainPassword);
+        this.type = type;
+
+        if (type == Type.ADMIN)
+            this.id = "ADM" + UUID.randomUUID().toString();
+        else
+            this.id = "USR" + UUID.randomUUID().toString();
     }
 
-    /*TODO: In caso aggiungere metodi per cambiare password, ma per ora lasciamo così*/
+    /**
+     * Costruttore per caricare un utente esistente, con password già hashata (es. da file CSV)
+     */
+    public User(String id, String email, String hashedpw, Type type) {
+        this.id = id;
+        this.email = email;
+        this.hashedpw = hashedpw;
+        this.type = type;
+    }
 
-    /*Metodo per vedere se la password è quella giusta*/
+    private String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    /**
+     * Verifica che la password in chiaro corrisponda alla password hashata memorizzata.
+     */
     public boolean checkPassword(String password) {
         return BCrypt.checkpw(password, this.hashedpw);
     }
 
-    /*Getters*/
+    /* Getters */
     public String getId() {
         return this.id;
     }
@@ -45,5 +61,9 @@ public class User {
 
     public Type getType() {
         return this.type;
+    }
+
+    public String getHashedpw() {
+        return this.hashedpw;
     }
 }

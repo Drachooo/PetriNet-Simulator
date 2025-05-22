@@ -2,7 +2,11 @@ package application.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -23,7 +27,12 @@ public class LoginViewController implements Initializable {
     @FXML
     private Button loginButton;
 
+    @FXML
+    private Button registerButton;
+
     private Stage stage;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,6 +50,41 @@ public class LoginViewController implements Initializable {
     public void setStage(Stage stage){
         this.stage = stage;
     }
+
+    @FXML
+    private void goToMainView(ActionEvent event) throws Exception{
+
+        //Carico il file FXML della MainView
+        Parent mainPage= FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
+
+        //Creo nuova scena
+        Scene mainPageScene = new Scene(mainPage);
+
+        /*Prendo il bottone cliccato, risalgo alla finestra che lo contiene cosi posso agire su di essa*/
+        Stage stage  = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        stage.setScene(mainPageScene);
+        stage.show();
+
+    }
+
+    @FXML
+    private void goToRegisterView(ActionEvent event) throws Exception{
+
+        //Carico il file FXML della MainView
+        Parent mainPage= FXMLLoader.load(getClass().getResource("/fxml/RegisterView.fxml"));
+
+        //Creo nuova scena
+        Scene mainPageScene = new Scene(mainPage);
+
+        /*Prendo il bottone cliccato, risalgo alla finestra che lo contiene cosi posso agire su di essa*/
+        Stage stage  = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        stage.setScene(mainPageScene);
+        stage.show();
+
+    }
+
 
     @FXML
     void closeProgram(ActionEvent event) {
