@@ -3,7 +3,7 @@ import application.logic.Place;
 import application.logic.Transition;
 import application.logic.Arc;
 import application.logic.MarkingData;
-
+import application.logic.Type;
 
 public class PetriNetApp {
     public static void main(String[] args) {
@@ -30,9 +30,9 @@ public class PetriNetApp {
         net.setFinal(pFinal);
 
         // Transizioni
-        Transition t1 = new Transition(net.getId(), "Transition1", Transition.Type.ADMIN);
-        Transition t2 = new Transition(net.getId(), "Transition2", Transition.Type.ADMIN);
-        Transition t3 = new Transition(net.getId(), "Transition3", Transition.Type.ADMIN);
+        Transition t1 = new Transition(net.getId(), "Transition1", Type.ADMIN);
+        Transition t2 = new Transition(net.getId(), "Transition2", Type.ADMIN);
+        Transition t3 = new Transition(net.getId(), "Transition3", Type.ADMIN);
 
         net.addTransition(t1);
         net.addTransition(t2);

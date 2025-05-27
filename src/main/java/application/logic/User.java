@@ -4,10 +4,6 @@ import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class User {
-    public static enum Type {
-        ADMIN,
-        USER
-    }
 
     private String id;
     private String email;
