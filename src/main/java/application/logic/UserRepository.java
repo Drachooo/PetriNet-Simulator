@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserRepository {
 
@@ -14,6 +16,8 @@ public class UserRepository {
             new User("matteo.drago@studenti.univr.it", "fragola82", Type.ADMIN),
             new User("luca.quaresima@studenti.univr.it", "lampone83", Type.ADMIN)
     );
+
+    private Map<String,User> users=new HashMap<>();
 
     // Metodo che salva un utente. Se file non esiste, lo crea e "appende" l'utente.
     public void saveUser(User user) {
@@ -69,4 +73,10 @@ public class UserRepository {
         writer.write(user.getEmail() + "," + user.getHashedpw() + "," + user.getType());
         writer.newLine();
     }
+
+    /*Metodo per verificare se le credenziali inserite durante il login sono corrette.*/
+    public boolean checkCredentials(String email, String password) {
+        return users.containsKey(email) && users.get(email).checkPassword(password);
+    }
+
 }
