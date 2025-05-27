@@ -1,4 +1,5 @@
 import application.controllers.LoginViewController;
+import application.logic.UserRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,6 +9,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Main extends Application {
+
+    private static UserRepository userRepository=new UserRepository();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -26,6 +29,9 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    public static UserRepository getUserRepository() {
+        return userRepository;
+    }
 
     public static void main(String[] args) {
         launch(args);
