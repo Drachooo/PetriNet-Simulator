@@ -1,5 +1,11 @@
 package application.controllers;
 
+import application.logic.UserRepository;
+import javafx.animation.PauseTransition;
+import javafx.scene.control.*;
+import javafx.util.Duration;
+import petriNetApp.Main;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,12 +13,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.ResourceBundle;
+
+
 
 public class LoginViewController implements Initializable {
 
@@ -30,12 +37,23 @@ public class LoginViewController implements Initializable {
     @FXML
     private Button registerButton;
 
+    @FXML
+    private TextField emailTextField;
+
+    @FXML
+    private PasswordField passwordTextField;
+
     private Stage stage;
+
+    private UserRepository userRepository;
 
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+       userRepository=Main.getUserRepository();
+
         sideBar.setOnMousePressed(mouseEvent -> {
             x = mouseEvent.getSceneX();
             y = mouseEvent.getSceneY();
@@ -69,6 +87,20 @@ public class LoginViewController implements Initializable {
     }
 
     @FXML
+    private void handleLogin(ActionEvent event) throws Exception {
+        String username=emailTextField.getText();
+        String password=passwordTextField.getText();
+
+        /*Controllo credenziali, se giusta-> goToMainView, altrimenti chiamo il Popup*/
+        if(userRepository.checkCredentials(username, password)){
+            goToMainView(event);
+        }else{
+            showPopUp(event);
+        }
+    }
+
+
+    @FXML
     private void goToRegisterView(ActionEvent event) throws Exception{
 
         //Carico il file FXML della MainView
@@ -84,6 +116,19 @@ public class LoginViewController implements Initializable {
         stage.show();
 
     }
+
+    @FXML
+    private void showPopUp(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Login Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Wrong credentials. Please try again.");
+
+        alert.showAndWait();
+    }
+
+
+
 
 
     @FXML
