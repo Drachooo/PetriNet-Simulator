@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -8,10 +9,10 @@
     <children>
         <AnchorPane layoutX="224.0" layoutY="76.0" prefHeight="249.0" prefWidth="310.0" style="-fx-background-radius: 25; -fx-background-color: white;">
             <children>
-                <TextField layoutX="72.0" layoutY="53.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Email" />
-                <TextField layoutX="72.0" layoutY="109.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Password" />
-                <Button fx:id="loginButton" layoutX="39.0" layoutY="175.0" onAction="#goToMainView" prefHeight="41.0" prefWidth="87.0" styleClass="colorBackground" stylesheets="@/styles/color.css" text="Login" />
+                <TextField fx:id="emailTextField" layoutX="72.0" layoutY="53.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Email" />
+                <Button fx:id="loginButton" layoutX="39.0" layoutY="175.0" onAction="#handleLogin" prefHeight="41.0" prefWidth="87.0" styleClass="colorBackground" stylesheets="@/styles/color.css" text="Login" />
             <Button fx:id="registerButton" layoutX="187.0" layoutY="175.0" onAction="#goToRegisterView" prefHeight="41.0" prefWidth="87.0" styleClass="colorBackground" stylesheets="@/styles/color.css" text="Register" />
+            <PasswordField fx:id="passwordTextField" layoutX="72.0" layoutY="100.0" prefHeight="25.0" prefWidth="174.0" promptText="Enter Password" />
             </children>
         </AnchorPane>
         <AnchorPane fx:id="sideBar" layoutX="31.0" layoutY="53.0" prefHeight="295.0" prefWidth="220.0" style="-fx-background-radius: 25;" styleClass="colorBackground" stylesheets="@/styles/color.css" />
