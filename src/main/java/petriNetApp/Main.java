@@ -1,3 +1,5 @@
+package petriNetApp;
+
 import application.controllers.LoginViewController;
 import application.logic.UserRepository;
 import javafx.application.Application;
