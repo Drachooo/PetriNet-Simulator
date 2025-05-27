@@ -2,6 +2,7 @@ package application.logic;
 
 import java.io.*;
 import java.util.*;
+import org.apache.commons.validator.routines.EmailValidator;
 
 public class UserRepository {
 
@@ -67,11 +68,6 @@ public class UserRepository {
         }
     }
 
-    public boolean checkCredentials(String email, String password) {
-        if (email == null || password == null || email.isEmpty() || password.isEmpty()) return false;
-        if (!users.containsKey(email)) return false;
-        return users.get(email).checkPassword(password);
-    }
 
     private void loadUsersFromFile() {
         if (!file.exists()) return;
@@ -96,4 +92,25 @@ public class UserRepository {
             e.printStackTrace();
         }
     }
+
+    public boolean checkCorrectCredentials(String email, String password) {
+        if (email == null || password == null || email.isEmpty() || password.isEmpty()) return false;
+        return users.get(email).checkPassword(password);
+    }
+
+    public boolean isEmailAvailable(String email) {
+        return !users.containsKey(email);
+    }
+
+    public boolean isEmailValid(String email) {
+        if (!EmailValidator.getInstance().isValid(email)) {
+            return false;
+        }
+
+        // Regex stretta: solo lettere, numeri, punti, trattini e underscore prima della @
+        // dominio con lettere, numeri e trattini, e TLD di almeno 2 lettere
+        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+
 }
