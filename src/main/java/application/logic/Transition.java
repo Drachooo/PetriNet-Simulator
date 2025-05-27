@@ -8,11 +8,6 @@ import java.util.Objects;
  * Rappresenta una transizione in una rete di Petri.
  */
 public class Transition {
-    /*NON SO PERCHE MA SE LO METTEVO FUORI NON ANDAVANO I TEST*/
-    public static enum Type {
-        ADMIN,
-        USER
-    }
 
     private final String id;
     private final String name;
