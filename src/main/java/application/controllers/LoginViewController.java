@@ -29,15 +29,6 @@ public class LoginViewController implements Initializable {
     private AnchorPane sideBar;
 
     @FXML
-    private Button loginExitButton;
-
-    @FXML
-    private Button loginButton;
-
-    @FXML
-    private Button registerButton;
-
-    @FXML
     private TextField emailTextField;
 
     @FXML
@@ -88,23 +79,32 @@ public class LoginViewController implements Initializable {
 
     @FXML
     private void handleLogin(ActionEvent event) throws Exception {
-        String username=emailTextField.getText();
+        String email=emailTextField.getText();
         String password=passwordTextField.getText();
 
-        /*Controllo credenziali, se giusta-> goToMainView, altrimenti chiamo il Popup*/
-        if(userRepository.checkCredentials(username, password)){
+        if(userRepository.isEmailAvailable(email)){
+            showNotRegisteredPopUp(event);
+            return;
+        }
+        /*Controllo credenziali, se giusta-> goToMainView, altrimenti chiamo il Popup delle credenziali non corrette*/
+        if(userRepository.checkCorrectCredentials(email, password)){
             goToMainView(event);
         }else{
-            showPopUp(event);
+            showWrongCredentialsPopUp(event);
         }
+
+        passwordTextField.clear();
     }
 
 
     @FXML
     private void goToRegisterView(ActionEvent event) throws Exception{
 
-        //Carico il file FXML della MainView
-        Parent mainPage= FXMLLoader.load(getClass().getResource("/fxml/RegisterView.fxml"));
+        //Carico il file FXML della RegisterView
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
+        Parent mainPage = loader.load();
+        RegisterViewController controller = loader.getController();
+        controller.setStage((Stage)((Node)event.getSource()).getScene().getWindow());
 
         //Creo nuova scena
         Scene mainPageScene = new Scene(mainPage);
@@ -118,7 +118,7 @@ public class LoginViewController implements Initializable {
     }
 
     @FXML
-    private void showPopUp(ActionEvent event) {
+    private void showWrongCredentialsPopUp(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Login Error");
         alert.setHeaderText(null);
@@ -127,7 +127,15 @@ public class LoginViewController implements Initializable {
         alert.showAndWait();
     }
 
+    @FXML
+    private void showNotRegisteredPopUp(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Login Error");
+        alert.setHeaderText(null);
+        alert.setContentText("You are not registered yet.");
 
+        alert.showAndWait();
+    }
 
 
 
