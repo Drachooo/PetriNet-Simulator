@@ -76,7 +76,10 @@ public class UserRepository {
 
     /*Metodo per verificare se le credenziali inserite durante il login sono corrette.*/
     public boolean checkCredentials(String email, String password) {
-        return users.containsKey(email) && users.get(email).checkPassword(password);
+        return !(email.isEmpty())
+                && !(password.isEmpty())
+                && users.containsKey(email)
+                && users.get(email).checkPassword(password);
     }
 
 }
