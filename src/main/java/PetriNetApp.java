@@ -1,4 +1,4 @@
-import application.logic.PetriNet;
+/* import application.logic.PetriNet;
 import application.logic.Place;
 import application.logic.Transition;
 import application.logic.Arc;
@@ -88,4 +88,4 @@ public class PetriNetApp {
         System.out.println(p2);
         System.out.println(pFinal);
     }
-}
+}*/
