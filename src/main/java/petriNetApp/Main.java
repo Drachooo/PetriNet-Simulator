@@ -19,7 +19,7 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
-       LoginViewController loginViewController = loader.getController();
+        LoginViewController loginViewController = loader.getController();
         Scene scene = new Scene(root);
 
         scene.setFill(Color.LIGHTGRAY);
