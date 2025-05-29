@@ -22,6 +22,8 @@ public class Main extends Application {
         LoginViewController loginViewController = loader.getController();
         Scene scene = new Scene(root);
 
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("");
         scene.setFill(Color.LIGHTGRAY);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
