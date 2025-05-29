@@ -9,14 +9,21 @@ import java.util.Objects;
  */
 public class Transition {
 
-    private final String id;
-    private final String name;
-    private final String petriNetId;
-    private final Type type; // Enum che indica il tipo di transizione
+    private String id;
+    private String name;
+    private String petriNetId;
+    private Type type;
+
 
     /** Insiemi dei posti di input e output */
     private Map<String, Place> inputPlaces;
     private Map<String,Place> outputPlaces;
+
+
+    public Transition() {
+        // Costruttore richiesto da Jackson
+    }
+
 
     /**
      * Costruttore di una transizione.

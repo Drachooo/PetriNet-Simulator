@@ -7,10 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PetriNet {
-    private final String id;
-    private final String name;
-    private final String adminId;
-    private final LocalDateTime dateCreated;
+    private  String id;
+    private  String name;
+    private  String adminId;
+    private  LocalDateTime dateCreated;
 
     private Place initialPlace = null;
     private Place finalPlace = null;
@@ -18,6 +18,14 @@ public class PetriNet {
     private final Map<String, Place> places = new HashMap<>(); // Per i place non dovrebbe servire l'ordine di inserimento
     private final Map<String, Transition> transitions = new HashMap<>(); // Neanche per le transizioni
     private final Map<String, Arc> arcs = new HashMap<>();
+
+    /*per Jackson (Michael)*/
+    public PetriNet() {
+        this.id = null;
+        this.name = null;
+        this.adminId = null;
+        this.dateCreated = null;
+    }
 
     public PetriNet(String name, String adminId) {
         this.id = "NP" + UUID.randomUUID().toString();

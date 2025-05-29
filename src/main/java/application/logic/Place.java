@@ -3,32 +3,31 @@ package application.logic;
 import java.util.Objects;
 import java.util.UUID;
 
-/*UUID: A class that represents an immutable universally unique identifier (UUID). A UUID represents a 128-bit value*/
-//Da creare i commenti JavaDoc
-
 public class Place {
-    private final String id;
-    private final String petriNetId;
-    private final String name;
+    private String id;
+    private String petriNetId;
+    private String name;
     private int tokens;
 
+    // Costruttore senza argomenti per Jackson
+    public Place() {}
+
+    // Costruttore per uso normale
     public Place(String name, String petriNetId) {
-        this.id = "P"+UUID.randomUUID().toString(); /*creo un UUID random e lo converto a stringa*/
+        this.id = "P" + UUID.randomUUID().toString();
         this.name = Objects.requireNonNull(name);
-        this.petriNetId = Objects.requireNonNull(petriNetId); /*Lancia NullPointerException se viene passato null*/
+        this.petriNetId = Objects.requireNonNull(petriNetId);
         this.tokens = 0;
     }
 
-    /*Aggiungo tokens*/
-    /*TODO: AGGIUNGERE SINCRONIZZAZIONE SE NECESSARIA, ora non pensiamoci*/
     public void addToken() {
         tokens++;
     }
 
-    public void setTokens(int tokens) {this.tokens = tokens;}
+    public void setTokens(int tokens) {
+        this.tokens = tokens;
+    }
 
-    /*Decremento tokens: se <=0, lancio IllegalStateException*/
-    /*TODO: AGGIUNGERE SINCRONIZZAZIONE SE NECESSARIA*/
     public void removeToken() {
         if (tokens <= 0) {
             throw new IllegalStateException("No tokens to remove");
@@ -36,30 +35,28 @@ public class Place {
         tokens--;
     }
 
-    /*True se tokens > 0*/
     public boolean hasTokens() {
         return tokens > 0;
     }
 
-    //Getters
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public String getPetriNetId() {
-        return this.petriNetId;
+        return petriNetId;
     }
 
     public int getTokens() {
-        return this.tokens;
+        return tokens;
     }
 
     @Override
     public String toString() {
-        return "P-"+this.name+": "+this.tokens;
+        return "P-" + name + ": " + tokens;
     }
 }

@@ -1,33 +1,43 @@
 package application.logic;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+
 public class PetriNetRepository {
 
-    private Map<String, PetriNet> repo;
+    private Map<String,PetriNet> repo=new HashMap<>();
 
-    public PetriNetRepository() {
-        this.repo=new HashMap<String, PetriNet>();
+    private Map<List<String>, PetriNet> subscribers=new HashMap<>();
+
+
+
+
+    private final File file=new File("src/main/resources/data/petriNetRepository.csv");
+
+    private PetriNetRepository(){
+
+        if (!file.exists() || file.length() == 0) {
+            try {
+                createFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
-    public void add(PetriNet net) {
-        if(repo.containsKey(net.getId()))
-            throw new IllegalArgumentException("PetriNet already exists");
-        repo.put(net.getId(),net);
+
+    private void createFile() throws IOException {
+        try(BufferedReader writer=new BufferedReader(new FileReader(file))){
+            writeHeader(writer);
+        }
     }
 
-    public void remove(String id) {
-        repo.remove(id);
+    private void writeHeader(BufferedReader writer) {
+        String header=""
     }
 
-    public PetriNet get(String id){
-        return repo.get(id);
-    }
-
-    public Collection<PetriNet> getAll(){
-        return Collections.unmodifiableCollection(repo.values());
-    }
 }
