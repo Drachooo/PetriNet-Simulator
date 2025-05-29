@@ -73,6 +73,8 @@ public class LoginViewController implements Initializable {
         Stage stage  = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         stage.setScene(mainPageScene);
+        stage.setMaximized(false);
+        stage.setMaximized(true);
         stage.show();
 
     }
@@ -113,7 +115,9 @@ public class LoginViewController implements Initializable {
         Stage stage  = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         stage.setScene(mainPageScene);
-        stage.setFullScreen(true);
+        /*reset del fullscreen per permettere che funzioni il maximized, altrimenti non funziona come dovrebbe*/
+        stage.setMaximized(false);
+        stage.setMaximized(true);
         stage.show();
 
     }

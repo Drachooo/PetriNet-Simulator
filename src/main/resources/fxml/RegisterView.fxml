@@ -45,7 +45,5 @@
                 </AnchorPane>
             </HBox>
         </StackPane>
-
-        <Button fx:id="registerExitButton" onAction="#closeProgram" style="-fx-background-color: red; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="X" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
     </children>
 </AnchorPane>

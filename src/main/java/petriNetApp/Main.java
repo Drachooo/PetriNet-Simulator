@@ -22,10 +22,10 @@ public class Main extends Application {
         LoginViewController loginViewController = loader.getController();
         Scene scene = new Scene(root);
 
-        primaryStage.setFullScreen(true);
+        primaryStage.setMaximized(true);
         primaryStage.setFullScreenExitHint("");
         scene.setFill(Color.LIGHTGRAY);
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.initStyle(StageStyle.DECORATED);
 
         primaryStage.setScene(scene);
 

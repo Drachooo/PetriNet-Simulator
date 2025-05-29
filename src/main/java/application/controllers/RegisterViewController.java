@@ -72,7 +72,7 @@ public class RegisterViewController implements Initializable {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent mainPage = loader.load();
-        LoginViewController controller = loader.getController(); // CORRETTO!
+        LoginViewController controller = loader.getController();
         controller.setStage((Stage)((Node)event.getSource()).getScene().getWindow());
 
         //Creo nuova scena
@@ -82,6 +82,8 @@ public class RegisterViewController implements Initializable {
         Stage stage  = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         stage.setScene(mainPageScene);
+        stage.setMaximized(false);
+        stage.setMaximized(true);
         stage.show();
 
     }
