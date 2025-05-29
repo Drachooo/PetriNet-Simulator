@@ -113,6 +113,7 @@ public class LoginViewController implements Initializable {
         Stage stage  = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         stage.setScene(mainPageScene);
+        stage.setFullScreen(true);
         stage.show();
 
     }
