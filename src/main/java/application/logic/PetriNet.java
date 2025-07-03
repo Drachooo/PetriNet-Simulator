@@ -5,11 +5,18 @@ package application.logic;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PetriNet {
     private  String id;
     private  String name;
     private  String adminId;
+
+
+    /*Dico a Jackson di serializzare la stringa in questo modo*/
+
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern= "dd-MM-yyyy HH:mm:ss")
     private  LocalDateTime dateCreated;
 
     private Place initialPlace = null;
@@ -132,7 +139,8 @@ public class PetriNet {
         return Collections.unmodifiableMap(arcs);
     }
 
-    public String getCreationDate() {
+    @JsonProperty("creationDate")
+    public String getCreationDateFormatted() {
         return dateCreated.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
