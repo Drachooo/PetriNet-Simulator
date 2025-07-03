@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class PetriNet {
     private  String id;
@@ -139,7 +140,7 @@ public class PetriNet {
         return Collections.unmodifiableMap(arcs);
     }
 
-    @JsonProperty("creationDate")
+    @JsonProperty("dateCreated")
     public String getCreationDateFormatted() {
         return dateCreated.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
@@ -223,6 +224,5 @@ public class PetriNet {
             throw new IllegalArgumentException("Cannot add outgoing arcs from final place");
         }
 
-        // TODO: se necessario aggiungere altri controlli
     }
 }

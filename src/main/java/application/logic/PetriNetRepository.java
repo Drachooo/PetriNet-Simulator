@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+
 public class PetriNetRepository {
 
     private Map<String, PetriNet> petriNets = new HashMap<>();
@@ -16,9 +17,9 @@ public class PetriNetRepository {
 
     private final File file = new File("src/main/resources/data/petriNetRepository.json");
 
-    private PetriNetRepository() {
-        mapper.registerModule(new JavaTimeModule()); // supporto serializzazione date
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // evita timestamp array
+    public PetriNetRepository() {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         if (!file.exists() || file.length() == 0) {
             try {
@@ -26,33 +27,48 @@ public class PetriNetRepository {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            loadPetriNets();
         }
     }
 
     private void loadPetriNets() {
-        /* Se il file non esiste oppure è vuoto non succede niente sium*/
-        if(!file.exists() || file.length() == 0)
-            return;
+        if (!file.exists() || file.length() == 0) return;
 
-        /*Altrimenti carico le mappe, "costruendo" l'hashmap che associa l'id (stringa) alla singola PetriNet*/
-        try{
-            petriNets=mapper.readValue(file, mapper.getTypeFactory().constructMapType(HashMap.class, String.class,PetriNet.class));
-        }catch(IOException e){
+        try {
+            petriNets = mapper.readValue(file, mapper.getTypeFactory().constructMapType(HashMap.class, String.class, PetriNet.class));
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void savePetriNets() {
-        try{
-            //Aggiorno il file JSON
-            mapper.writeValue(file,petriNets);
-        }catch(IOException e){
+    public void savePetriNets() {
+        try {
+            mapper.writeValue(file, petriNets);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private void createFile() throws IOException {
-        mapper.writeValue(file, petriNets); /* Se il file non esiste o è vuoto creo un file con una mappa vuota*/
+        mapper.writeValue(file, petriNets);
+    }
+
+    public Map<String, PetriNet> getPetriNets() {
+        return petriNets;
+    }
+
+    public void addPetriNet(PetriNet net) {
+        /*Se esiste già una net con lo stesso NOME ( non ID, perchè abbiamo la sicurezza che l'ID sia univoco!)->errore*/
+
+        boolean exists = petriNets.values().stream().anyMatch(existingNet -> existingNet.getName().equals(net.getName()));
+
+        if (exists) {
+            System.out.println("Una rete con nome '" + net.getName() + "' è già presente.");
+            return;
+        }
+
+        petriNets.put(net.getId(), net);
+        savePetriNets();
     }
 }

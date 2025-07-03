@@ -1,12 +1,12 @@
-/* import application.logic.PetriNet;
-import application.logic.Place;
-import application.logic.Transition;
-import application.logic.Arc;
-import application.logic.MarkingData;
-import application.logic.Type;
+import application.logic.*;
+
 
 public class PetriNetApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        // Creo il repository che gestisce file JSON
+        PetriNetRepository repository = new PetriNetRepository();
+
+        // Creo una rete Petri
         PetriNet net = new PetriNet("SimpleNet", "AdminID");
 
         // Place iniziale con un token
@@ -87,5 +87,21 @@ public class PetriNetApp {
         System.out.println(p1);
         System.out.println(p2);
         System.out.println(pFinal);
+
+        // Salvo la rete nel file tramite repository
+        repository.addPetriNet(net);
+        System.out.println("\nRete salvata nel file JSON.");
+
+        // Carico la rete da file tramite repository
+        PetriNet loadedNet = repository.getPetriNets().get(net.getId());
+
+        System.out.println("\nRete caricata dal file:");
+        System.out.println("Nome rete: " + loadedNet.getName());
+        System.out.println("Numero posti: " + loadedNet.getPlaces().size());
+        System.out.println("Numero transizioni: " + loadedNet.getTransitions().size());
+
+        // Stampo posti caricati
+        System.out.println("\nPosti della rete caricata:");
+        loadedNet.getPlaces().values().forEach(System.out::println);
     }
-}*/
+}
