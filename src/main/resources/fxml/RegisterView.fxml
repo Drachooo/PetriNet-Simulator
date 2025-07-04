@@ -1,49 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.RegisterViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.RegisterViewController">
     <children>
-        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <HBox alignment="CENTER" maxHeight="450.0" maxWidth="900.0" prefHeight="350.0" prefWidth="700.0" style="-fx-background-radius: 25;">
-
-                <AnchorPane fx:id="sideBar" prefWidth="350.0" style="-fx-background-radius: 25; -fx-background-color: #6a89cc;" HBox.hgrow="ALWAYS">
+        <BorderPane prefHeight="1198.0" prefWidth="1440.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <left>
+                <ImageView fitHeight="1198.0" fitWidth="600.0" preserveRatio="true" BorderPane.alignment="CENTER">
+                    <image>
+                        <Image url="@../images/PetriLogo.jpg" />
+                    </image>
+                </ImageView>
+            </left>
+            <center>
+                <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
                     <children>
-                        <VBox alignment="CENTER" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label text="WELCOME ABOARD!" textAlignment="CENTER">
+                            <font>
+                                <Font name="Times New Roman" size="36.0" />
+                            </font>
+                        </Label>
+
+                        <VBox alignment="CENTER" maxWidth="600.0" spacing="20.0">
                             <children>
-                                <Label text="Benvenuto!" textFill="WHITE">
-                                    <font>
-                                        <Font size="24.0" />
-                                    </font>
-                                </Label>
-                                <Label text="Crea il tuo account" textFill="WHITE">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
+                                <TextField fx:id="emailTextField" prefHeight="65.0" prefWidth="600.0" promptText="Enter your email" />
+                                <PasswordField fx:id="passwordTextField" prefHeight="65.0" prefWidth="600.0" promptText="Enter your password" />
+                                <PasswordField fx:id="confirmPasswordTextField" prefHeight="65.0" prefWidth="600.0" promptText="Confirm Password" />
+                            </children>
+                        </VBox>
+
+                        <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleRegister" prefWidth="107.0" text="REGISTER" />
+                          <Label text="You already have an account?" textAlignment="CENTER">
+                              <font>
+                                  <Font name="Times New Roman Bold" size="12.0" />
+                              </font>
+                          </Label>
+
+                        <VBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <Button fx:id="backToLoginButton" mnemonicParsing="false" onAction="#goToLoginView" prefHeight="25.0" prefWidth="107.0" text="BACK TO LOGIN" />
                             </children>
                         </VBox>
                     </children>
-                </AnchorPane>
-
-                <AnchorPane prefWidth="350.0" style="-fx-background-radius: 25; -fx-background-color: white;" HBox.hgrow="ALWAYS">
-                    <children>
-                        <TextField fx:id="emailTextField" layoutY="51.0" prefHeight="25.0" promptText="Enter Email" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="72.0" />
-                        <PasswordField fx:id="passwordTextField" layoutY="89.0" prefHeight="25.0" promptText="Enter Password" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="72.0" />
-                        <PasswordField fx:id="confirmPasswordTextField" layoutY="126.0" prefHeight="25.0" promptText="Confirm Password" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="72.0" />
-
-                        <Button fx:id="registerButton" layoutX="63.0" layoutY="187.0" onAction="#handleRegister" prefHeight="41.0" prefWidth="206.0" style="-fx-background-color: #6a89cc; -fx-text-fill: white;" text="Register" AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="81.0" />
-                    </children>
-                </AnchorPane>
-            </HBox>
-        </StackPane>
+                    <padding>
+                        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+                    </padding>
+                </VBox>
+            </center>
+        </BorderPane>
     </children>
 </AnchorPane>

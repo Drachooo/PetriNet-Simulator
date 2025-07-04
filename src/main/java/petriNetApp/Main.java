@@ -1,6 +1,7 @@
 package petriNetApp;
 
 import application.controllers.LoginViewController;
+import application.logic.SharedResources;
 import application.logic.UserRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,29 +13,22 @@ import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
-    private static UserRepository userRepository=new UserRepository();
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+        SharedResources sharedResources = new SharedResources();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
-        LoginViewController loginViewController = loader.getController();
+
+        LoginViewController controller = loader.getController();
+        controller.setSharedResources(sharedResources);
+
         Scene scene = new Scene(root);
-
-        primaryStage.setMaximized(true);
-        primaryStage.setFullScreenExitHint("");
-        scene.setFill(Color.LIGHTGRAY);
-        primaryStage.initStyle(StageStyle.DECORATED);
-
         primaryStage.setScene(scene);
-
-      loginViewController.setStage(primaryStage);
         primaryStage.show();
-    }
 
-    public static UserRepository getUserRepository() {
-        return userRepository;
+
     }
 
     public static void main(String[] args) {
