@@ -93,6 +93,11 @@ public class UserRepository {
         }
     }
 
+    /*Metodo per controllare se una email è admin*/
+    public boolean isAdmin(String email) {
+        return admins.stream().anyMatch(admin -> admin.getEmail().equals(email));
+    }
+
     public boolean checkCorrectCredentials(String email, String password) {
         if (email == null || password == null || email.isEmpty() || password.isEmpty()) return false;
         return users.get(email).checkPassword(password);
