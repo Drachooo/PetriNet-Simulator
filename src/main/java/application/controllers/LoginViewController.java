@@ -87,17 +87,17 @@ public class LoginViewController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent mainPage = loader.load();
 
-        // Ottieni il controller per passare dati
+
         MainViewController controller = loader.getController();
 
-        // Passa le sharedResources al controller
+
         controller.setSharedResources(sharedResources);
 
-        // Passa lo stage
+
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         controller.setStage(stage);
 
-        // Se vuoi, puoi passare anche l'utente loggato (esempio):
+
         String email = emailTextField.getText();
         controller.setCurrentUser(email);
 
