@@ -21,8 +21,6 @@ import java.util.ResourceBundle;
 
 public class LoginViewController implements Initializable {
 
-    private double x = 0,y = 0;
-
     private SharedResources sharedResources;
     @FXML
     private TextField emailTextField;

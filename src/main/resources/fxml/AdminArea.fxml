@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.MainViewController">
+<BorderPane prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.AdminAreaController">
 
     <left>
         <VBox prefWidth="250.0" BorderPane.alignment="CENTER">
@@ -29,16 +29,16 @@
                     <Insets bottom="30.0" />
                 </VBox.margin>
             </Label>
-         <Region prefHeight="36.0" prefWidth="210.0" />
+            <Region prefHeight="36.0" prefWidth="210.0" />
 
             <VBox prefHeight="135.0" prefWidth="210.0" spacing="8.0">
-            <Button fx:id="adminAreaButton" mnemonicParsing="false" onAction="#goToAdminArea" text="Admin Area" />
-            <Region prefHeight="200.0" prefWidth="200.0" />
+                <Button fx:id="adminAreaButton" mnemonicParsing="false" text="Admin Area" />
+                <Region prefHeight="200.0" prefWidth="200.0" />
                 <Button fx:id="exploreNetsButton" onAction="#goToExploreNets" text="Explore Nets" />
-            <Region prefHeight="200.0" prefWidth="200.0" />
-                <Button fx:id="yourNetsButton" text="Your Nets" />
-            <Region prefHeight="200.0" prefWidth="200.0" />
-            <Button fx:id="helpButton" onAction="#goToHelp" text="Help" />
+                <Region prefHeight="200.0" prefWidth="200.0" />
+                <Button fx:id="yourNetsButton" onAction="#goToMainView" text="Your Nets" />
+                <Region prefHeight="200.0" prefWidth="200.0" />
+                <Button fx:id="helpButton" onAction="#goToHelp" text="Help" />
             </VBox>
 
             <VBox spacing="10.0">
@@ -48,12 +48,12 @@
             </VBox>
 
             <Region prefHeight="800.0" prefWidth="210.0" VBox.vgrow="ALWAYS" />
-         <VBox prefHeight="46.0" prefWidth="210.0">
-            <children>
-               <Region prefHeight="23.0" prefWidth="210.0" />
-               <Button mnemonicParsing="false" onAction="#logOut" text="Logout" />
-            </children>
-         </VBox>
+            <VBox prefHeight="46.0" prefWidth="210.0">
+                <children>
+                    <Region prefHeight="23.0" prefWidth="210.0" />
+                    <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOut" text="Logout" />
+                </children>
+            </VBox>
         </VBox>
     </left>
 
@@ -81,8 +81,8 @@
                     <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                     </padding>
-                    <HBox alignment="CENTER_LEFT" spacing="15.0">
-                        <Label text="🔗">
+                    <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="179.0" spacing="15.0">
+                        <Label text="📊">
                             <font>
                                 <Font size="24.0" />
                             </font>
@@ -93,62 +93,38 @@
                                     <Font size="12.0" />
                                 </font>
                             </Label>
-                            <Label text="5">
-                                <font>
-                                    <Font name="System Bold" size="32.0" />
-                                </font>
-                            </Label>
-                        </VBox>
-                    </HBox>
-                </VBox>
-
-                <VBox HBox.hgrow="ALWAYS">
-                    <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                    </padding>
-                    <HBox alignment="CENTER_LEFT" spacing="15.0">
-                        <Label text="📊">
-                            <font>
-                                <Font size="24.0" />
-                            </font>
-                        </Label>
-                        <VBox>
-                            <Label text="Total Nets">
-                                <font>
-                                    <Font size="12.0" />
-                                </font>
-                            </Label>
                             <Label text="1,893">
                                 <font>
                                     <Font name="System Bold" size="32.0" />
                                 </font>
                             </Label>
                         </VBox>
-                    </HBox>
-                </VBox>
-
-                <VBox HBox.hgrow="ALWAYS">
-                    <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                    </padding>
-                    <HBox alignment="CENTER_LEFT" spacing="15.0">
-                        <Label text="👥">
-                            <font>
-                                <Font size="24.0" />
-                            </font>
+                  <Region prefHeight="64.0" prefWidth="270.0" />
+                  <Button fx:id="newNetButton" mnemonicParsing="false" onAction="#goToNetCreation" text="New Net" />
+                  <Region prefHeight="64.0" prefWidth="270.0" />
+                  <Label text="📊">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <VBox>
+                     <children>
+                        <Label text="Total Upvotes">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
                         </Label>
-                        <VBox>
-                            <Label text="Users">
-                                <font>
-                                    <Font size="12.0" />
-                                </font>
-                            </Label>
-                            <Label text="189">
-                                <font>
+                        <HBox>
+                           <children>
+                              <Label text="1,893">
+                                 <font>
                                     <Font name="System Bold" size="32.0" />
-                                </font>
-                            </Label>
-                        </VBox>
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                     </HBox>
                 </VBox>
             </HBox>
@@ -159,7 +135,7 @@
                 </VBox.margin>
 
                 <HBox alignment="CENTER_LEFT" spacing="20.0">
-                    <Label text="Your Nets">
+                    <Label text="Nets Created">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
@@ -171,8 +147,8 @@
                 <TableView prefHeight="861.0" prefWidth="1130.0">
                     <columns>
                         <TableColumn prefWidth="200.0" text="Net Name" />
-                        <TableColumn prefWidth="250.0" text="Creator" />
-                        <TableColumn prefWidth="200.0" text="Date Created" />
+                        <TableColumn prefWidth="250.0" text="Date Created" />
+                        <TableColumn prefWidth="200.0" text="Upvotes" />
                         <TableColumn prefWidth="150.0" text="Status" />
                     </columns>
                     <columnResizePolicy>
@@ -180,7 +156,7 @@
                     </columnResizePolicy>
                 </TableView>
             </VBox>
-         <Pagination prefHeight="7.0" prefWidth="1130.0" />
+            <Pagination prefHeight="7.0" prefWidth="1130.0" />
         </VBox>
     </center>
 </BorderPane>
