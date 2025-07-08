@@ -79,6 +79,10 @@ public class PetriNet {
             throw new IllegalArgumentException("Arc with this ID already exists");
         }
 
+        if (hasArcBetween(arc.getTargetId(), arc.getSourceId())) {
+            throw new IllegalArgumentException("Cannot add arc: inverse arc already exists");
+        }
+
         verifyInitialFinal(arc);
 
         arcs.put(arc.getId(), arc);
@@ -89,23 +93,39 @@ public class PetriNet {
         if (!places.containsKey(place.getId())) {
             throw new IllegalArgumentException("Place must be added to the net first");
         }
-        if (initialPlace != null) {
-            throw new IllegalStateException("Initial place has already been set");
+
+        // Se è già final, lo rimuovo da lì
+        if (finalPlace != null && finalPlace.getId().equals(place.getId())) {
+            finalPlace = null;
         }
+
+        // Rimuovo il token dal precedente initial place (se esiste)
+        if (initialPlace != null) {
+            initialPlace.setTokens(0);
+        }
+
         initialPlace = place;
         place.setTokens(1);
     }
+
+
 
     public void setFinal(Place place) {
         Objects.requireNonNull(place);
         if (!places.containsKey(place.getId())) {
             throw new IllegalArgumentException("Place must be added to the net first");
         }
-        if (finalPlace != null) {
-            throw new IllegalStateException("Final place already set");
+
+        // Se è già initial, lo faccio diventare null
+        if (initialPlace != null && initialPlace.getId().equals(place.getId())) {
+            initialPlace.setTokens(0);
+            initialPlace = null;
         }
+
         finalPlace = place;
     }
+
+
 
     // Getters
     public String getId() {
@@ -225,4 +245,14 @@ public class PetriNet {
         }
 
     }
+
+    public boolean hasArcBetween(String sourceId, String targetId) {
+        for (Arc arc : arcs.values()) {
+            if (arc.getSourceId().equals(sourceId) && arc.getTargetId().equals(targetId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

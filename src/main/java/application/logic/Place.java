@@ -13,7 +13,7 @@ public class Place {
     public Place() {}
 
     // Costruttore per uso normale
-    public Place(String name, String petriNetId) {
+    public Place(String petriNetId, String name) {
         this.id = "P" + UUID.randomUUID().toString();
         this.name = Objects.requireNonNull(name);
         this.petriNetId = Objects.requireNonNull(petriNetId);
