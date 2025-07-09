@@ -1,6 +1,7 @@
 package application.controllers;
 
 import application.logic.SharedResources;
+import application.logic.User;
 import application.logic.UserRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,16 +19,14 @@ import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
-    //TODO: forse implementare una classe Sessione in modo da non dover passare ogni volta la mail dell'user(?).
-
     @FXML
     private Button adminAreaButton;
 
     private SharedResources sharedResources;
     private UserRepository userRepository;
+    private User currentUser;
 
     private Stage stage;
-    private String currentUser;
 
     public void setSharedResources(SharedResources sharedResources) {
         this.sharedResources = sharedResources;
@@ -38,18 +37,18 @@ public class MainViewController implements Initializable {
         this.stage = stage;
     }
 
-    public void setCurrentUser(String user) {
+    public void setCurrentUser(User user) {
         this.currentUser = user;
         updateUI();
     }
 
     private void updateUI() {
-        adminAreaButton.setVisible(currentUser != null && userRepository.isAdmin(currentUser));
+        adminAreaButton.setVisible(currentUser != null && currentUser.isAdmin());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // non serve nulla qui per ora
+        // Nessuna inizializzazione per ora
     }
 
     @FXML
@@ -59,11 +58,10 @@ public class MainViewController implements Initializable {
 
         AdminAreaController controller = loader.getController();
         controller.setSharedResources(sharedResources);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-
-        stage.setScene(scene);
+        stage.setScene(new Scene(root));
         stage.show();
     }
 
@@ -79,6 +77,8 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void logOut(ActionEvent event) throws IOException {
+        sharedResources.setCurrentUser(null);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
 
@@ -86,9 +86,7 @@ public class MainViewController implements Initializable {
         controller.setSharedResources(sharedResources);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-
-        stage.setScene(scene);
+        stage.setScene(new Scene(root));
         stage.show();
     }
 }
