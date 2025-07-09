@@ -170,7 +170,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>PetriNetApp</mainClass>
+                            <mainClass>Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
