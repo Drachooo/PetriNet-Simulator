@@ -9,12 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-
 public class PetriNetRepository {
 
     private Map<String, PetriNet> petriNets = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
-
     private final File file = new File("src/main/resources/data/petriNetRepository.json");
 
     public PetriNetRepository() {
@@ -36,7 +34,10 @@ public class PetriNetRepository {
         if (!file.exists() || file.length() == 0) return;
 
         try {
-            petriNets = mapper.readValue(file, mapper.getTypeFactory().constructMapType(HashMap.class, String.class, PetriNet.class));
+            petriNets = mapper.readValue(
+                    file,
+                    mapper.getTypeFactory().constructMapType(HashMap.class, String.class, PetriNet.class)
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,10 +59,10 @@ public class PetriNetRepository {
         return petriNets;
     }
 
-    public void addPetriNet(PetriNet net) {
-        /*Se esiste già una net con lo stesso NOME ( non ID, perchè abbiamo la sicurezza che l'ID sia univoco!)->errore*/
-
-        boolean exists = petriNets.values().stream().anyMatch(existingNet -> existingNet.getName().equals(net.getName()));
+    public void savePetriNet(PetriNet net) {
+        // Se esiste già una rete con lo stesso NOME (non ID, perché l'ID è univoco) -> errore
+        boolean exists = petriNets.values().stream()
+                .anyMatch(existingNet -> existingNet.getName().equals(net.getName()));
 
         if (exists) {
             System.out.println("Una rete con nome '" + net.getName() + "' è già presente.");

@@ -62,4 +62,9 @@ public class User {
     public String getHashedpw() {
         return this.hashedpw;
     }
+
+    /*Metodo per controllare se una email è admin*/
+    public boolean isAdmin() {
+        return this.type.equals(Type.ADMIN);
+    }
 }

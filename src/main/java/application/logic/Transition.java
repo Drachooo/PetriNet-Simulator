@@ -115,6 +115,10 @@ public class Transition {
         return this.type;
     }
 
+    public void setType(Type type) {
+        this.type = Objects.requireNonNull(type, "Type cannot be null");
+    }
+
     public Map<String,Place> getInputPlaces() {
         return Collections.unmodifiableMap(inputPlaces);
     }

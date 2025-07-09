@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.MainViewController">
+<BorderPane prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.NetCreationController">
 
     <!-- Left sidebar - Mantenuto esattamente come nel tuo originale -->
     <left>
@@ -38,7 +38,7 @@
                 <Region prefHeight="200.0" prefWidth="200.0" />
                 <Button fx:id="exploreNetsButton" onAction="#goToExploreNets" text="Explore Nets" />
                 <Region prefHeight="200.0" prefWidth="200.0" />
-                <Button fx:id="yourNetsButton" text="Your Nets" />
+                <Button fx:id="yourNetsButton" onAction="#goToYourNets" text="Your Nets" />
                 <Region prefHeight="200.0" prefWidth="200.0" />
                 <Button fx:id="helpButton" onAction="#goToHelp" text="Help" />
             </VBox>
@@ -62,20 +62,20 @@
     <center>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
-                <HBox prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #f0f0f0; -fx-padding: 5;" BorderPane.alignment="CENTER" spacing="20">
-                    <Button text="Place">
+                <HBox prefHeight="50.0" prefWidth="200.0" spacing="20" style="-fx-background-color: #f0f0f0; -fx-padding: 5;" BorderPane.alignment="CENTER">
+                    <Button onAction="#drawPlace" text="Place">
                         <graphic>
                             <Circle fill="#3498db" radius="10" />
                         </graphic>
                     </Button>
 
-                    <Button prefHeight="29.0" prefWidth="94.0" text="Transition">
+                    <Button onAction="#drawTransition" prefHeight="29.0" prefWidth="94.0" text="Transition">
                         <graphic>
                             <Rectangle fill="#e74c3c" height="10" width="20" />
                         </graphic>
                     </Button>
 
-                    <Button text="Arc">
+                    <Button onAction="#drawArc" text="Arc">
                         <graphic>
                             <Line endX="20" endY="5" startX="0" startY="5" stroke="#2ecc71" strokeWidth="2" />
                         </graphic>
@@ -91,15 +91,15 @@
 
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <Button mnemonicParsing="false" text="Save Net" />
+                    <Button mnemonicParsing="false" onAction="#savePetriNet" text="Save Net" />
                 </HBox>
             </top>
 
             <center>
-                <ScrollPane prefHeight="200.0" prefWidth="200.0" style="-fx-background: white;" BorderPane.alignment="CENTER">
+                <ScrollPane fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background: white;" BorderPane.alignment="CENTER">
                     <content>
                         <!-- Area di disegno principale -->
-                        <Pane id="drawingArea" prefHeight="1133.0" prefWidth="1190.0" style="-fx-background-color: white;" />
+                        <Pane id="drawingArea" fx:id="drawingPane" prefHeight="1133.0" prefWidth="1190.0" style="-fx-background-color: white;" />
                     </content>
                 </ScrollPane>
             </center>

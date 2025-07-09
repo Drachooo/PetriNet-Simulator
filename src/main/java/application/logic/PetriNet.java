@@ -169,7 +169,7 @@ public class PetriNet {
         return places.containsKey(elementId) || transitions.containsKey(elementId);
     }
 
-    public void validate() {
+    public void validate() throws IllegalArgumentException {
         validateSingleInitialPlace();
         validateSingleFinalPlace();
     }

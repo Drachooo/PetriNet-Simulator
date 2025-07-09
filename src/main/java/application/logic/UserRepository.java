@@ -93,10 +93,10 @@ public class UserRepository {
         }
     }
 
-    /*Metodo per controllare se una email è admin*/
-    public boolean isAdmin(String email) {
-        return admins.stream().anyMatch(admin -> admin.getEmail().equals(email));
+    public User getUser(String email) {
+        return users.get(email);
     }
+
 
     public boolean checkCorrectCredentials(String email, String password) {
         if (email == null || password == null || email.isEmpty() || password.isEmpty()) return false;
@@ -111,7 +111,6 @@ public class UserRepository {
         if (!EmailValidator.getInstance().isValid(email)) {
             return false;
         }
-
         // Regex stretta: solo lettere, numeri, punti, trattini e underscore prima della @
         // dominio con lettere, numeri e trattini, e TLD di almeno 2 lettere
         return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");

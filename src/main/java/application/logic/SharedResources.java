@@ -3,6 +3,7 @@ package application.logic;
 public class SharedResources {
     private final UserRepository userRepository;
     private final PetriNetRepository petriNetRepository;
+    private User currentUser;
 
     public SharedResources() {
         userRepository=new UserRepository();
@@ -15,5 +16,13 @@ public class SharedResources {
 
     public PetriNetRepository getPetriNetRepository() {
         return petriNetRepository;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public User getCurrentUser() {
+        return this.currentUser;
     }
 }
