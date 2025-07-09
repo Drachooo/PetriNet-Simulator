@@ -17,12 +17,10 @@ import java.util.ResourceBundle;
 public class AdminAreaController implements Initializable {
 
     private SharedResources sharedResources;
-    private UserRepository userRepository;
     private Stage stage;
 
     public void setSharedResources(SharedResources sharedResources) {
         this.sharedResources = sharedResources;
-        this.userRepository = sharedResources.getUserRepository();
     }
 
     public void goToExploreNets(ActionEvent event) throws IOException {

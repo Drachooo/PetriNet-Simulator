@@ -174,6 +174,10 @@ public class PetriNet {
         validateSingleFinalPlace();
     }
 
+    public boolean isEmpty() throws IllegalArgumentException {
+        return arcs.isEmpty() && transitions.isEmpty() && initialPlace == null && finalPlace == null;
+    }
+
     private void validateSingleInitialPlace() {
         if (initialPlace == null) {
             throw new IllegalArgumentException("initialPlace must be defined");
@@ -254,5 +258,45 @@ public class PetriNet {
         }
         return false;
     }
+
+    public void removePlace(String placeId) {
+        if (!places.containsKey(placeId)) {
+            throw new IllegalArgumentException("Place not found");
+        }
+
+        removeArcsConnectedTo(placeId);
+
+        if (initialPlace != null && initialPlace.getId().equals(placeId)) {
+            initialPlace = null;
+        }
+        if (finalPlace != null && finalPlace.getId().equals(placeId)) {
+            finalPlace = null;
+        }
+
+        places.remove(placeId);
+    }
+
+    public void removeTransition(String transitionId) {
+        if (!transitions.containsKey(transitionId)) {
+            throw new IllegalArgumentException("Transition not found");
+        }
+
+        removeArcsConnectedTo(transitionId);
+
+        transitions.remove(transitionId);
+    }
+
+
+    public void removeArc(String arcId) {
+        arcs.remove(arcId);
+    }
+
+    public void removeArcsConnectedTo(String elementId) {
+        arcs.values().removeIf(arc ->
+                arc.getSourceId().equals(elementId) || arc.getTargetId().equals(elementId)
+        );
+    }
+
+
 
 }

@@ -60,16 +60,18 @@ public class PetriNetRepository {
     }
 
     public void savePetriNet(PetriNet net) {
-        // Se esiste già una rete con lo stesso NOME (non ID, perché l'ID è univoco) -> errore
-        boolean exists = petriNets.values().stream()
-                .anyMatch(existingNet -> existingNet.getName().equals(net.getName()));
-
-        if (exists) {
-            System.out.println("Una rete con nome '" + net.getName() + "' è già presente.");
-            return;
-        }
-
-        petriNets.put(net.getId(), net);
+        String id = net.getId();
+        // Sovrascrive se l'ID esiste, altrimenti aggiunge
+        petriNets.put(id, net);
         savePetriNets();
     }
+
+    public void deletePetriNet(String id) {
+        if (petriNets.containsKey(id)) {
+            petriNets.remove(id);
+            savePetriNets();
+        }
+    }
+
+
 }

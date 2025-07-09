@@ -63,7 +63,7 @@
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
                 <HBox prefHeight="50.0" prefWidth="200.0" spacing="20" style="-fx-background-color: #f0f0f0; -fx-padding: 5;" BorderPane.alignment="CENTER">
-                    <Button onAction="#drawPlace" text="Place">
+                    <Button onAction="#drawPlace" prefHeight="29.0" prefWidth="68.0" text="Place">
                         <graphic>
                             <Circle fill="#3498db" radius="10" />
                         </graphic>
@@ -75,21 +75,16 @@
                         </graphic>
                     </Button>
 
-                    <Button onAction="#drawArc" text="Arc">
+                    <Button onAction="#drawArc" prefHeight="29.0" prefWidth="65.0" text="Arc">
                         <graphic>
                             <Line endX="20" endY="5" startX="0" startY="5" stroke="#2ecc71" strokeWidth="2" />
                         </graphic>
                     </Button>
 
-                    <Button text="Token">
-                        <graphic>
-                            <Circle fill="#f39c12" radius="5" />
-                        </graphic>
-                    </Button>
-
-                    <Button mnemonicParsing="false" onAction="#logOut" text="Clear Net" />
-
                     <Region HBox.hgrow="ALWAYS" />
+               <Button mnemonicParsing="false" onAction="#enterDeleteMode" text="Delete Mode" />
+
+                    <Button mnemonicParsing="false" onAction="#clearNet" text="Clear Net" />
 
                     <Button mnemonicParsing="false" onAction="#savePetriNet" text="Save Net" />
                 </HBox>
