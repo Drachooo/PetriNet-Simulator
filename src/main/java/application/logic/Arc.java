@@ -16,7 +16,7 @@ public class Arc {
     }
 
     // Costruttore normale
-    public Arc(String petriNetId, String sourceId, String targetId) {
+    public Arc(String petriNetId, String sourceId, String targetId) throws IllegalArgumentException {
         if (!isValidConnection(sourceId, targetId)) {
             throw new IllegalArgumentException("You cannot connect elements of the same type!");
         }
