@@ -32,7 +32,7 @@ public class UserRepository {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (User admin : admins) {
                 writeUser(writer, admin);
-                users.put(admin.getId(), admin); // ✅ usa id come chiave
+                users.put(admin.getId(), admin);
             }
         }
     }
@@ -54,7 +54,7 @@ public class UserRepository {
                     Type type = Type.valueOf(tokens[3]);
 
                     User user = new User(id, email, hashedPassword, type);
-                    users.put(id, user); // ✅ usa id come chiave
+                    users.put(id, user);
                 }
             }
         } catch (IOException e) {
@@ -63,7 +63,7 @@ public class UserRepository {
     }
 
     public void saveUser(User user) {
-        users.put(user.getId(), user); // ✅ usa id come chiave
+        users.put(user.getId(), user);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (User u : users.values()) {
                 writeUser(writer, u);
