@@ -119,6 +119,13 @@ public class Transition {
         this.type = Objects.requireNonNull(type, "Type cannot be null");
     }
 
+    public Type toggleType() {
+        this.type = (this.type == Type.USER) ? Type.ADMIN : Type.USER;
+        return this.type;
+    }
+
+
+
     public Map<String,Place> getInputPlaces() {
         return Collections.unmodifiableMap(inputPlaces);
     }
