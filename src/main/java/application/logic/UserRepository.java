@@ -1,91 +1,60 @@
 package application.logic;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
-import org.apache.commons.validator.routines.EmailValidator;
 
 public class UserRepository {
-
-    private final List<User> admins = List.of(
-            new User("pietro.sala@univr.it", "mela44", Type.ADMIN),
-            new User("carlo.combi@univr.it", "ananas37", Type.ADMIN),
-            new User("matteo.drago@studenti.univr.it", "fragola82", Type.ADMIN),
-            new User("luca.quaresima@studenti.univr.it", "lampone83", Type.ADMIN),
-            new User("aa", "aa", Type.ADMIN)
-    );
-
-    private Map<String, User> users = new HashMap<>();
-
-    private final File file = new File("./src/main/resources/data/userData.csv");
+    private static final String FILE_PATH = "src/main/resources/data/users.csv";
+    private Map<String, User> users = new HashMap<>(); // ✅ id → User
 
     public UserRepository() {
-        loadUsersFromFile();
+        File file = new File(FILE_PATH);
+
         if (!file.exists() || file.length() == 0) {
             try {
                 createFileWithAdmins();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            loadUsersFromFile();
         }
     }
 
     private void createFileWithAdmins() throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writeHeader(writer);
+        List<User> admins = List.of(
+                new User("admin1@example.com", "admin1", Type.ADMIN),
+                new User("admin2@example.com", "admin2", Type.ADMIN)
+        );
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (User admin : admins) {
                 writeUser(writer, admin);
-                users.put(admin.getEmail(), admin);
+                users.put(admin.getId(), admin); // ✅ usa id come chiave
             }
         }
-    }
-
-    private void writeHeader(BufferedWriter writer) throws IOException {
-        writer.write("id,email,password,type");
-        writer.newLine();
     }
 
     private void writeUser(BufferedWriter writer, User user) throws IOException {
-        writer.write(user.getId() + "," + user.getEmail() + "," + user.getHashedpw() + "," + user.getType());
-        writer.newLine();
+        writer.write(String.format("%s,%s,%s,%s\n",
+                user.getId(), user.getEmail(), user.getHashedpw(), user.getType().name()));
     }
-
-    public void saveUser(User user) {
-        try {
-            if (!file.exists() || file.length() == 0) {
-                createFileWithAdmins();
-            }
-            appendUserToFile(user);
-            users.put(user.getEmail(), user);
-            System.out.println("Utente salvato: " + user.getEmail());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void appendUserToFile(User user) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            writeUser(writer, user);
-        }
-    }
-
 
     private void loadUsersFromFile() {
-        if (!file.exists()) return;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(FILE_PATH))) {
             String line;
-
-            reader.readLine(); //salto intestazione
-
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 4) {
-                    String id = parts[0];
-                    String email = parts[1];
-                    String hashedPassword = parts[2];
-                    Type type = Type.valueOf(parts[3]);
+                String[] tokens = line.split(",");
+                if (tokens.length == 4) {
+                    String id = tokens[0];
+                    String email = tokens[1];
+                    String hashedPassword = tokens[2];
+                    Type type = Type.valueOf(tokens[3]);
+
                     User user = new User(id, email, hashedPassword, type);
-                    users.put(email, user);
+                    users.put(id, user); // ✅ usa id come chiave
                 }
             }
         } catch (IOException e) {
@@ -93,28 +62,22 @@ public class UserRepository {
         }
     }
 
-    public User getUser(String email) {
-        return users.get(email);
-    }
-
-
-    public boolean checkCorrectCredentials(String email, String password) {
-        if (email == null || password == null || email.isEmpty() || password.isEmpty()) return false;
-        return users.get(email).checkPassword(password);
-    }
-
-    public boolean isEmailAvailable(String email) {
-        return !users.containsKey(email);
-    }
-
-    public boolean isEmailValid(String email) {
-        if (!EmailValidator.getInstance().isValid(email)) {
-            return false;
+    public void saveUser(User user) {
+        users.put(user.getId(), user); // ✅ usa id come chiave
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (User u : users.values()) {
+                writeUser(writer, u);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        // Regex stretta: solo lettere, numeri, punti, trattini e underscore prima della @
-        // dominio con lettere, numeri e trattini, e TLD di almeno 2 lettere
-        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
+    public Map<String, User> getUsers() {
+        return users;
+    }
 
+    public User getUserById(String id) {
+        return users.get(id);
+    }
 }
