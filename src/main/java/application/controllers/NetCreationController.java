@@ -208,19 +208,20 @@ public class NetCreationController implements Initializable {
 
     /**
      * Cambia il tipo di una transizione tra USER e ADMIN.
-     * @param tr transizione da modificare
+     * @param transition transizione da modificare
      */
-    private void toggleTransitionType(Transition tr) {
-        Group g = getGroupForTransition(tr);
+    private void toggleTransitionType(Transition transition) {
+        Group g = getGroupForTransition(transition);
         Rectangle rect = (Rectangle) g.getChildren().get(0);
-        if (tr.getType() == Type.USER) {
-            tr.setType(Type.ADMIN);
+
+        Type newType = transition.toggleType();
+        if (newType == Type.ADMIN) {
             rect.setFill(Color.RED);
         } else {
-            tr.setType(Type.USER);
             rect.setFill(Color.BLUE);
         }
     }
+
 
     /**
      * Ottiene il Group grafico associato a una transizione.
