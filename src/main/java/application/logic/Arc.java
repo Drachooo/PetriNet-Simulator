@@ -56,6 +56,15 @@ public class Arc {
         return targetId;
     }
 
+    public boolean isSourcePlace() {
+        return sourceId != null && sourceId.startsWith("P");
+    }
+
+    public boolean isSourceTransition() {
+        return sourceId != null && sourceId.startsWith("T");
+    }
+
+
     public int getWeight() {
         return weight;
     }
