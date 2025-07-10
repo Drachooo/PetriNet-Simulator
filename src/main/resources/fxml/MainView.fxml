@@ -36,9 +36,8 @@
             <Region prefHeight="200.0" prefWidth="200.0" />
                 <Button fx:id="exploreNetsButton" onAction="#goToExploreNets" text="Explore Nets" />
             <Region prefHeight="200.0" prefWidth="200.0" />
-                <Button fx:id="yourNetsButton" text="Your Nets" />
-            <Region prefHeight="200.0" prefWidth="200.0" />
             <Button fx:id="helpButton" onAction="#goToHelp" text="Help" />
+            <Region prefHeight="200.0" prefWidth="200.0" />
             </VBox>
 
             <VBox spacing="10.0">
