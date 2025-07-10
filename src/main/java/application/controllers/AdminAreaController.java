@@ -3,6 +3,7 @@ package application.controllers;
 import application.logic.SharedResources;
 import application.logic.UserRepository;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -23,8 +24,18 @@ public class AdminAreaController implements Initializable {
         this.sharedResources = sharedResources;
     }
 
-    public void goToExploreNets(ActionEvent event) throws IOException {
-        // TODO
+    @FXML
+    private void goToExploreNets(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNets.fxml"));
+        Parent root = loader.load();
+
+        ExploreNetsController controller = loader.getController();
+        controller.setSharedResources(sharedResources);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     public void goToMainView(ActionEvent event) throws IOException {
