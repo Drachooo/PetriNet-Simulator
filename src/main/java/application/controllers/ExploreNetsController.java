@@ -106,7 +106,33 @@ public class ExploreNetsController implements Initializable {
     public void setSharedResources(SharedResources sharedResources) {
         this.sharedResources = sharedResources;
         populateTable();
+
+        tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldRow, newRow) -> {
+            if (newRow != null) {
+                PetriNet selectedNet = newRow.getPetriNet();
+                showNetGraphically(selectedNet);
+            }
+        });
     }
+
+    private void showNetGraphically(PetriNet net) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
+            Parent root = loader.load();
+
+            ViewPetriNetController controller = loader.getController();
+            controller.setSharedResources(sharedResources);
+            controller.loadPetriNet(net);
+            controller.setStage(stage);
+
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public void setStage(Stage stage) {
         this.stage = stage;
