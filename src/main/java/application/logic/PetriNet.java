@@ -6,9 +6,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PetriNet {
     private  String id;
     private  String name;
@@ -34,7 +36,6 @@ public class PetriNet {
         this.adminId = null;
         this.dateCreated = null;
     }
-
     public PetriNet(String name, String adminId) {
         this.id = "NP" + UUID.randomUUID().toString();
         this.name = Objects.requireNonNull(name);
@@ -296,7 +297,5 @@ public class PetriNet {
                 arc.getSourceId().equals(elementId) || arc.getTargetId().equals(elementId)
         );
     }
-
-
 
 }

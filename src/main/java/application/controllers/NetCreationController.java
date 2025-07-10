@@ -509,16 +509,20 @@ public class NetCreationController implements Initializable {
 
 
 
-    @FXML private void goToExploreNets() { } // TODO
+    @FXML
+    private void goToExploreNets(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNets.fxml"));
+        Parent root = loader.load();
+
+        ExploreNetsController controller = loader.getController();
+        controller.setSharedResources(sharedResources);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
     @FXML private void goToYourNets() { }    // TODO
     @FXML private void goToHelp() { }        // TODO
-
-    @FXML private void logOut(ActionEvent e) throws IOException {
-        FXMLLoader l = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
-        Parent r = l.load();
-        l.<LoginViewController>getController().setSharedResources(sharedResources);
-        Stage s = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        s.setScene(new Scene(r));
-        s.show();
-    }
 }

@@ -3,6 +3,7 @@ package application.controllers;
 import application.logic.SharedResources;
 import application.logic.User;
 import application.logic.UserRepository;
+import application.ui.graphics.PetriNetTableRow;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -66,8 +69,17 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    private void goToExploreNets() {
-        // TODO: implementare navigazione area esplorazione
+    private void goToExploreNets(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNets.fxml"));
+        Parent root = loader.load();
+
+        ExploreNetsController controller = loader.getController();
+        controller.setSharedResources(sharedResources);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     @FXML

@@ -52,7 +52,7 @@ public class LoginViewController implements Initializable {
         }
 
         if (userRepository.checkCorrectCredentials(email, password)) {
-            User user = userRepository.getUser(email);
+            User user = userRepository.getUserByEmail(email);
             sharedResources.setCurrentUser(user);
             goToMainView(event);
         } else {
