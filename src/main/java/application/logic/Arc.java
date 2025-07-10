@@ -33,7 +33,7 @@ public class Arc {
                 (sourceId.startsWith("T") && targetId.startsWith("P"));
     }
 
-    // Getters e setters (necessari per Jackson)
+    // Getters e setters
     public String getId() {
         return id;
     }
@@ -46,24 +46,14 @@ public class Arc {
         return petriNetId;
     }
 
-    public void setPetriNetId(String petriNetId) {
-        this.petriNetId = petriNetId;
-    }
 
     public String getSourceId() {
         return sourceId;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
 
     public String getTargetId() {
         return targetId;
-    }
-
-    public void setTargetId(String targetId) {
-        this.targetId = targetId;
     }
 
     public int getWeight() {
