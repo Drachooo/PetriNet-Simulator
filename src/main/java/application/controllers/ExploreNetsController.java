@@ -38,11 +38,6 @@ public class ExploreNetsController implements Initializable {
     }
 
 
-
-
-
-
-
     public void populateTable() {
         if (sharedResources == null) return;
 

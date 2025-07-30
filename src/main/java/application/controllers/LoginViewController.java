@@ -2,7 +2,7 @@ package application.controllers;
 
 import application.logic.SharedResources;
 import application.logic.User;
-import application.logic.UserRepository;
+import application.repositories.UserRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

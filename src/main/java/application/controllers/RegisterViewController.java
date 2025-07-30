@@ -3,7 +3,7 @@
     import application.logic.SharedResources;
     import application.logic.Type;
     import application.logic.User;
-    import application.logic.UserRepository;
+    import application.repositories.UserRepository;
     import javafx.scene.Node;
     import javafx.scene.Parent;
     import javafx.scene.Scene;
@@ -15,7 +15,6 @@
     import javafx.fxml.Initializable;
     import javafx.stage.Stage;
 
-    import java.io.IOException;
     import java.net.URL;
     import java.util.ResourceBundle;
 

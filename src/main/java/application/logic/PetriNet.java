@@ -85,7 +85,6 @@ public class PetriNet {
         }
 
         verifyInitialFinal(arc);
-
         arcs.put(arc.getId(), arc);
     }
 
@@ -94,10 +93,12 @@ public class PetriNet {
         if (!places.containsKey(place.getId())) {
             throw new IllegalArgumentException("Place must be added to the net first");
         }
-
-        // Se è già final, lo rimuovo da lì
+        System.out.println("Ciaoooooo setinit");
+        // Se è già final, lo rimuovo dalla variabile finalPlace
         if (finalPlace != null && finalPlace.getId().equals(place.getId())) {
+            invertArcs();
             finalPlace = null;
+            System.out.println("Ciaoooooo ifsetinit");
         }
 
         // Rimuovo il token dal precedente initial place (se esiste)
@@ -116,16 +117,27 @@ public class PetriNet {
         if (!places.containsKey(place.getId())) {
             throw new IllegalArgumentException("Place must be added to the net first");
         }
-
+        System.out.println("Ciaoooooo setfinal");
         // Se è già initial, lo faccio diventare null
         if (initialPlace != null && initialPlace.getId().equals(place.getId())) {
             initialPlace.setTokens(0);
+            invertArcs();
             initialPlace = null;
+            System.out.println("Ciaoooooo ifsetfinal");
         }
 
         finalPlace = place;
     }
 
+
+    private void invertArcs() {
+        String temp;
+        for(Arc arc : arcs.values()) {
+            temp = arc.getSourceId();
+            arc.setSourceId(arc.getTargetId());
+            arc.setTargetId(temp);
+        }
+    }
 
 
     // Getters

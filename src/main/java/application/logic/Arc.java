@@ -42,6 +42,14 @@ public class Arc {
         this.id = id;
     }
 
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
+    }
+
     public String getPetriNetId() {
         return petriNetId;
     }
@@ -55,6 +63,8 @@ public class Arc {
     public String getTargetId() {
         return targetId;
     }
+
+
 
     public boolean isSourcePlace() {
         return sourceId != null && sourceId.startsWith("P");

@@ -1,4 +1,4 @@
-package application.logic;
+package application.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

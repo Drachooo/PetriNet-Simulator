@@ -1,10 +1,12 @@
-package application.logic;
+package application.repositories;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import application.logic.Type;
+import application.logic.User;
 import org.apache.commons.validator.routines.EmailValidator;
 
 public class UserRepository {

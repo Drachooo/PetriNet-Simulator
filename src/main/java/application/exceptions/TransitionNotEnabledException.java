@@ -1,4 +1,4 @@
-package application.logic;
+package application.exceptions;
 
 public class TransitionNotEnabledException extends RuntimeException {
     public TransitionNotEnabledException() {

@@ -1,7 +1,6 @@
 package application.controllers;
 
 import application.logic.SharedResources;
-import application.logic.UserRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
