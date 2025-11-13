@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Manages all business logic for running processes.
@@ -77,6 +78,16 @@ public class ProcessService {
 
     /*BUSINESS LOGIC*/
 
+
+    /**
+     * Implements Use Case 6.2.2: Start Computation.
+     * Creates a new computation
+     *
+     * @param userId ID of user that starts the process
+     * @param netId ID of PetriNet
+     * @return created computation
+     * @throws IllegalStateException if rule is violated
+     */
     public Computation startNewComputation(String userId, String netId) throws IllegalStateException {
         User user=userRepository.getUserById(userId);
         PetriNet net=petriNetRepository.getPetriNets().get(netId);
@@ -115,8 +126,16 @@ public class ProcessService {
 
     }
 
-    /*6.2.3*/
-
+    /**
+     * Implements Use Case 6.2.3: Execute Transition.
+     * Fires a transition
+     *
+     * @param computationId ID of computation to update.
+     * @param transitionId ID of transition fo fire.
+     * @param userId ID of user that wants to fire.
+     * @return upodated trabsition.
+     * @throws IllegalStateException if any rule is violated.
+     */
     public Computation fireTransition(String computationId, String transitionId, String userId) throws IllegalStateException{
         Computation comp=computations.get(computationId);
 
@@ -168,6 +187,11 @@ public class ProcessService {
         return comp;
     }
 
+    /**
+     * Implements rule 2.3
+     * @throws IllegalStateException if user cannot fire transition
+     *
+     */
     private void checkFirePermissions(User user, PetriNet net, Transition transition) {
         Type transitionType=transition.getType();
         boolean isNetAdmin=user.isAdmin() && net.getAdminId().equals(user.getId());
@@ -185,6 +209,15 @@ public class ProcessService {
         }
     }
 
+    /**
+     *Implements requirements FR4.1, 4.2, 4.3.
+     * Gets a list of all transitions that the given user can currently fire
+     * in a specific computation.
+     *
+     * @param computationId The ID of the active computation.
+     * @param userId The ID of the user asking.
+     * @return A List of Transition objects that are both enabled AND permitted for the user.
+     */
     public List<Transition> getAvailableTransitions(String computationId, String userId) {
         Computation comp=computations.get(computationId);
         User user=userRepository.getUserById(userId);
@@ -212,6 +245,77 @@ public class ProcessService {
         }
         return available;
     }
+
+    /*UI HELPER METHOIDS*/
+
+    /**
+     * Implements Use Case 5.3 and 5.4: Delete Computation.
+     *
+     * @param computationId ID of computation to delete
+     * @param userId ID of user that wants to delete computation
+     * @throws IllegalStateException if user does not have permissions.
+     */
+
+    public void deleteComputation(String computationId, String userId) throws IllegalStateException {
+        Computation comp=computations.get(computationId);
+        if(comp==null) return;
+
+        User user=userRepository.getUserById(userId);
+        if(user==null) throw new IllegalStateException("User not found");
+
+        PetriNet net=petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+
+        //FR 5.4: "Users shall be able to delete their own computations"
+        boolean isOwner=comp.getUserId().equals(userId);
+
+        //FR5.3: "Admins shall be able to delete any computation related to their PEtri nets"
+        boolean isAdminOfNet= net != null && user.isAdmin();
+
+        if(isOwner || isAdminOfNet) {
+            computations.remove(computationId);
+            saveComputationsToFile();
+        }else{
+            throw new IllegalStateException("User is not owner or admin");
+        }
+    }
+
+    /**
+     * Implements Use Case 6.1.2: Manage Computations.
+     * Obtains computations of all users on the nets created by an admin.
+     * Useful for "Administrator Dashboard".
+     */
+    public List<Computation> getComputationsForAdmin(String adminId) {
+        return computations.values().stream().filter(c->{
+            PetriNet net=petriNetRepository.getPetriNets().get(c.getPetriNetId());
+
+            return net!=null && net.getAdminId().equals(adminId);
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Implements Use Case 6.2.1: Subscribe to Process.
+     * Obtains nets to which it can subscribe (all except his/her own).
+     * Useful for "User Dashboard".
+     */
+    public List<PetriNet> getAvailableNetsForUser(String userId) {
+        User user=userRepository.getUserById(userId);
+        if(user == null) return new ArrayList<>();
+
+        //FR 2.1 and 2.2: An admin cannot subscribe to his own net :)
+        return petriNetRepository.getPetriNets().values().stream()
+                .filter(n->!n.getAdminId().equals(userId)).collect(Collectors.toList());
+    }
+
+    /**
+     * Obtains computation by its ID
+     */
+    public Computation getComputationById(String computationId) {
+        return computations.get(computationId);
+    }
+
+
+
+
 
 
 }
