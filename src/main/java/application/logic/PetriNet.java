@@ -22,8 +22,8 @@ public class PetriNet {
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern= "dd-MM-yyyy HH:mm:ss")
     private  LocalDateTime dateCreated;
 
-    private Place initialPlace = null;
-    private Place finalPlace = null;
+    private String initialPlaceId = null;
+    private String finalPlaceId = null;
 
     private final Map<String, Place> places = new HashMap<>(); // Per i place non dovrebbe servire l'ordine di inserimento
     private final Map<String, Transition> transitions = new HashMap<>(); // Neanche per le transizioni
@@ -93,21 +93,13 @@ public class PetriNet {
         if (!places.containsKey(place.getId())) {
             throw new IllegalArgumentException("Place must be added to the net first");
         }
-        System.out.println("Ciaoooooo setinit");
-        // Se è già final, lo rimuovo dalla variabile finalPlace
-        if (finalPlace != null && finalPlace.getId().equals(place.getId())) {
-            invertArcs();
-            finalPlace = null;
-            System.out.println("Ciaoooooo ifsetinit");
+
+        // Se questo posto era il posto finale, ora non lo è più.
+        if (finalPlaceId != null && finalPlaceId.equals(place.getId())) {
+            finalPlaceId = null;
         }
 
-        // Rimuovo il token dal precedente initial place (se esiste)
-        if (initialPlace != null) {
-            initialPlace.setTokens(0);
-        }
-
-        initialPlace = place;
-        place.setTokens(1);
+        this.initialPlaceId = place.getId();
     }
 
 
@@ -117,26 +109,13 @@ public class PetriNet {
         if (!places.containsKey(place.getId())) {
             throw new IllegalArgumentException("Place must be added to the net first");
         }
-        System.out.println("Ciaoooooo setfinal");
-        // Se è già initial, lo faccio diventare null
-        if (initialPlace != null && initialPlace.getId().equals(place.getId())) {
-            initialPlace.setTokens(0);
-            invertArcs();
-            initialPlace = null;
-            System.out.println("Ciaoooooo ifsetfinal");
+
+        // Se questo posto era il posto iniziale, ora non lo è più.
+        if (initialPlaceId != null && initialPlaceId.equals(place.getId())) {
+            initialPlaceId = null;
         }
 
-        finalPlace = place;
-    }
-
-
-    private void invertArcs() {
-        String temp;
-        for(Arc arc : arcs.values()) {
-            temp = arc.getSourceId();
-            arc.setSourceId(arc.getTargetId());
-            arc.setTargetId(temp);
-        }
+        this.finalPlaceId = place.getId();
     }
 
 
@@ -153,12 +132,26 @@ public class PetriNet {
         return adminId;
     }
 
+    public String getInitialPlaceId() {
+        return initialPlaceId;
+    }
+
     public Place getInitialPlace() {
-        return initialPlace;
+        if (initialPlaceId == null) {
+            return null;
+        }
+        return places.get(initialPlaceId);
+    }
+
+    public String getFinalPlaceId() {
+        return finalPlaceId;
     }
 
     public Place getFinalPlace() {
-        return finalPlace;
+        if (finalPlaceId == null) {
+            return null;
+        }
+        return places.get(finalPlaceId);
     }
 
     public Map<String, Place> getPlaces() {
@@ -188,11 +181,11 @@ public class PetriNet {
     }
 
     public boolean isEmpty() throws IllegalArgumentException {
-        return arcs.isEmpty() && transitions.isEmpty() && initialPlace == null && finalPlace == null;
+        return arcs.isEmpty() && transitions.isEmpty() && initialPlaceId == null && finalPlaceId == null;
     }
 
     private void validateSingleInitialPlace() {
-        if (initialPlace == null) {
+        if (initialPlaceId == null) {
             throw new IllegalArgumentException("initialPlace must be defined");
         }
 
@@ -217,13 +210,13 @@ public class PetriNet {
             throw new IllegalStateException("There must be exactly one initial place (Place with no incoming arcs), found: " + candidates.size());
         }
 
-        if (!candidates.get(0).getId().equals(initialPlace.getId())) {
+        if (!candidates.getFirst().getId().equals(initialPlaceId)) {
             throw new IllegalStateException("The DEFINED initial place does not match the initial place of the net you designed.");
         }
     }
 
     private void validateSingleFinalPlace() {
-        if (finalPlace == null) {
+        if (finalPlaceId == null) {
             throw new IllegalArgumentException("finalPlace must be defined");
         }
 
@@ -248,16 +241,16 @@ public class PetriNet {
             throw new IllegalStateException("There must be exactly one final place, found: " + candidates.size());
         }
 
-        if (!candidates.get(0).getId().equals(finalPlace.getId())) {
+        if (!candidates.getFirst().getId().equals(finalPlaceId)) {
             throw new IllegalStateException("The DEFINED final place does not match the the final place of the net you designed.");
         }
     }
 
     private void verifyInitialFinal(Arc arc) {
-        if (initialPlace != null && arc.getTargetId().equals(initialPlace.getId())) {
+        if (arc.getTargetId().equals(initialPlaceId)) {
             throw new IllegalArgumentException("Cannot add incoming arcs to initial place");
         }
-        if (finalPlace != null && arc.getSourceId().equals(finalPlace.getId())) {
+        if (arc.getSourceId().equals(finalPlaceId)) {
             throw new IllegalArgumentException("Cannot add outgoing arcs from final place");
         }
 
@@ -279,11 +272,11 @@ public class PetriNet {
 
         removeArcsConnectedTo(placeId);
 
-        if (initialPlace != null && initialPlace.getId().equals(placeId)) {
-            initialPlace = null;
+        if (initialPlaceId != null && initialPlaceId.equals(placeId)) {
+            initialPlaceId = null;
         }
-        if (finalPlace != null && finalPlace.getId().equals(placeId)) {
-            finalPlace = null;
+        if (finalPlaceId != null && finalPlaceId.equals(placeId)) {
+            finalPlaceId = null;
         }
 
         places.remove(placeId);
