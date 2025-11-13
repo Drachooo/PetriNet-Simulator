@@ -3,8 +3,20 @@ package application.logic;
 import java.time.LocalDateTime;
 import java.util.*;
 
+// Imports needed for Jackson
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+/**
+ * Represents a single execution instance of a Petri net by a user.
+ * Maps to data model 5.2.5.
+ */
 public class Computation {
 
+    /**
+     * Defines the runtime status of a Computation.
+     */
     public enum ComputationStatus {
         ACTIVE, COMPLETED;
 
@@ -16,11 +28,22 @@ public class Computation {
     private final String id;
     private final String petriNetId;
     private final String userId;
-    private ComputationStatus status;
+    private ComputationStatus status; // Mutable: changes during lifecycle
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private final LocalDateTime startTime;
-    private LocalDateTime endTime;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime endTime; // Mutable: set on completion
+
+    // Holds the history of this computation
     private final List<ComputationStep> steps = new ArrayList<>();
 
+    /**
+     * Business constructor for starting a new computation.
+     * @param petriNetId The net being executed.
+     * @param userId The user executing the net.
+     */
     public Computation(String petriNetId, String userId) {
         this.id = "CO" + UUID.randomUUID().toString();
         this.petriNetId = Objects.requireNonNull(petriNetId, "PetriNet ID cannot be null");
@@ -29,6 +52,35 @@ public class Computation {
         this.startTime = LocalDateTime.now();
     }
 
+    /**
+     * Constructor for Jackson deserialization.
+     * @JsonCreator tells Jackson to use this constructor.
+     * @JsonProperty maps JSON fields to parameters.
+     */
+    @JsonCreator
+    public Computation(
+            @JsonProperty("id") String id,
+            @JsonProperty("petriNetId") String petriNetId,
+            @JsonProperty("userId") String userId,
+            @JsonProperty("status") ComputationStatus status,
+            @JsonProperty("startTime") LocalDateTime startTime,
+            @JsonProperty("endTime") LocalDateTime endTime,
+            @JsonProperty("steps") List<ComputationStep> steps)
+    {
+        this.id = id;
+        this.petriNetId = petriNetId;
+        this.userId = userId;
+        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        if (steps != null) {
+            this.steps.addAll(steps);
+        }
+    }
+
+    /**
+     * Marks the computation as completed.
+     */
     public void completeComputation() {
         if (!status.isActive()) {
             throw new IllegalStateException("Computation has already been completed");
@@ -37,6 +89,10 @@ public class Computation {
         this.endTime = LocalDateTime.now();
     }
 
+    /**
+     * Adds a new history step to this computation.
+     * @param step The step to add.
+     */
     public void addStep(ComputationStep step) {
         Objects.requireNonNull(step, "Computation step cannot be null");
         if (!step.getComputationId().equals(this.id)) {
@@ -45,6 +101,10 @@ public class Computation {
         steps.add(step);
     }
 
+    /**
+     * Gets the first step (which contains the initial marking).
+     * @return The initial ComputationStep, or null.
+     */
     public ComputationStep getInitialStep() {
         for (ComputationStep step : steps) {
             if (step.getTransitionId() == null) {
@@ -54,21 +114,29 @@ public class Computation {
         return null;
     }
 
+    /**
+     * Gets the most recent step (which contains the current marking).
+     * @return The last ComputationStep, or null.
+     */
     public ComputationStep getLastStep() {
         return steps.isEmpty() ? null : steps.get(steps.size() - 1);
     }
 
+    /**
+     * Returns an unmodifiable view of the computation history.
+     */
     public List<ComputationStep> getSteps() {
         return Collections.unmodifiableList(steps);
     }
 
-    // Getters
+    // --- Getters ---
+
     public String getId() { return id; }
     public String getPetriNetId() { return petriNetId; }
     public String getUserId() { return userId; }
     public boolean isActive() { return status==ComputationStatus.ACTIVE; }
     public LocalDateTime getStartTime() { return startTime; }
-    public LocalDateTime getEndTime() { return endTime; }  // Può restituire null
+    public LocalDateTime getEndTime() { return endTime; }
     public ComputationStatus getStatus() { return status; }
 
     @Override
