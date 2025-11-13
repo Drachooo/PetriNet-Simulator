@@ -9,7 +9,6 @@ import application.repositories.UserRepository;
  */
 public class SharedResources {
 
-    // 1. The static instance of this class
     private static final SharedResources instance = new SharedResources();
 
     private final UserRepository userRepository;
@@ -20,7 +19,7 @@ public class SharedResources {
         // Instantiated only once at the start of the application.
         this.userRepository = new UserRepository();
         this.petriNetRepository = new PetriNetRepository();
-        this.processService = new ProcessService();
+        this.processService = new ProcessService(userRepository, petriNetRepository);
     }
 
     /**
