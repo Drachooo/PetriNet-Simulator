@@ -14,11 +14,13 @@ public class SharedResources {
 
     private final UserRepository userRepository;
     private final PetriNetRepository petriNetRepository;
+    private final ProcessService processService;
 
     private SharedResources() {
         // Instantiated only once at the start of the application.
         this.userRepository = new UserRepository();
         this.petriNetRepository = new PetriNetRepository();
+        this.processService = new ProcessService();
     }
 
     /**
