@@ -9,7 +9,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,6 +75,143 @@ public class ProcessService {
         }
     }
 
+    /*BUSINESS LOGIC*/
+
+    public Computation startNewComputation(String userId, String netId) throws IllegalStateException {
+        User user=userRepository.getUserById(userId);
+        PetriNet net=petriNetRepository.getPetriNets().get(netId);
+
+        if(user==null) throw new IllegalStateException("User not found");
+        if (net==null) throw new IllegalStateException("PetriNet not found");
+
+        if(user.isAdmin() && net.getAdminId().equals(user.getId()))
+            throw new IllegalStateException("Admin cannot start computation of his own net");
+
+        boolean hasActive=computations.values().stream().anyMatch(c->c.getUserId().equals(user.getId()) && c.getPetriNetId().equals(netId) && c.isActive());
+
+        if(hasActive) {
+            throw new IllegalStateException("User already has an active computation for this net");
+        }
+
+        /*6.2.2*/
+        Computation newComp= new Computation(netId,userId);
+
+        MarkingData initialMarking=new MarkingData();
+        String initialPlaceId=net.getInitialPlaceId();
+
+        if(initialPlaceId==null) {
+            throw new IllegalStateException("Could not start net: initialPlace was not defined");
+        }
+        /*Rule 1.1.3 "exactly one token"*/
+        initialMarking.setTokens(initialPlaceId,1);
+
+        ComputationStep initialStep=new ComputationStep(newComp.getId(),null,initialMarking);
+
+        newComp.addStep(initialStep);
+        computations.put(newComp.getId(), newComp);
+        saveComputationsToFile();
+
+        return newComp;
+
+    }
+
+    /*6.2.3*/
+
+    public Computation fireTransition(String computationId, String transitionId, String userId) throws IllegalStateException{
+        Computation comp=computations.get(computationId);
+
+        if(comp==null) throw new IllegalStateException("Computation not found");
+
+        User user=userRepository.getUserById(userId);
+        if(user==null) throw new IllegalStateException("User not found");
+
+        PetriNet net=petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+        if(net==null) throw new IllegalStateException("PetriNet not found");
+
+        Transition transition=net.getTransitions().get(transitionId);
+        if(transition==null) throw new IllegalStateException("Transition not found");
+
+        /*Computation must be active*/
+        if(!comp.isActive()) throw new IllegalStateException("Computation is not active");
+
+        /*User must have permission (owner or admin of net)*/
+        // (Req 5.4: "Users shall be able to delete their own computations")
+        // (Req 5.3: "Administrators shall be able to delete any computation related to their Petri nets")
+        boolean isOwner=comp.getUserId().equals(userId);
+        boolean isAdmin=user.isAdmin() && net.getAdminId().equals(user.getId());
+
+        if(!isOwner && !isAdmin) {
+            throw new IllegalStateException("User is not owner or admin");
+        }
+
+        checkFirePermissions(user,net,transition);
+
+
+        MarkingData curr=comp.getLastStep().getMarkingData();
+
+        if(!net.isEnabled(transitionId,curr)){
+            throw new IllegalStateException("Transition is not enabled (insuff token)");
+        }
+
+        MarkingData newMarking= net.fire(transitionId,curr);
+
+        /*6.2.3: new marking is recorded with timestamp*/
+        ComputationStep newStep=new ComputationStep(comp.getId(),transitionId,newMarking);
+        comp.addStep(newStep);
+
+        String finalPlaceId=net.getFinalPlaceId();
+        if(finalPlaceId!=null && newMarking.getTokens(finalPlaceId)>0) {
+            comp.completeComputation();
+        }
+
+        saveComputationsToFile();
+        return comp;
+    }
+
+    private void checkFirePermissions(User user, PetriNet net, Transition transition) {
+        Type transitionType=transition.getType();
+        boolean isNetAdmin=user.isAdmin() && net.getAdminId().equals(user.getId());
+
+        if(transitionType==Type.ADMIN){
+            /*2.3: Administrator transitions can only be fired by the administrator who created the Petri net*/
+            if(!isNetAdmin) {
+                throw new IllegalStateException("Only the admin of this net can fire its transitions");
+            }
+
+            /*2.3: "User transitions can only be fired by users"
+                    is implicitly handled: if not admin of the net you are considered as a valid user
+                    even if you are admin of another net (2.1)
+             */
+        }
+    }
+
+    public List<Transition> getAvailableTransitions(String computationId, String userId) {
+        Computation comp=computations.get(computationId);
+        User user=userRepository.getUserById(userId);
+
+        if(comp==null || user==null || !comp.isActive())
+            return new ArrayList<>();
+
+        PetriNet net=petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+        if(net==null)
+            return new ArrayList<>();
+
+        MarkingData curr=comp.getLastStep().getMarkingData();
+
+        List<Transition> available=new ArrayList<>();
+
+        for(Transition t: net.getTransitions().values()) {
+            boolean isEnabled=net.isEnabled(t.getId(),curr);
+
+            if(isEnabled) {
+                try{
+                    checkFirePermissions(user,net,t);
+                    available.add(t);
+                }catch(IllegalStateException e){}
+            }
+        }
+        return available;
+    }
 
 
 }
