@@ -292,7 +292,6 @@ public class PetriNet {
         transitions.remove(transitionId);
     }
 
-
     public void removeArc(String arcId) {
         arcs.remove(arcId);
     }
@@ -301,6 +300,71 @@ public class PetriNet {
         arcs.values().removeIf(arc ->
                 arc.getSourceId().equals(elementId) || arc.getTargetId().equals(elementId)
         );
+    }
+
+    /**
+     * @param transitionId The ID of the transition to check.
+     * @param marking      The current token distribution (state).
+     * @return true if the transition can fire, false otherwise.
+     */
+    public boolean isEnabled(String transitionId, MarkingData marking) {
+        Objects.requireNonNull(marking, "Marking cannot be null");
+        if (!transitions.containsKey(transitionId)) {
+            throw new IllegalArgumentException("Transition " + transitionId + " not found in this net.");
+        }
+
+        // Check if all input places have enough tokens
+        for (Arc arc : arcs.values()) {
+            if (arc.getTargetId().equals(transitionId)) {
+                // This is an input arc: (Place) -> (Transition)
+                String inputPlaceId = arc.getSourceId();
+                int weight = arc.getWeight();
+
+                if (marking.getTokens(inputPlaceId) < weight) {
+                    return false; // Not enough tokens
+                }
+            }
+        }
+        return true; // All requirements met
+    }
+
+    /**
+     * Implements the "Firing Rule" (1.1.2) and "Marking Evolution".
+     * Fires a transition and returns the new resulting marking.
+     * This method does *not* modify the currentMarking.
+     *
+     * @param transitionId   The ID of the transition to fire.
+     * @param currentMarking The state *before* firing.
+     * @return A **new Marking object** representing the state *after* firing.
+     * @throws IllegalStateException if the transition is not enabled.
+     */
+    public MarkingData fire(String transitionId, MarkingData currentMarking) {
+        if (!isEnabled(transitionId, currentMarking)) {
+            throw new IllegalStateException("Transition " + transitionId + " is not enabled.");
+        }
+
+        // Create a copy of the state to modify.
+        MarkingData newMarking = new MarkingData(currentMarking);
+
+        // Remove tokens from input places (M'(p) = M(p) - W(p, t))
+        for (Arc arc : arcs.values()) {
+            if (arc.getTargetId().equals(transitionId)) {
+                String inputPlaceId = arc.getSourceId();
+                int weight = arc.getWeight();
+                newMarking.removeTokens(inputPlaceId, weight);
+            }
+        }
+
+        // Add tokens to output places (M'(p) = ... + W(t, p))
+        for (Arc arc : arcs.values()) {
+            if (arc.getSourceId().equals(transitionId)) {
+                String outputPlaceId = arc.getTargetId();
+                int weight = arc.getWeight();
+                newMarking.addTokens(outputPlaceId, weight);
+            }
+        }
+
+        return newMarking; // Return the new state
     }
 
 }
