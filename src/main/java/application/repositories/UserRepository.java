@@ -121,7 +121,6 @@ public class UserRepository {
     }
 
     public boolean isEmailValid(String email) {
-        if (!EmailValidator.getInstance().isValid(email)) return false;
-        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+        return EmailValidator.getInstance().isValid(email);
     }
 }

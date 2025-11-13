@@ -1,7 +1,7 @@
 package application.controllers;
 
 import application.logic.*;
-import application.repositories.CoordinatesRepository;
+import application.repositories.PetriNetCoordinates;
 import application.ui.graphics.ArcViewFactory;
 import application.ui.graphics.PlaceViewFactory;
 import application.ui.graphics.TransitionViewFactory;
@@ -26,7 +26,7 @@ public class ViewPetriNetController {
     private Pane drawingPane;
 
     private PetriNet petriNet;
-    private CoordinatesRepository coordinatesRepo;
+    private PetriNetCoordinates coordinatesRepo;
     private SharedResources sharedResources;
     private Stage stage;
 
@@ -56,7 +56,7 @@ public class ViewPetriNetController {
      * Imposta il repository delle coordinate dei nodi.
      * @param coordinatesRepo repository delle coordinate
      */
-    public void setCoordinatesRepo(CoordinatesRepository coordinatesRepo) {
+    public void setCoordinatesRepo(PetriNetCoordinates coordinatesRepo) {
         this.coordinatesRepo = coordinatesRepo;
     }
 
@@ -79,9 +79,9 @@ public class ViewPetriNetController {
      */
     private void drawPlaces() {
         for (Place place : petriNet.getPlaces().values()) {
-            CoordinatesRepository.Position pos = coordinatesRepo.getPlacePosition(place.getId());
+            PetriNetCoordinates.Position pos = coordinatesRepo.getPlacePosition(place.getId());
             if (pos == null) {
-                pos = new CoordinatesRepository.Position(100, 100);
+                pos = new PetriNetCoordinates.Position(100, 100);
                 coordinatesRepo.setPlacePosition(place.getId(), pos.x, pos.y);
             }
 
@@ -104,9 +104,9 @@ public class ViewPetriNetController {
      */
     private void drawTransitions() {
         for (Transition transition : petriNet.getTransitions().values()) {
-            CoordinatesRepository.Position pos = coordinatesRepo.getTransitionPosition(transition.getId());
+            PetriNetCoordinates.Position pos = coordinatesRepo.getTransitionPosition(transition.getId());
             if (pos == null) {
-                pos = new CoordinatesRepository.Position(300, 100);
+                pos = new PetriNetCoordinates.Position(300, 100);
                 coordinatesRepo.setTransitionPosition(transition.getId(), pos.x, pos.y);
             }
 

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CoordinatesRepository {
+public class PetriNetCoordinates {
 
     public static class Position {
         public double x;
@@ -54,8 +54,8 @@ public class CoordinatesRepository {
     }
 
     // Caricamento da file JSON
-    public static CoordinatesRepository loadFromFile(String filePath) throws IOException {
+    public static PetriNetCoordinates loadFromFile(String filePath) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(new File(filePath), CoordinatesRepository.class);
+        return mapper.readValue(new File(filePath), PetriNetCoordinates.class);
     }
 }
