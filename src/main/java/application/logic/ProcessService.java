@@ -293,6 +293,18 @@ public class ProcessService {
     }
 
     /**
+     * Implements Use case 6.2.2
+     *
+     * @param userId L'ID dell'utente.
+     * @return Una lista di Computazioni.
+     */
+    public List<Computation> getComputationsForUser(String userId) {
+        return computations.values().stream()
+                .filter(c -> c.getUserId().equals(userId))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Implements Use Case 6.2.1: Subscribe to Process.
      * Obtains nets to which it can subscribe (all except his/her own).
      * Useful for "User Dashboard".
