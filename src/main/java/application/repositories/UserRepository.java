@@ -1,6 +1,7 @@
 package application.repositories;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -107,6 +108,10 @@ public class UserRepository {
 
     public User getUserById(String id) {
         return usersById.get(id);
+    }
+
+    public List<User> getAllUsers() {
+        return new ArrayList<>(usersById.values());
     }
 
     public boolean checkCorrectCredentials(String email, String password) {

@@ -38,4 +38,6 @@ public class SharedResources {
     public PetriNetRepository getPetriNetRepository() {
         return petriNetRepository;
     }
+
+    public ProcessService getProcessService() {return processService;}
 }
