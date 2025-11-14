@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.MainViewController">
+<BorderPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.MainViewController">
 
     <left>
         <VBox prefWidth="250.0" BorderPane.alignment="CENTER">
@@ -50,7 +50,7 @@
          <VBox prefHeight="46.0" prefWidth="210.0">
             <children>
                <Region prefHeight="23.0" prefWidth="210.0" />
-               <Button mnemonicParsing="false" onAction="#logOut" text="Logout" />
+               <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logOut" text="Logout" />
             </children>
          </VBox>
         </VBox>
@@ -63,7 +63,7 @@
             </padding>
 
             <HBox alignment="CENTER_LEFT" spacing="20.0">
-                <Label text="Welcome, User.name(?)">
+                <Label fx:id="userNameLabel" text="Welcome, User.name(?)">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
@@ -92,7 +92,7 @@
                                     <Font size="12.0" />
                                 </font>
                             </Label>
-                            <Label text="5">
+                            <Label fx:id="yourNetsLabel" text="5">
                                 <font>
                                     <Font name="System Bold" size="32.0" />
                                 </font>
@@ -117,7 +117,7 @@
                                     <Font size="12.0" />
                                 </font>
                             </Label>
-                            <Label text="1,893">
+                            <Label fx:id="totalNetsLabel" text="1,893">
                                 <font>
                                     <Font name="System Bold" size="32.0" />
                                 </font>
@@ -142,7 +142,7 @@
                                     <Font size="12.0" />
                                 </font>
                             </Label>
-                            <Label text="189">
+                            <Label fx:id="usersNumberLabel" text="189">
                                 <font>
                                     <Font name="System Bold" size="32.0" />
                                 </font>
@@ -158,28 +158,28 @@
                 </VBox.margin>
 
                 <HBox alignment="CENTER_LEFT" spacing="20.0">
-                    <Label text="Your Nets">
+                    <Label fx:id="tableTitleLabel" text="Your Nets">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
                     </Label>
                     <Region HBox.hgrow="ALWAYS" />
-                    <TextField promptText="Search nets..." />
+                    <TextField fx:id="searchNetsField" promptText="Search nets..." />
                 </HBox>
 
-                <TableView prefHeight="861.0" prefWidth="1130.0">
+                <TableView fx:id="tableViewNets" prefHeight="861.0" prefWidth="1130.0">
                     <columns>
-                        <TableColumn prefWidth="200.0" text="Net Name" />
-                        <TableColumn prefWidth="250.0" text="Creator" />
-                        <TableColumn prefWidth="200.0" text="Date Created" />
-                        <TableColumn prefWidth="150.0" text="Status" />
+                        <TableColumn fx:id="tableColumnNet" prefWidth="200.0" text="Net Name" />
+                        <TableColumn fx:id="tableColumnCreator" prefWidth="250.0" text="Creator" />
+                        <TableColumn fx:id="tableColumnDate" prefWidth="200.0" text="Date Created" />
+                        <TableColumn fx:id="tableColumnStatus" prefWidth="150.0" text="Status" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
             </VBox>
-         <Pagination prefHeight="7.0" prefWidth="1130.0" />
+         <Pagination fx:id="paginationRow" prefHeight="7.0" prefWidth="1130.0" />
         </VBox>
     </center>
 </BorderPane>

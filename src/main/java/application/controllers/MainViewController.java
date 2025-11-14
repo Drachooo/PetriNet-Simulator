@@ -1,5 +1,6 @@
 package application.controllers;
 
+import application.logic.Computation;
 import application.logic.SharedResources;
 import application.logic.User;
 import application.repositories.UserRepository;
@@ -10,7 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,8 +20,39 @@ import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
+    // --- Componenti FXML ---
     @FXML
     private Button adminAreaButton;
+    @FXML
+    private Button exploreNetsButton;
+    @FXML
+    private Button helpButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Label userNameLabel;
+    @FXML
+    private Label yourNetsLabel;
+    @FXML
+    private Label totalNetsLabel;
+    @FXML
+    private Label usersNumberLabel;
+    @FXML
+    private Label tableTitleLabel; // [NUOVO] fx:id aggiunto al titolo "Your Nets"
+    @FXML
+    private TextField searchNetsField;
+    @FXML
+    private TableView<Computation> tableViewNets; // [MODIFICATO] Specificato il tipo
+    @FXML
+    private TableColumn<Computation, String> tableColumnNet;
+    @FXML
+    private TableColumn<Computation, String> tableColumnCreator;
+    @FXML
+    private TableColumn<Computation, String> tableColumnDate;
+    @FXML
+    private TableColumn<Computation, String> tableColumnStatus;
+    @FXML
+    private Pagination paginationRow;
 
     private SharedResources sharedResources;
     private UserRepository userRepository;
@@ -44,8 +76,12 @@ public class MainViewController implements Initializable {
 
     private void updateUI() {
         adminAreaButton.setVisible(currentUser != null && currentUser.isAdmin());
-    }
+        adminAreaButton.setManaged(currentUser != null && currentUser.isAdmin()); // [NUOVO] Nasconde anche lo spazio
 
+        if (currentUser != null) {
+            userNameLabel.setText("Welcome, " + currentUser.getEmail());
+        }
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Nessuna inizializzazione per ora
@@ -86,13 +122,9 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void logOut(ActionEvent event) throws IOException {
-        sharedResources.setCurrentUser(null);
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
 
-        LoginViewController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
