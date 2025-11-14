@@ -37,6 +37,7 @@
                         <PasswordField fx:id="passwordTextField" prefHeight="65.0" prefWidth="600.0" promptText="Enter your password" />
                      </children>
                   </VBox>
+                  <Label fx:id="errorLabel" text="Label" />
 
                   <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLogin" prefWidth="107.0" text="LOGIN" />
 
