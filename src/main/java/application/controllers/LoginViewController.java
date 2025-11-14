@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -29,16 +30,19 @@ public class LoginViewController implements Initializable {
     @FXML
     private PasswordField passwordTextField;
 
-    private UserRepository userRepository;
+    @FXML
+    private Label errorLabel;
 
-    public void setSharedResources(SharedResources sharedResources) {
-        this.sharedResources = sharedResources;
-        this.userRepository = sharedResources.getUserRepository();
-    }
+    private UserRepository userRepository;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Nessuna inizializzazione specifica
+        this.sharedResources = SharedResources.getInstance();
+        this.userRepository = sharedResources.getUserRepository();
+
+        if(errorLabel != null) {
+            errorLabel.setText("");
+        }
     }
 
     @FXML
@@ -46,17 +50,21 @@ public class LoginViewController implements Initializable {
         String email = emailTextField.getText();
         String password = passwordTextField.getText();
 
+        if(email.isEmpty() || password.isEmpty()) {
+            showError("Email and password cannot be empty");
+            return;
+        }
+
         if (userRepository.isEmailAvailable(email)) {
-            showNotRegisteredPopUp();
+            showError("This email addres is not registered");
             return;
         }
 
         if (userRepository.checkCorrectCredentials(email, password)) {
             User user = userRepository.getUserByEmail(email);
-            sharedResources.setCurrentUser(user);
             goToMainView(event);
         } else {
-            showWrongCredentialsPopUp();
+            showError("Incorrect email or password");
         }
 
         passwordTextField.clear();
@@ -91,19 +99,16 @@ public class LoginViewController implements Initializable {
         stage.show();
     }
 
-    private void showWrongCredentialsPopUp() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Error");
-        alert.setHeaderText(null);
-        alert.setContentText("Wrong credentials. Please try again.");
-        alert.showAndWait();
-    }
-
-    private void showNotRegisteredPopUp() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Error");
-        alert.setHeaderText(null);
-        alert.setContentText("You are not registered yet.");
-        alert.showAndWait();
+    /**
+     * Shows error message to user.
+     * @param message
+     */
+    private void showError(String message){
+        if(errorLabel != null) {
+            errorLabel.setText(message);
+        }
+        else{
+            System.err.println("errorLabel not found in FXML file");
+        }
     }
 }
