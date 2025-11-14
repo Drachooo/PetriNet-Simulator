@@ -62,7 +62,7 @@ public class LoginViewController implements Initializable {
 
         if (userRepository.checkCorrectCredentials(email, password)) {
             User user = userRepository.getUserByEmail(email);
-            goToMainView(event);
+            goToMainView(event,user);
         } else {
             showError("Incorrect email or password");
         }
@@ -85,14 +85,14 @@ public class LoginViewController implements Initializable {
     }
 
     @FXML
-    private void goToMainView(ActionEvent event) throws Exception {
+    private void goToMainView(ActionEvent event, User currentUser) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent mainPage = loader.load();
 
         MainViewController controller = loader.getController();
         controller.setSharedResources(sharedResources);
         controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-        controller.setCurrentUser(sharedResources.getCurrentUser());
+        controller.setCurrentUser(currentUser);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(mainPage));
