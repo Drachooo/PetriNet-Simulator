@@ -95,11 +95,6 @@ public class LoginViewController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
         Parent root = loader.load();
 
-        // Pass services and stage reference to the next controller
-        RegisterViewController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
