@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1198.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.RegisterViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.RegisterViewController">
     <children>
-        <BorderPane prefHeight="1198.0" prefWidth="1440.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane prefHeight="900.0" prefWidth="1440.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <left>
-                <ImageView fitHeight="1198.0" fitWidth="600.0" preserveRatio="true" BorderPane.alignment="CENTER">
+                <ImageView fitHeight="900.0" fitWidth="600.0" preserveRatio="true" BorderPane.alignment="CENTER">
                     <image>
                         <Image url="@../images/PetriLogo.jpg" />
                     </image>
@@ -38,6 +38,7 @@
                                 <PasswordField fx:id="confirmPasswordTextField" prefHeight="65.0" prefWidth="600.0" promptText="Confirm Password" />
                             </children>
                         </VBox>
+                  <Label fx:id="errorLabel" text="Label" />
 
                         <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleRegister" prefWidth="107.0" text="REGISTER" />
                           <Label text="You already have an account?" textAlignment="CENTER">

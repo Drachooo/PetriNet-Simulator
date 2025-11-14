@@ -138,7 +138,6 @@ public class LoginViewController implements Initializable {
             errorLabel.setText(message);
         }
         else{
-            // Fallback if FXML is missing the label
             System.err.println("errorLabel not found in FXML file");
         }
     }
