@@ -26,37 +26,49 @@ public class MainViewController implements Initializable {
 
     // --- FXML Components ---
     @FXML
-    private Button adminAreaButton;
+    private Label welcomeLabel;
     @FXML
-    private Button exploreNetsButton;
+    private Label yourComputationsCountLabel;
     @FXML
-    private Button helpButton;
+    private Label totalNetsCountLabel;
     @FXML
-    private Button logoutButton; // Make sure FXML has fx:id="logoutButton"
-    @FXML
-    private Label userNameLabel;
-    @FXML
-    private Label yourNetsLabel;
-    @FXML
-    private Label totalNetsLabel;
-    @FXML
-    private Label usersNumberLabel;
+    private Label totalUsersCountLabel;
     @FXML
     private Label tableTitleLabel;
     @FXML
-    private TextField searchNetsField;
+    private Label errorLabel;
     @FXML
-    private TableView<Computation> tableViewNets;
+    private TextField searchTextField;
+
     @FXML
-    private TableColumn<Computation, String> tableColumnNet;
+    private Button myComputationsButton;
     @FXML
-    private TableColumn<Computation, String> tableColumnCreator;
+    private Button exploreNetsButton;
     @FXML
-    private TableColumn<Computation, String> tableColumnDate;
+    private Button adminAreaButton;
     @FXML
-    private TableColumn<Computation, String> tableColumnStatus;
+    private Button helpButton;
     @FXML
-    private Pagination paginationRow;
+    private Button logoutButton;
+
+    @FXML
+    private Button viewButton;
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button deleteButton;
+
+    //Table
+    @FXML
+    private TableView<Object> mainTableView;
+    @FXML
+    private TableColumn<Object, String> column1;
+    @FXML
+    private TableColumn<Object, String> column2;
+    @FXML
+    private TableColumn<Object, String> column3;
+    @FXML
+    private TableColumn<Object, String> column4;
 
     // --- Services ---
     private ProcessService processService;
@@ -68,16 +80,31 @@ public class MainViewController implements Initializable {
     private User currentUser;
     private Stage stage;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-    private ObservableList<Computation> computationData = FXCollections.observableArrayList();
 
-    /**
-     * Initializes services (passed by LoginController).
-     */
-    public void setSharedResources(SharedResources sharedResources) {
-        this.sharedResources = sharedResources;
-        this.userRepository = sharedResources.getUserRepository();
-        this.petriNetRepository = sharedResources.getPetriNetRepository();
+
+    private ObservableList<Object> tableData = FXCollections.observableArrayList();
+    private String currentViewMode="COMPUTATIONS";
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.sharedResources = SharedResources.getInstance();
         this.processService = sharedResources.getProcessService();
+        this.petriNetRepository = sharedResources.getPetriNetRepository();
+        this.userRepository = sharedResources.getUserRepository();
+
+        mainTableView.setItems(tableData);
+
+        if (errorLabel != null) {
+            errorLabel.setText("");
+        }
+    }
+
+    public void setSharedResources(SharedResources sharedResources) {
+        if(this.sharedResources==null){
+            this.initialize(null,null);
+        }
+
+        //TODO:REMOVE
     }
 
     public void setStage(Stage stage) {
@@ -89,86 +116,29 @@ public class MainViewController implements Initializable {
      */
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        updateUI();
-        setupTableViewColumns();
+        initializeUIComponents();
         refreshDashboardData();
     }
 
-    /**
-     * Updates UI based on user role (e.g., hides Admin button).
-     */
-    private void updateUI() {
-        boolean isAdmin = currentUser != null && currentUser.isAdmin();
-        adminAreaButton.setVisible(isAdmin);
-        adminAreaButton.setManaged(isAdmin); // Doesn't take up space if invisible
+    private void initializeUIComponents(){
+        welcomeLabel.setText("Welcome," + currentUser.getEmail());
 
-        if (currentUser != null) {
-            userNameLabel.setText("Welcome, " + currentUser.getEmail());
+        boolean isAdmin=currentUser.isAdmin();
+        adminAreaButton.setVisible(isAdmin);
+        adminAreaButton.setManaged(isAdmin);
+    }
+
+    /**
+     * Shows errors
+     */
+    private void showError(String error) {
+        if(errorLabel!=null){
+            errorLabel.setText(error);
+        }else{
+            System.err.println(error);
         }
     }
 
-    /**
-     * Sets up the TableView.
-     * Tells the table how to read data from a 'Computation' object.
-     */
-    private void setupTableViewColumns() {
-        tableViewNets.setItems(computationData);
-
-        // Column 1: Net Name
-        tableColumnNet.setCellValueFactory(cellData -> {
-            Computation comp = cellData.getValue();
-            PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
-            String name = (net != null) ? net.getName() : "Unknown Net";
-            return new SimpleStringProperty(name);
-        });
-
-        // Column 2: Creator
-        tableColumnCreator.setCellValueFactory(cellData -> {
-            Computation comp = cellData.getValue();
-            PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
-            if (net != null) {
-                User admin = userRepository.getUserById(net.getAdminId());
-                String email = (admin != null) ? admin.getEmail() : "Unknown Admin";
-                return new SimpleStringProperty(email);
-            }
-            return new SimpleStringProperty("N/A");
-        });
-
-        // Column 3: Date (Date Started)
-        tableColumnDate.setCellValueFactory(cellData -> {
-            String date = cellData.getValue().getStartTime().format(formatter);
-            return new SimpleStringProperty(date);
-        });
-
-        // Column 4: Status
-        tableColumnStatus.setCellValueFactory(cellData -> {
-            String status = cellData.getValue().getStatus().toString();
-            return new SimpleStringProperty(status);
-        });
-    }
-
-    private void refreshDashboardData() {
-        // 1. Populate "Cards" (Counters)
-        int yourComps = processService.getComputationsForUser(currentUser.getId()).size();
-        yourNetsLabel.setText(String.valueOf(yourComps));
-
-        int totalNets = petriNetRepository.getPetriNets().size();
-        totalNetsLabel.setText(String.valueOf(totalNets));
-
-        int totalUsers = userRepository.getAllUsers().size();
-        usersNumberLabel.setText(String.valueOf(totalUsers));
-
-        // 2. Populate Table (default: "Your Computations")
-        tableTitleLabel.setText("Your Computations");
-        List<Computation> userComputations = processService.getComputationsForUser(currentUser.getId());
-
-        computationData.clear();
-        computationData.addAll(userComputations);
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-    }
 
     /**
      * Navigates to the AdminArea screen.
@@ -181,7 +151,6 @@ public class MainViewController implements Initializable {
         AdminAreaController controller = loader.getController();
         controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
         controller.setCurrentUser(this.currentUser);
-        //TODO: implement setCurrentUser in ADMINAREACTRL
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
@@ -199,7 +168,7 @@ public class MainViewController implements Initializable {
      * Logs the user out and returns to the Login screen.
      */
     @FXML
-    private void logOut(ActionEvent event) throws IOException {
+    private void handleLogout(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
 
