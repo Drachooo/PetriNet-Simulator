@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
-    // --- Componenti FXML ---
+    // --- FXML Components ---
     @FXML
     private Button adminAreaButton;
     @FXML
@@ -32,7 +32,7 @@ public class MainViewController implements Initializable {
     @FXML
     private Button helpButton;
     @FXML
-    private Button logoutButton;
+    private Button logoutButton; // Make sure FXML has fx:id="logoutButton"
     @FXML
     private Label userNameLabel;
     @FXML
@@ -58,17 +58,21 @@ public class MainViewController implements Initializable {
     @FXML
     private Pagination paginationRow;
 
+    // --- Services ---
     private ProcessService processService;
     private PetriNetRepository petriNetRepository;
     private SharedResources sharedResources;
     private UserRepository userRepository;
 
-
+    // --- State ---
     private User currentUser;
     private Stage stage;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private ObservableList<Computation> computationData = FXCollections.observableArrayList();
 
+    /**
+     * Initializes services (passed by LoginController).
+     */
     public void setSharedResources(SharedResources sharedResources) {
         this.sharedResources = sharedResources;
         this.userRepository = sharedResources.getUserRepository();
@@ -81,7 +85,7 @@ public class MainViewController implements Initializable {
     }
 
     /**
-     * Populates Dashboard
+     * Main entry point. Populates the dashboard with user data.
      */
     public void setCurrentUser(User user) {
         this.currentUser = user;
@@ -91,12 +95,12 @@ public class MainViewController implements Initializable {
     }
 
     /**
-     * Updates UI based on user role (Admin or not)
+     * Updates UI based on user role (e.g., hides Admin button).
      */
     private void updateUI() {
         boolean isAdmin = currentUser != null && currentUser.isAdmin();
         adminAreaButton.setVisible(isAdmin);
-        adminAreaButton.setManaged(isAdmin); // Non occupa spazio se invisibile
+        adminAreaButton.setManaged(isAdmin); // Doesn't take up space if invisible
 
         if (currentUser != null) {
             userNameLabel.setText("Welcome, " + currentUser.getEmail());
@@ -104,12 +108,13 @@ public class MainViewController implements Initializable {
     }
 
     /**
-     * Populates Table
+     * Sets up the TableView.
+     * Tells the table how to read data from a 'Computation' object.
      */
     private void setupTableViewColumns() {
         tableViewNets.setItems(computationData);
 
-        // Net Name
+        // Column 1: Net Name
         tableColumnNet.setCellValueFactory(cellData -> {
             Computation comp = cellData.getValue();
             PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
@@ -117,7 +122,7 @@ public class MainViewController implements Initializable {
             return new SimpleStringProperty(name);
         });
 
-        // Creator
+        // Column 2: Creator
         tableColumnCreator.setCellValueFactory(cellData -> {
             Computation comp = cellData.getValue();
             PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
@@ -129,23 +134,21 @@ public class MainViewController implements Initializable {
             return new SimpleStringProperty("N/A");
         });
 
-        //Date
+        // Column 3: Date (Date Started)
         tableColumnDate.setCellValueFactory(cellData -> {
             String date = cellData.getValue().getStartTime().format(formatter);
             return new SimpleStringProperty(date);
         });
 
-        //Status (active or finished)
+        // Column 4: Status
         tableColumnStatus.setCellValueFactory(cellData -> {
             String status = cellData.getValue().getStatus().toString();
             return new SimpleStringProperty(status);
         });
     }
 
-    /**
-     * refreshes the dashboard
-     */
     private void refreshDashboardData() {
+        // 1. Populate "Cards" (Counters)
         int yourComps = processService.getComputationsForUser(currentUser.getId()).size();
         yourNetsLabel.setText(String.valueOf(yourComps));
 
@@ -155,6 +158,7 @@ public class MainViewController implements Initializable {
         int totalUsers = userRepository.getAllUsers().size();
         usersNumberLabel.setText(String.valueOf(totalUsers));
 
+        // 2. Populate Table (default: "Your Computations")
         tableTitleLabel.setText("Your Computations");
         List<Computation> userComputations = processService.getComputationsForUser(currentUser.getId());
 
@@ -162,14 +166,12 @@ public class MainViewController implements Initializable {
         computationData.addAll(userComputations);
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Nessuna inizializzazione per ora
     }
 
     /**
-     * Goes to AdminArea
+     * Navigates to the AdminArea screen.
      */
     @FXML
     private void goToAdminArea(ActionEvent event) throws IOException {
@@ -186,41 +188,20 @@ public class MainViewController implements Initializable {
         stage.show();
     }
 
-    /**
-     * Goes to ExploreNets
-     */
-    @FXML
-    private void goToExploreNets(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNets.fxml"));
-        Parent root = loader.load();
 
-        ExploreNetsController controller = loader.getController();
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-
-        controller.setCurrentUser(this.currentUser);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
-
-    /**
-     * Goes to HelpView
-     */
     @FXML
     private void goToHelp() {
-        // TODO: implementare navigazione help
+        // TODO: implement help navigation
         System.out.println("Help button clicked");
     }
 
     /**
-     * LogsOut
+     * Logs the user out and returns to the Login screen.
      */
     @FXML
     private void logOut(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
-        .
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));

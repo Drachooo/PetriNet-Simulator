@@ -13,16 +13,15 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.paint.Color?>
 
 <BorderPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.NetCreationController">
 
-    <!-- Left sidebar - Mantenuto esattamente come nel tuo originale -->
     <left>
-        <VBox prefWidth="250.0" BorderPane.alignment="CENTER">
+        <VBox prefWidth="250.0" style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
-
             <Label text="Net Creation">
                 <font>
                     <Font name="System Bold" size="18.0" />
@@ -33,68 +32,60 @@
             </Label>
             <Region prefHeight="36.0" prefWidth="210.0" />
 
-            <VBox prefHeight="135.0" prefWidth="210.0" spacing="8.0">
-                <Button fx:id="adminAreaButton" mnemonicParsing="false" onAction="#goToAdminArea" text="Admin Area" />
-                <Region prefHeight="200.0" prefWidth="200.0" />
-                <Button fx:id="exploreNetsButton" onAction="#goToExploreNets" text="Explore Nets" />
-                <Region prefHeight="200.0" prefWidth="200.0" />
-                <Button fx:id="yourNetsButton" onAction="#goToYourNets" text="Your Nets" />
-                <Region prefHeight="200.0" prefWidth="200.0" />
-                <Button fx:id="helpButton" onAction="#goToHelp" text="Help" />
+            <VBox prefWidth="210.0" spacing="8.0">
+                <Button fx:id="adminAreaButton" mnemonicParsing="false" onAction="#goToAdminArea" prefWidth="200.0" text="Admin Area" />
+                <Button fx:id="exploreNetsButton" mnemonicParsing="false" onAction="#goToExploreNets" prefWidth="200.0" text="Explore Nets" />
+                <Button fx:id="yourNetsButton" mnemonicParsing="false" onAction="#goToMainView" prefWidth="200.0" text="Your Nets" />
+                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#goToHelp" prefWidth="200.0" text="Help" />
             </VBox>
 
-            <VBox spacing="10.0">
-                <VBox.margin>
-                    <Insets top="40.0" />
-                </VBox.margin>
-            </VBox>
-
-            <Region prefHeight="800.0" prefWidth="210.0" VBox.vgrow="ALWAYS" />
-            <VBox prefHeight="46.0" prefWidth="210.0">
-                <children>
-                    <Region prefHeight="23.0" prefWidth="210.0" />
-                </children>
-            </VBox>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" prefWidth="200.0" text="Logout" />
         </VBox>
     </left>
 
-    <!-- Centro - Modificato solo qui per supportare il disegno -->
     <center>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+
             <top>
-                <HBox prefHeight="50.0" prefWidth="200.0" spacing="20" style="-fx-background-color: #f0f0f0; -fx-padding: 5;" BorderPane.alignment="CENTER">
-                    <Button onAction="#drawPlace" prefHeight="29.0" prefWidth="68.0" text="Place">
-                        <graphic>
-                            <Circle fill="#3498db" radius="10" />
-                        </graphic>
-                    </Button>
+                <VBox>
+                    <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: #FAFAFA; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                        <children>
 
-                    <Button onAction="#drawTransition" prefHeight="29.0" prefWidth="94.0" text="Transition">
-                        <graphic>
-                            <Rectangle fill="#e74c3c" height="10" width="20" />
-                        </graphic>
-                    </Button>
+                            <Button fx:id="placeButton" onAction="#handleDrawPlace" text="Place">
+                                <graphic> <Circle fill="#3498db" radius="10" /> </graphic>
+                            </Button>
+                            <Button fx:id="transitionButton" onAction="#handleDrawTransition" text="Transition">
+                                <graphic> <Rectangle fill="#e74c3c" height="10" width="20" /> </graphic>
+                            </Button>
+                            <Button fx:id="arcButton" onAction="#handleDrawArc" text="Arc">
+                                <graphic> <Line endX="20" endY="5" startX="0" startY="5" stroke="#2ecc71" strokeWidth="2" /> </graphic>
+                            </Button>
+                            <Button fx:id="deleteButton" onAction="#handleDeleteMode" text="Delete" textFill="RED" />
 
-                    <Button onAction="#drawArc" prefHeight="29.0" prefWidth="65.0" text="Arc">
-                        <graphic>
-                            <Line endX="20" endY="5" startX="0" startY="5" stroke="#2ecc71" strokeWidth="2" />
-                        </graphic>
-                    </Button>
+                            <Region HBox.hgrow="ALWAYS" />
 
-                    <Region HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" onAction="#enterDeleteMode" text="Delete Mode" />
+                            <Label fx:id="statusLabel" text="Status: Ready." textFill="#2980b9">
+                                <font><Font name="System Bold" size="14.0" /></font>
+                                <HBox.margin>
+                                    <Insets right="20.0" />
+                                </HBox.margin>
+                            </Label>
 
-                    <Button mnemonicParsing="false" onAction="#clearNet" text="Clear Net" />
-
-                    <Button mnemonicParsing="false" onAction="#savePetriNet" text="Save Net" />
-                </HBox>
+                            <Button fx:id="clearButton" onAction="#handleClearNet" text="Clear Net" />
+                            <Button fx:id="saveButton" onAction="#handleSavePetriNet" text="Save Net" style="-fx-font-weight: bold;" />
+                        </children>
+                    </HBox>
+                </VBox>
             </top>
 
             <center>
-                <ScrollPane fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background: white;" BorderPane.alignment="CENTER">
+                <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <content>
-                        <!-- Area di disegno principale -->
-                        <Pane id="drawingArea" fx:id="drawingPane" prefHeight="1133.0" prefWidth="1190.0" style="-fx-background-color: white;" />
+                        <Pane fx:id="drawingPane" prefHeight="2000.0" prefWidth="2000.0" style="-fx-background-color: white;" />
                     </content>
                 </ScrollPane>
             </center>
