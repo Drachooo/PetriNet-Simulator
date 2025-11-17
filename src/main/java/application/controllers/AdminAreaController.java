@@ -162,6 +162,10 @@ public class AdminAreaController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Deletes computations (Req 5.3)
+     * Called by deleteComputationButton
+     */
     @FXML
     void handleDeleteNet(ActionEvent event) throws IOException {
         //Obtain selected net from listview
@@ -216,5 +220,31 @@ public class AdminAreaController implements Initializable {
             showError(e.getMessage());
         }
     }
+
+    /**
+     * Implements Use Case 6.1.1: Create Petri Net
+     * called by createNewNetButton
+     */
+    @FXML
+    void handleCreateNewNet(ActionEvent event){
+        //TODO: Navigate to editor fxml
+    }
+
+
+    /**
+     * Implements Use Case 6.1.1: Edit Petri Net
+     * called by editNEtButton
+     */
+    @FXML
+    void handleEditNet(ActionEvent event){
+        PetriNet selectedNet=myNetsListView.getSelectionModel().getSelectedItem();
+        if(selectedNet==null){
+            showError("Please select a net to edit");
+            return;
+        }
+
+        //TODO: Navigate to editor fxml
+    }
+
 
 }
