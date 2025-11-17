@@ -162,6 +162,59 @@ public class AdminAreaController implements Initializable {
         stage.show();
     }
 
+    @FXML
+    void handleDeleteNet(ActionEvent event) throws IOException {
+        //Obtain selected net from listview
+        PetriNet selectedNet=myNetsListView.getSelectionModel().getSelectedItem();
+        if(selectedNet==null){
+            showError("Please select a net to delete");
+            return;
+        }
 
+        //TODO: add confirm popup
+
+        //Are there active computations on this net?
+        boolean hasActiveComputations=processService.getComputationsForAdmin(currentUser.getId()).stream().anyMatch(c->c.getPetriNetId().equals(selectedNet.getId()) && c.isActive());
+
+        if(hasActiveComputations){
+            showError("Cannot delete net: Active computations are still running");
+            return;
+        }
+
+        //Delete Net
+        petriNetRepository.deletePetriNet(selectedNet.getId());
+
+        //Deletes all associated computations
+
+        List<Computation> compsToDelete = processService.getComputationsForAdmin(currentUser.getId()).stream()
+                .filter(c -> c.getPetriNetId().equals(selectedNet.getId()))
+                .toList();
+
+        for(Computation c:compsToDelete){
+            try{
+                processService.deleteComputation(c.getId(),currentUser.getId());
+            }catch(IllegalStateException e){}
+        }
+        refreshData();
+    }
+
+    @FXML
+    void handleDeleteComputation(ActionEvent event) throws IOException {
+        Computation selectedComputation=computationsListView.getSelectionModel().getSelectedItem();
+
+        if(selectedComputation==null){
+            showError("Please select a computation to delete");
+            return;
+        }
+
+        try{
+            processService.deleteComputation(selectedComputation.getId(),currentUser.getId());
+
+            refreshData();
+        }
+        catch(IllegalStateException e){
+            showError(e.getMessage());
+        }
+    }
 
 }
