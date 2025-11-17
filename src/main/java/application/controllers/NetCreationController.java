@@ -55,27 +55,33 @@ public class NetCreationController implements Initializable {
     // --- Elementi UI FXML ---
     @FXML private Pane drawingPane;
     @FXML private ScrollPane scrollPane;
+    @FXML private Label statusLabel;
 
     private SharedResources sharedResources;
+    private User currentUser;
+    private Stage stage;
 
     // --- Inizializzazione ---
 
-    /**
-     * Setta le risorse condivise e inizializza i dati.
-     * @param sr risorse condivise
-     */
-    public void setSharedResources(SharedResources sr) {
-        this.sharedResources = sr;
-        initData();
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        initData(); // Avvia l'inizializzazione dei dati ORA che abbiamo l'utente
     }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
 
     /**
      * Inizializza la nuova rete e setup evento mouse.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        drawingPane.setOnMouseClicked(this::onDrawingPaneClicked);
+        this.sharedResources=SharedResources.getInstance();
         scrollPane.setPannable(true);
+        if(statusLabel!=null)
+            statusLabel.setText("Status: Ready");
     }
 
     /**
@@ -85,12 +91,12 @@ public class NetCreationController implements Initializable {
         if (sharedResources == null) {
             throw new IllegalStateException("SharedResources non è inizializzato!");
         }
-        if (sharedResources.getCurrentUser() == null) {
+        if (currentUser == null) {
             throw new IllegalStateException("Nessun utente corrente settato!");
         }
         int idx = sharedResources.getPetriNetRepository().getPetriNets().size() + 1;
         String netName = "NP" + idx;
-        String adminId = sharedResources.getCurrentUser().getId();
+        String adminId = currentUser.getId();
         petriNet = new PetriNet(netName, adminId);
     }
 
@@ -346,7 +352,7 @@ public class NetCreationController implements Initializable {
         undoStack.clear();
         petriNet = new PetriNet(
                 petriNet.getName(),
-                sharedResources.getCurrentUser().getId()
+                currentUser.getId()
         );
     }
 
