@@ -367,10 +367,7 @@ public class NetCreationController implements Initializable {
             petriNet.validate();
             sharedResources.getPetriNetRepository().savePetriNet(petriNet);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Net Saved");
-            alert.setContentText("Your Net was saved successfully.");
-            alert.showAndWait();
+            showStatus("Net saved successfully!",false);
 
             return true;
 
@@ -461,15 +458,19 @@ public class NetCreationController implements Initializable {
     }
 
     /**
-     * Mostra un alert di errore con header e messaggio.
-     * @param header titolo dell'errore
-     * @param msg contenuto dell'errore
+     * Shows error/status message
      */
+    private void showStatus(String message, boolean isError) {
+        if (statusLabel != null) {
+            statusLabel.setText(message);
+            statusLabel.setTextFill(isError ? Color.RED : Color.BLUE);
+        } else {
+            System.err.println(message);
+        }
+    }
+
     private void showError(String header, String msg) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setHeaderText(header);
-        a.setContentText(msg);
-        a.showAndWait();
+        showStatus(header + ": " + msg, true);
     }
 
     // --- Navigazione tra schermate ---
