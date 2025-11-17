@@ -74,7 +74,7 @@ public class ViewPetriNetController implements Initializable {
             return;
         }
         try{
-            this.coordinates=PetriNetCoordinates.loadFromFile("src/main/resources/data/coords"+currentNet.getId()+"_coords.json");
+            this.coordinates=PetriNetCoordinates.loadFromFile("src/main/resources/data/coords/"+currentNet.getId()+"_coords.json");
 
         }catch (IOException e){
             showError("Coords file not found. using default layout");
@@ -84,27 +84,21 @@ public class ViewPetriNetController implements Initializable {
         netNameLabel.setText(currentNet.getName());
         updateStatusLabel();
 
-        drawNetStructure();
+        drawPetriNet();
 
         refreshState();
 
     }
 
-    /**
-     * Mappa che associa gli id logici dei nodi con i nodi grafici JavaFX,
-     * utile per creare e legare gli archi.
-     */
-    private final Map<String, Node> nodeMap = new HashMap<>();
 
 
     /**
-     * Disegna la rete di Petri nella Pane associata.
-     * La rete è visualizzata in modalità di sola lettura, senza possibilità
-     * di interazioni utente sui nodi.
+     * Draws the petriNet calling helper methods.
      */
     public void drawPetriNet() {
         drawingPane.getChildren().clear();
-        nodeMap.clear();
+        placeNodes.clear();
+        transitionNodes.clear();
 
         drawPlaces();
         drawTransitions();
@@ -150,7 +144,7 @@ public class ViewPetriNetController implements Initializable {
                     (t) -> handleTransitionClick(t)
             );
 
-            // Riassegna il click all'intero gruppo per facilitare
+
             transitionNode.setOnMouseClicked(e -> handleTransitionClick(transition));
             transitionNode.setOnMousePressed(null);
             transitionNode.setOnMouseDragged(null);
@@ -232,6 +226,8 @@ public class ViewPetriNetController implements Initializable {
         try{
             this.currentComputation=processService.fireTransition(currentComputation.getId(),t.getId(),currentUser.getId());
             showSuccess("Transition"+t.getName()+"fired");
+
+            refreshState();
         }catch(IllegalStateException e){
             showError(e.getMessage());
         }
@@ -280,8 +276,6 @@ public class ViewPetriNetController implements Initializable {
             statusLabel.setTextFill(Color.GREEN);
         }
     }
-
-
 
 
     @Override
