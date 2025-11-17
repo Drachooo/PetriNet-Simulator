@@ -507,8 +507,12 @@ public class NetCreationController implements Initializable {
     private void switchToAdminArea(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminArea.fxml"));
         Parent adminView = loader.load();
+
         AdminAreaController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
+
+        controller.setCurrentUser(currentUser);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
         Scene adminScene = new Scene(adminView);
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(adminScene);
@@ -523,7 +527,8 @@ public class NetCreationController implements Initializable {
         Parent root = loader.load();
 
         ExploreNetsController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
+
+        controller.setCurrentUser(this.currentUser);
         controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -531,6 +536,17 @@ public class NetCreationController implements Initializable {
         stage.show();
     }
 
-    @FXML private void goToYourNets() { }    // TODO
+    @FXML private void goToYourNets(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        Parent mainView = loader.load();
+
+        MainViewController controller = loader.getController();
+        controller.setSharedResources(sharedResources);
+        controller.setCurrentUser(this.currentUser);
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(mainView));
+        stage.show();
+    }
     @FXML private void goToHelp() { }        // TODO
 }
