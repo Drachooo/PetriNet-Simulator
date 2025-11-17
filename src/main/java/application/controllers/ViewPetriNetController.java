@@ -83,6 +83,8 @@ public class ViewPetriNetController implements Initializable {
         netNameLabel.setText(currentNet.getName());
         updateStatusLabel();
 
+        drawNetStructure();
+
     }
 
     /**
@@ -107,66 +109,64 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Disegna tutti i Place della rete.
+     * Draws all places
      */
     private void drawPlaces() {
-        for (Place place : petriNet.getPlaces().values()) {
-            PetriNetCoordinates.Position pos = coordinatesRepo.getPlacePosition(place.getId());
+        for (Place place : currentNet.getPlaces().values()) {
+            PetriNetCoordinates.Position pos = coordinates.getPlacePosition(place.getId());
             if (pos == null) {
-                pos = new PetriNetCoordinates.Position(100, 100);
-                coordinatesRepo.setPlacePosition(place.getId(), pos.x, pos.y);
+                pos = new PetriNetCoordinates.Position(100, 100 + (placeNodes.size() * 50));
             }
 
             Group placeNode = PlaceViewFactory.createPlaceNode(
-                    place,
-                    place.getName(),
-                    pos.x,
-                    pos.y,
-                    null,
-                    null
+                    place, place.getName(), pos.x, pos.y,
+                    null, null //No menu (view only)
             );
 
+           //no drag and drop
+            placeNode.setOnMousePressed(null);
+            placeNode.setOnMouseDragged(null);
+
             drawingPane.getChildren().add(placeNode);
-            nodeMap.put(place.getId(), placeNode);
+            placeNodes.put(place.getId(), placeNode);
         }
     }
 
     /**
-     * Disegna tutte le Transition della rete.
+     * Draws all transitions
      */
     private void drawTransitions() {
-        for (Transition transition : petriNet.getTransitions().values()) {
-            PetriNetCoordinates.Position pos = coordinatesRepo.getTransitionPosition(transition.getId());
+        for (Transition transition : currentNet.getTransitions().values()) {
+            PetriNetCoordinates.Position pos = coordinates.getTransitionPosition(transition.getId());
             if (pos == null) {
-                pos = new PetriNetCoordinates.Position(300, 100);
-                coordinatesRepo.setTransitionPosition(transition.getId(), pos.x, pos.y);
+                pos = new PetriNetCoordinates.Position(300, 100 + (transitionNodes.size() * 50));
             }
 
             Group transitionNode = TransitionViewFactory.createTransitionNode(
-                    transition,
-                    transition.getName(),
-                    pos.x,
-                    pos.y,
-                    null    // nessun callback per eventi di click/doppio click
+                    transition, transition.getName(), pos.x, pos.y,
+                    (t) -> handleTransitionClick(t)
             );
 
+            // Riassegna il click all'intero gruppo per facilitare
+            transitionNode.setOnMouseClicked(e -> handleTransitionClick(transition));
+            transitionNode.setOnMousePressed(null);
+            transitionNode.setOnMouseDragged(null);
+
             drawingPane.getChildren().add(transitionNode);
-            nodeMap.put(transition.getId(), transitionNode);
+            transitionNodes.put(transition.getId(), transitionNode);
         }
     }
     /**
-     * Disegna tutti gli archi della rete, collegandoli ai nodi grafici.
-     * Porta gli archi in fondo per non sovrapporsi ai nodi.
+     * Draws all arcs
      */
     private void drawArcs() {
-        for (Arc arc : petriNet.getArcs().values()) {
-            Node source = nodeMap.get(arc.getSourceId());
-            Node target = nodeMap.get(arc.getTargetId());
+        for (Arc arc : currentNet.getArcs().values()) {
+            Node source = arc.isSourcePlace() ? placeNodes.get(arc.getSourceId()) : transitionNodes.get(arc.getSourceId());
+            Node target = arc.isSourcePlace() ? transitionNodes.get(arc.getTargetId()) : placeNodes.get(arc.getTargetId());
 
             if (source != null && target != null) {
                 Line arcLine = ArcViewFactory.createArcLine(source, target);
-                drawingPane.getChildren().add(arcLine);
-                arcLine.toBack();
+                drawingPane.getChildren().addFirst(arcLine);
             }
         }
     }
