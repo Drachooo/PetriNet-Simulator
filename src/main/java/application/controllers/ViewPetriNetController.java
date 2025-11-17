@@ -21,6 +21,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.fxml.Initializable;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -84,6 +85,8 @@ public class ViewPetriNetController implements Initializable {
         updateStatusLabel();
 
         drawNetStructure();
+
+        refreshState();
 
     }
 
@@ -168,6 +171,69 @@ public class ViewPetriNetController implements Initializable {
                 Line arcLine = ArcViewFactory.createArcLine(source, target);
                 drawingPane.getChildren().addFirst(arcLine);
             }
+        }
+    }
+
+    public void refreshState(){
+        MarkingData curr= currentComputation.getLastStep().getMarkingData();
+
+        List<Transition> availableTransitions=processService.getAvailableTransitions(currentComputation.getId(),currentUser.getId());
+
+        for(Map.Entry<String,Group> entry: placeNodes.entrySet()){
+            String placeId = entry.getKey();
+            Group group = entry.getValue();
+            int tokens = curr.getTokens(placeId);
+            updatePlaceTokensVisual(group, tokens);
+        }
+
+        for (Map.Entry<String, Group> entry : transitionNodes.entrySet()) {
+            Transition t = currentNet.getTransitions().get(entry.getKey());
+            Group group = entry.getValue();
+            Rectangle rect = (Rectangle) group.getChildren().getFirst();
+
+            boolean isAvailable = availableTransitions.contains(t);
+
+            if (isAvailable && currentComputation.isActive()) {
+                rect.setStroke(Color.LIMEGREEN);
+                rect.setStrokeWidth(4.0);
+            } else {
+                rect.setStroke(Color.BLACK);
+                rect.setStrokeWidth(2.0);
+            }
+        }
+        updateStatusLabel();
+    }
+
+    private void updatePlaceTokensVisual(Group placeGroup, int tokenCount) {
+        //Clean all old tokens
+        placeGroup.getChildren().removeIf(node ->
+                node.getId() != null && node.getId().equals("token")
+        );
+
+        //Add new tokens
+        if (tokenCount > 0) {
+            Circle token = new Circle(0, 0, 8, Color.BLACK);
+            token.setId("token"); // Marchialo per la prossima pulizia
+
+            // TODO: add label if token count > 1
+
+            placeGroup.getChildren().add(token);
+        }
+    }
+
+    private void handleTransitionClick(Transition t) {
+        if(t==null) return;
+
+        if(!currentComputation.isActive()){
+            showError("Computation is " +currentComputation.getStatus());
+            return;
+        }
+
+        try{
+            this.currentComputation=processService.fireTransition(currentComputation.getId(),t.getId(),currentUser.getId());
+            showSuccess("Transition"+t.getName()+"fired");
+        }catch(IllegalStateException e){
+            showError(e.getMessage());
         }
     }
 
