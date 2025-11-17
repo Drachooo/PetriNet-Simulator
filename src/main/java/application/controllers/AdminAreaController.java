@@ -143,5 +143,25 @@ public class AdminAreaController implements Initializable {
     }
 
 
+    /**
+     * Navigates back to the main dashboard.
+     * Called by backButton
+     */
+    @FXML
+    void handleGoBack(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        Parent mainPage=loader.load();
+
+        MainViewController controller = loader.getController();
+        controller.setSharedResources(sharedResources);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+        controller.setCurrentUser(currentUser);
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(mainPage));
+        stage.show();
+    }
+
+
 
 }
