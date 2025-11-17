@@ -2,40 +2,87 @@ package application.controllers;
 
 import application.logic.*;
 import application.repositories.PetriNetCoordinates;
+import application.repositories.PetriNetRepository;
 import application.ui.graphics.ArcViewFactory;
 import application.ui.graphics.PlaceViewFactory;
 import application.ui.graphics.TransitionViewFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import javafx.fxml.Initializable;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ViewPetriNetController {
+public class ViewPetriNetController implements Initializable {
 
     @FXML
     private Pane drawingPane;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private Label netNameLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label messageLabel;
 
-    private PetriNet petriNet;
-    private PetriNetCoordinates coordinatesRepo;
     private SharedResources sharedResources;
-    private Stage stage;
+    private ProcessService processService;
+    private PetriNetRepository petriNetRepository;
 
-    public void setSharedResources(SharedResources sharedResources) {
-        this.sharedResources = sharedResources;
-    }
+    private Stage stage;
+    private User currentUser;
+    private Computation currentComputation;
+    private PetriNet currentNet;
+    private PetriNetCoordinates coordinates;
+
+    private final Map<String, Group> placeNodes = new HashMap<>();
+    private final Map<String, Group> transitionNodes = new HashMap<>();
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public void loadComputation(User user, Computation computation){
+        this.currentUser = user;
+        this.currentComputation = computation;
+        this.currentNet=petriNetRepository.getPetriNets().get(computation.getPetriNetId());
+
+        if(this.currentNet==null){
+            showError("FATAL: load net failed");
+            return;
+        }
+        try{
+            this.coordinates=PetriNetCoordinates.loadFromFile("src/main/resources/data/coords"+currentNet.getId()+"_coords.json");
+
+        }catch (IOException e){
+            showError("Coords file not found. using default layout");
+            this.coordinates=new PetriNetCoordinates();
+        }
+
+        netNameLabel.setText(currentNet.getName());
+        updateStatusLabel();
+
     }
 
     /**
@@ -44,21 +91,6 @@ public class ViewPetriNetController {
      */
     private final Map<String, Node> nodeMap = new HashMap<>();
 
-    /**
-     * Imposta la rete di Petri da visualizzare.
-     * @param petriNet istanza di PetriNet
-     */
-    public void setPetriNet(PetriNet petriNet) {
-        this.petriNet = petriNet;
-    }
-
-    /**
-     * Imposta il repository delle coordinate dei nodi.
-     * @param coordinatesRepo repository delle coordinate
-     */
-    public void setCoordinatesRepo(PetriNetCoordinates coordinatesRepo) {
-        this.coordinatesRepo = coordinatesRepo;
-    }
 
     /**
      * Disegna la rete di Petri nella Pane associata.
@@ -140,23 +172,16 @@ public class ViewPetriNetController {
     }
 
     /**
-     * Carica una rete di Petri e la visualizza graficamente.
-     * Recupera automaticamente il repository delle coordinate da SharedResources.
-     * @param net la rete di Petri da visualizzare
+     * Goes to Dashboard
      */
-    public void loadPetriNet(PetriNet net) {
-        setPetriNet(net);
-        setCoordinatesRepo(sharedResources.getCoordinatesRepository());
-        drawPetriNet();
-    }
-
     @FXML
-    private void goToExploreNets(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNets.fxml"));
+    void handleGoBack(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent root = loader.load();
 
-        ExploreNetsController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
+        MainViewController controller = loader.getController();
+        controller.setSharedResources(SharedResources.getInstance());
+        controller.setCurrentUser(currentUser);
         controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -164,9 +189,39 @@ public class ViewPetriNetController {
         stage.show();
     }
 
-    public void goToYourNets(ActionEvent event) throws IOException {/*TODO*/ }
+    @FXML
+    public void goToHelp(ActionEvent event) throws IOException {
+        //TODO
+    }
 
-    public void goToHelp(ActionEvent event) throws IOException { }
+    private void showSuccess(String message) {
+        messageLabel.setText(message);
+        messageLabel.setTextFill(Color.GREEN);
+    }
+
+    private void showError(String message) {
+        messageLabel.setText(message);
+        messageLabel.setTextFill(Color.RED);
+    }
+
+    private void updateStatusLabel() {
+        statusLabel.setText(currentComputation.getStatus().toString());
+        if (!currentComputation.isActive()) {
+            statusLabel.setTextFill(Color.RED);
+            messageLabel.setText("Computazione Completata.");
+            messageLabel.setTextFill(Color.BLACK);
+        } else {
+            statusLabel.setTextFill(Color.GREEN);
+        }
+    }
 
 
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.sharedResources = SharedResources.getInstance();
+        this.processService = sharedResources.getProcessService();
+        this.petriNetRepository = sharedResources.getPetriNetRepository();
+    }
 }
