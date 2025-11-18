@@ -69,7 +69,7 @@
                         <Button fx:id="viewComputationButton" mnemonicParsing="false" onAction="#handleViewComputation" text="View Computation" />
                         <Region prefHeight="25.0" prefWidth="18.0" />
                               <!-- fx:id e onAction aggiunti -->
-                              <Button fx:id="deleteComputationButton" mnemonicParsing="false" onAction="#handleDeleteComputation" text="Delete Selected Computation (5.3)" textFill="RED" />
+                              <Button fx:id="deleteComputationButton" mnemonicParsing="false" onAction="#handleDeleteComputation" text="Delete Selected Computation" textFill="RED" />
                      </children>
                   </HBox>
                     </children>
