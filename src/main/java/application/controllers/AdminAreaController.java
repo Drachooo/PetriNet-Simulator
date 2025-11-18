@@ -16,11 +16,15 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 /**
  * Controller for AdminArea.fxml
@@ -42,6 +46,14 @@ public class AdminAreaController implements Initializable {
     private ListView<PetriNet> myNetsListView;
     @FXML
     private ListView<Computation> computationsListView;
+
+    private final Timeline errorClearer = new Timeline(
+            new KeyFrame(Duration.seconds(3), e -> {
+                if (errorLabel != null) {
+                    errorLabel.setText("");
+                }
+            })
+    );
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,6 +81,8 @@ public class AdminAreaController implements Initializable {
     private void showError(String message) {
         if(errorLabel!=null){
             errorLabel.setText(message);
+            errorClearer.stop();
+            errorClearer.playFromStart();
         }else{
             System.err.println("errorLabel is null in AdminAreaController");
         }
@@ -84,9 +98,11 @@ public class AdminAreaController implements Initializable {
         if(currentUser==null || !currentUser.isAdmin()){
             showError("User is not admin");
         }
+
         setupListViewFormatters();
         refreshData();
     }
+
 
     /**
      * Configures the ListViews to display text.
@@ -129,7 +145,6 @@ public class AdminAreaController implements Initializable {
      */
     private void refreshData() {
         errorLabel.setText("");
-
         // 1. Populate "My Created Nets" (Use Case 6.1.1)
         List<PetriNet> myNets = petriNetRepository.getPetriNets().values().stream()
                 .filter(net -> net.getAdminId().equals(currentUser.getId()))
@@ -175,14 +190,23 @@ public class AdminAreaController implements Initializable {
             return;
         }
 
-        //TODO: add confirm popup
-
         //Are there active computations on this net?
         boolean hasActiveComputations=processService.getComputationsForAdmin(currentUser.getId()).stream().anyMatch(c->c.getPetriNetId().equals(selectedNet.getId()) && c.isActive());
 
         if(hasActiveComputations){
             showError("Cannot delete net: Active computations are still running");
             return;
+        }
+
+        String coordsPath = "data/coords/" + selectedNet.getId() + "_coords.json";
+        File coordsFile = new File(coordsPath);
+
+        if (coordsFile.exists()) {
+            if (coordsFile.delete()) {
+                System.out.println("Coordinate file deleted successfully: " + coordsPath);
+            } else {
+                System.err.println("Warning: Could not delete coordinates file.");
+            }
         }
 
         //Delete Net
@@ -226,8 +250,19 @@ public class AdminAreaController implements Initializable {
      * called by createNewNetButton
      */
     @FXML
-    void handleCreateNewNet(ActionEvent event){
-        //TODO: Navigate to editor fxml
+    void handleCreateNewNet(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NetCreation.fxml"));
+        Parent root = loader.load();
+
+        NetCreationController controller = loader.getController();
+
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+        controller.setCurrentUser(currentUser);
+        controller.initData();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
 
@@ -236,14 +271,27 @@ public class AdminAreaController implements Initializable {
      * called by editNEtButton
      */
     @FXML
-    void handleEditNet(ActionEvent event){
-        PetriNet selectedNet=myNetsListView.getSelectionModel().getSelectedItem();
-        if(selectedNet==null){
-            showError("Please select a net to edit");
+    void handleEditNet(ActionEvent event) throws IOException {
+        PetriNet selectedNet = myNetsListView.getSelectionModel().getSelectedItem();
+        if (selectedNet == null) {
+            showError("Please select a net to edit.");
             return;
         }
 
-        //TODO: Navigate to editor fxml
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NetCreation.fxml"));
+        Parent root = loader.load();
+
+        NetCreationController controller = loader.getController();
+
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+        controller.setCurrentUser(currentUser);
+
+        controller.loadNetForEditing(selectedNet);
+
+        // 5. Mostra la scena
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
 

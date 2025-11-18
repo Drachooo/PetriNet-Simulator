@@ -55,16 +55,16 @@
                         </padding>
                         <children>
 
-                            <Button fx:id="placeButton" onAction="#handleDrawPlace" text="Place">
+                            <Button fx:id="placeButton" onAction="#drawPlace" text="Place">
                                 <graphic> <Circle fill="#3498db" radius="10" /> </graphic>
                             </Button>
-                            <Button fx:id="transitionButton" onAction="#handleDrawTransition" text="Transition">
+                            <Button fx:id="transitionButton" onAction="#drawTransition" text="Transition">
                                 <graphic> <Rectangle fill="#e74c3c" height="10" width="20" /> </graphic>
                             </Button>
-                            <Button fx:id="arcButton" onAction="#handleDrawArc" text="Arc">
+                            <Button fx:id="arcButton" onAction="#drawArc" text="Arc">
                                 <graphic> <Line endX="20" endY="5" startX="0" startY="5" stroke="#2ecc71" strokeWidth="2" /> </graphic>
                             </Button>
-                            <Button fx:id="deleteButton" onAction="#handleDeleteMode" text="Delete" textFill="RED" />
+                            <Button fx:id="deleteButton" onAction="#deleteMode" text="Delete" textFill="RED" />
 
                             <Region HBox.hgrow="ALWAYS" />
 
@@ -75,8 +75,8 @@
                                 </HBox.margin>
                             </Label>
 
-                            <Button fx:id="clearButton" onAction="#handleClearNet" text="Clear Net" />
-                            <Button fx:id="saveButton" onAction="#handleSavePetriNet" text="Save Net" style="-fx-font-weight: bold;" />
+                            <Button fx:id="clearButton" onAction="#clearNet" text="Clear Net" />
+                            <Button fx:id="saveButton" onAction="#savePetriNet" text="Save Net" style="-fx-font-weight: bold;" />
                         </children>
                     </HBox>
                 </VBox>

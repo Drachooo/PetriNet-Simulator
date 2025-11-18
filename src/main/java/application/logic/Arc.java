@@ -1,8 +1,11 @@
 package application.logic;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.UUID;
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Arc {
     private String id;
     private String petriNetId;
@@ -10,9 +13,9 @@ public class Arc {
     private String targetId; // ID di un Transition o Place
     private int weight; // Default 1
 
-    // Costruttore vuoto per Jackson
+
     public Arc() {
-        this.weight = 1; // Default anche quando deserializzi
+        this.weight = 1;
     }
 
     // Costruttore normale

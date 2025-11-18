@@ -4,50 +4,56 @@ import application.logic.Transition;
 import application.logic.Type;
 import application.ui.utils.Delta;
 import javafx.scene.Group;
+import javafx.scene.control.ContextMenu; // Aggiunto per il menu contestuale
+import javafx.scene.control.MenuItem; // Aggiunto per il menu contestuale
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.util.function.Consumer;
 
+/**
+ * Factory class to create the visual representation (View) for a Transition.
+ * A Transition is a Group containing a Rectangle and a Text label.
+ */
 public class TransitionViewFactory {
 
+    private static final double TRANSITION_WIDTH = 15.0;
+    private static final double TRANSITION_HEIGHT = 40.0;
+
     /**
-     * Crea il nodo grafico che rappresenta una Transizione.
+     * Creates a new graphic node for a Transition.
      *
      * @param transition Oggetto logico Transition associato
      * @param labelText  Etichetta della transizione (es. "T1")
      * @param posX       Coordinata X della posizione iniziale
      * @param posY       Coordinata Y della posizione iniziale
-     * @param onDoubleClick Callback per doppio click (cambia tipo transizione)
+     * @param onToggleType Callback per cambiare il tipo di transizione (ADMIN/USER).
      * @return Gruppo grafico (Group) rappresentante la transizione
      */
     public static Group createTransitionNode(Transition transition, String labelText, double posX, double posY,
-                                             Consumer<Transition> onDoubleClick) {
-        // Rettangolo blu con bordo nero che rappresenta la transizione
-        Rectangle transitionRect = new Rectangle(-10, -20, 20, 40);
-        transitionRect.setFill(Color.BLUE);
+                                             Consumer<Transition> onToggleType) {
+        Rectangle transitionRect = new Rectangle(
+                -TRANSITION_WIDTH / 2,
+                -TRANSITION_HEIGHT / 2,
+                TRANSITION_WIDTH,
+                TRANSITION_HEIGHT
+        );
         transitionRect.setStroke(Color.BLACK);
+        transitionRect.setStrokeWidth(2.0);
 
-        // Testo dell'etichetta, centrato SOTTO la transizione
+        transitionRect.setFill(Color.BLUE);
+        transitionRect.setFill(transition.getType() == Type.ADMIN ? Color.RED : Color.BLUE);
         Text transitionLabel = new Text(labelText);
         transitionLabel.setMouseTransparent(true);
         transitionLabel.setY(33);
         transitionLabel.setX(-transitionLabel.getLayoutBounds().getWidth() / 2);
 
-        // Gruppo che contiene il rettangolo e il testo
         Group transitionGroup = new Group(transitionRect, transitionLabel);
         transitionGroup.setLayoutX(posX);
         transitionGroup.setLayoutY(posY);
 
-        // Se clicco 2 volte la transizione, cambia colore !!!! :)))
-        transitionRect.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                onDoubleClick.accept(transition);
-            }
-        });
 
-        // drag & drop per spostare la transizione nel pane :-o
         Delta dragDelta = new Delta();
         transitionGroup.setOnMousePressed(event -> {
             dragDelta.x = event.getSceneX() - transitionGroup.getLayoutX();
@@ -58,6 +64,16 @@ public class TransitionViewFactory {
             transitionGroup.setLayoutX(event.getSceneX() - dragDelta.x);
             transitionGroup.setLayoutY(event.getSceneY() - dragDelta.y);
         });
+
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem toggleTypeItem = new MenuItem("Toggle Admin/User Type");
+        toggleTypeItem.setOnAction(event -> onToggleType.accept(transition));
+
+        contextMenu.getItems().add(toggleTypeItem);
+
+        transitionGroup.setOnContextMenuRequested(event ->
+                contextMenu.show(transitionGroup, event.getScreenX(), event.getScreenY())
+        );
 
         return transitionGroup;
     }

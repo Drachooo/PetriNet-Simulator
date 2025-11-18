@@ -14,7 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,6 +39,12 @@ public class LoginViewController implements Initializable {
     @FXML
     private Label errorLabel;
 
+    private final Timeline errorClearer = new Timeline(
+            new KeyFrame(Duration.seconds(3), e -> {
+                // L'azione da fare dopo 3 secondi (cancellare il testo)
+                // Sarà gestita nel metodo showError
+            })
+    );
     /**
      * Called by JavaFX when the FXML is loaded.
      * Initializes services and controllers.
@@ -47,7 +55,7 @@ public class LoginViewController implements Initializable {
         this.userRepository = sharedResources.getUserRepository();
 
         if(errorLabel != null) {
-            errorLabel.setText(""); // Clear error label on startup
+            errorLabel.setText("");
         }
     }
 
@@ -131,6 +139,8 @@ public class LoginViewController implements Initializable {
     private void showError(String message){
         if(errorLabel != null) {
             errorLabel.setText(message);
+            errorClearer.stop();
+            errorClearer.playFromStart();
         }
         else{
             System.err.println("errorLabel not found in FXML file");

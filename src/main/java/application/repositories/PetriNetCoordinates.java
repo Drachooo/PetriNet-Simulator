@@ -24,7 +24,24 @@ public class PetriNetCoordinates {
     private Map<String, Position> placePositions = new HashMap<>();
     private Map<String, Position> transitionPositions = new HashMap<>();
 
-    // metodi get/set
+
+    public Map<String, Position> getPlacePositions() {
+        return placePositions;
+    }
+
+    public void setPlacePositions(Map<String, Position> placePositions) {
+        this.placePositions = placePositions;
+    }
+
+    public Map<String, Position> getTransitionPositions() {
+        return transitionPositions;
+    }
+
+    public void setTransitionPositions(Map<String, Position> transitionPositions) {
+        this.transitionPositions = transitionPositions;
+    }
+
+    // -------------------------------------------------------------
 
     public void setPlacePosition(String placeId, double x, double y) {
         placePositions.put(placeId, new Position(x, y));
@@ -47,13 +64,15 @@ public class PetriNetCoordinates {
         transitionPositions.clear();
     }
 
-    // Salvataggio su file JSON
     public void saveToFile(String filePath) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(new File(filePath), this);
+        File f = new File(filePath);
+        if (f.getParentFile() != null) {
+            f.getParentFile().mkdirs();
+        }
+        mapper.writeValue(f, this);
     }
 
-    // Caricamento da file JSON
     public static PetriNetCoordinates loadFromFile(String filePath) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new File(filePath), PetriNetCoordinates.class);

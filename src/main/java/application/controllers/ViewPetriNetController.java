@@ -6,6 +6,8 @@ import application.repositories.PetriNetRepository;
 import application.ui.graphics.ArcViewFactory;
 import application.ui.graphics.PlaceViewFactory;
 import application.ui.graphics.TransitionViewFactory;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +30,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 
 import java.io.IOException;
@@ -46,6 +49,14 @@ public class ViewPetriNetController implements Initializable {
     private Label statusLabel;
     @FXML
     private Label messageLabel;
+
+    private final Timeline errorClearer = new Timeline(
+            new KeyFrame(Duration.seconds(3), e -> {
+                if (messageLabel != null) {
+                    messageLabel.setText("");
+                }
+            })
+    );
 
     private SharedResources sharedResources;
     private ProcessService processService;
@@ -74,7 +85,7 @@ public class ViewPetriNetController implements Initializable {
             return;
         }
         try{
-            this.coordinates=PetriNetCoordinates.loadFromFile("src/main/resources/data/coords/"+currentNet.getId()+"_coords.json");
+            this.coordinates=PetriNetCoordinates.loadFromFile("data/coords/"+currentNet.getId()+"_coords.json");
 
         }catch (IOException e){
             showError("Coords file not found. using default layout");
@@ -257,20 +268,29 @@ public class ViewPetriNetController implements Initializable {
     }
 
     private void showSuccess(String message) {
-        messageLabel.setText(message);
-        messageLabel.setTextFill(Color.GREEN);
+        if (messageLabel != null) {
+            messageLabel.setText(message);
+            messageLabel.setTextFill(Color.GREEN);
+        }
+        errorClearer.stop();
+        errorClearer.playFromStart();
     }
 
     private void showError(String message) {
-        messageLabel.setText(message);
-        messageLabel.setTextFill(Color.RED);
+        if (messageLabel != null) {
+            messageLabel.setText(message);
+            messageLabel.setTextFill(Color.RED);
+        }
+        errorClearer.stop();
+        errorClearer.playFromStart();
     }
 
     private void updateStatusLabel() {
-        statusLabel.setText(currentComputation.getStatus().toString());
+        if(statusLabel!=null)
+            statusLabel.setText(currentComputation.getStatus().toString());
         if (!currentComputation.isActive()) {
             statusLabel.setTextFill(Color.RED);
-            messageLabel.setText("Computazione Completata.");
+            messageLabel.setText("Computation Completed.");
             messageLabel.setTextFill(Color.BLACK);
         } else {
             statusLabel.setTextFill(Color.GREEN);

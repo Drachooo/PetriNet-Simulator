@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -136,6 +137,7 @@ public class PetriNet {
         return initialPlaceId;
     }
 
+    @JsonIgnore
     public Place getInitialPlace() {
         if (initialPlaceId == null) {
             return null;
@@ -147,6 +149,7 @@ public class PetriNet {
         return finalPlaceId;
     }
 
+    @JsonIgnore
     public Place getFinalPlace() {
         if (finalPlaceId == null) {
             return null;
@@ -180,6 +183,7 @@ public class PetriNet {
         validateSingleFinalPlace();
     }
 
+    @JsonIgnore
     public boolean isEmpty() throws IllegalArgumentException {
         return arcs.isEmpty() && transitions.isEmpty() && initialPlaceId == null && finalPlaceId == null;
     }

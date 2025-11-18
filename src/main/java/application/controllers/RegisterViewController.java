@@ -4,6 +4,8 @@
     import application.logic.Type;
     import application.logic.User;
     import application.repositories.UserRepository;
+    import javafx.animation.KeyFrame;
+    import javafx.animation.Timeline;
     import javafx.scene.Node;
     import javafx.scene.Parent;
     import javafx.scene.Scene;
@@ -14,6 +16,7 @@
     import javafx.fxml.FXMLLoader;
     import javafx.fxml.Initializable;
     import javafx.stage.Stage;
+    import javafx.util.Duration;
 
     import java.net.URL;
     import java.util.ResourceBundle;
@@ -34,6 +37,13 @@
         @FXML
         private Label errorLabel;
 
+        private final Timeline errorClearer = new Timeline(
+                new KeyFrame(Duration.seconds(3), e -> {
+                    if (errorLabel != null) {
+                        errorLabel.setText("");
+                    }
+                })
+        );
 
         @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -113,6 +123,8 @@
         private void showError(String message){
             if(errorLabel != null) {
                 errorLabel.setText(message);
+                errorClearer.stop();
+                errorClearer.playFromStart();
             }
             else{
                 System.err.println("errorLabel not found in FXML file");

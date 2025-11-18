@@ -23,7 +23,7 @@ public class UserRepository {
     private final Map<String, User> usersById = new HashMap<>();
     private final Map<String, User> usersByEmail = new HashMap<>();
 
-    private final File file = new File("./src/main/resources/data/userData.csv");
+    private final File file = new File("data/userData.csv");
 
     public UserRepository() {
         if (!file.exists() || file.length() == 0) {

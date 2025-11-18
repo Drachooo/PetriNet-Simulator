@@ -14,7 +14,7 @@ public class PetriNetRepository {
 
     private Map<String, PetriNet> petriNets = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final File file = new File("src/main/resources/data/petriNetRepository.json");
+    private final File file = new File("data/petriNetRepository.json");
 
     public PetriNetRepository() {
         mapper.registerModule(new JavaTimeModule());

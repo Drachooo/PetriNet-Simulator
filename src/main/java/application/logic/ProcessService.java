@@ -29,7 +29,7 @@ public class ProcessService {
 
     // --- Persistence Tools ---
     private final ObjectMapper mapper = new ObjectMapper();
-    private final File computationFile = new File("src/main/resources/data/computations.json");
+    private final File computationFile = new File("data/computations.json");
 
     public ProcessService(UserRepository userRepository, PetriNetRepository petriNetRepository) {
         this.userRepository = userRepository;

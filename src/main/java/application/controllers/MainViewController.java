@@ -13,8 +13,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,53 +29,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the MainView.fxml (Main Dashboard).
+ * Shows the user's active computations and manages navigation.
+ */
 public class MainViewController implements Initializable {
-
-    // --- FXML Components ---
-    @FXML
-    private Label welcomeLabel;
-    @FXML
-    private Label yourComputationsCountLabel;
-    @FXML
-    private Label totalNetsCountLabel;
-    @FXML
-    private Label totalUsersCountLabel;
-    @FXML
-    private Label tableTitleLabel;
-    @FXML
-    private Label errorLabel;
-    @FXML
-    private TextField searchTextField;
-
-    @FXML
-    private Button myComputationsButton;
-    @FXML
-    private Button exploreNetsButton;
-    @FXML
-    private Button adminAreaButton;
-    @FXML
-    private Button helpButton;
-    @FXML
-    private Button logoutButton;
-
-    @FXML
-    private Button viewButton;
-    @FXML
-    private Button startButton;
-    @FXML
-    private Button deleteButton;
-
-    //Table
-    @FXML
-    private TableView<Object> mainTableView;
-    @FXML
-    private TableColumn<Object, String> column1;
-    @FXML
-    private TableColumn<Object, String> column2;
-    @FXML
-    private TableColumn<Object, String> column3;
-    @FXML
-    private TableColumn<Object, String> column4;
 
     // --- Services ---
     private ProcessService processService;
@@ -81,9 +46,45 @@ public class MainViewController implements Initializable {
     private Stage stage;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-
     private ObservableList<Object> tableData = FXCollections.observableArrayList();
-    private String currentViewMode="COMPUTATIONS";
+
+    // --- FXML Components ---
+    @FXML private Label welcomeLabel;
+    @FXML private Label yourComputationsCountLabel;
+    @FXML private Label totalNetsCountLabel;
+    @FXML private Label totalUsersCountLabel;
+    @FXML private Label tableTitleLabel;
+    @FXML private Label errorLabel;
+    @FXML private TextField searchTextField;
+
+    // Bottoni Sidebar
+    @FXML private Button myComputationsButton;
+    @FXML private Button exploreNetsButton;
+    @FXML private Button adminAreaButton;
+    @FXML private Button helpButton;
+    @FXML private Button logoutButton;
+
+    // Bottoni Azione Tabella
+    @FXML private Button viewButton;
+    @FXML private Button startButton;
+    @FXML private Button deleteButton;
+
+    // Tabella
+    @FXML private TableView<Object> mainTableView;
+    @FXML private TableColumn<Object, String> column1;
+    @FXML private TableColumn<Object, String> column2;
+    @FXML private TableColumn<Object, String> column3;
+    @FXML private TableColumn<Object, String> column4;
+
+    private final Timeline errorClearer = new Timeline(
+            new KeyFrame(Duration.seconds(3), e -> {
+                if (errorLabel != null) {
+                    errorLabel.setText("");
+                }
+            })
+    );
+
+    // --- METODI DI INIZIALIZZAZIONE ---
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -93,58 +94,106 @@ public class MainViewController implements Initializable {
         this.userRepository = sharedResources.getUserRepository();
 
         mainTableView.setItems(tableData);
+        setupComputationColumns();
 
-        if (errorLabel != null) {
-            errorLabel.setText("");
-        }
+        if (errorLabel != null) errorLabel.setText("");
     }
 
     public void setSharedResources(SharedResources sharedResources) {
-        if(this.sharedResources==null){
-            this.initialize(null,null);
-        }
-
-        //TODO:REMOVE
+        if (this.sharedResources == null) { this.initialize(null, null); }
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
+    public void setStage(Stage stage) { this.stage = stage; }
 
-    /**
-     * Main entry point. Populates the dashboard with user data.
-     */
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
         initializeUIComponents();
         refreshDashboardData();
     }
 
-    private void initializeUIComponents(){
+    private void initializeUIComponents() {
         welcomeLabel.setText("Welcome," + currentUser.getEmail());
 
-        boolean isAdmin=currentUser.isAdmin();
+        boolean isAdmin = currentUser.isAdmin();
         adminAreaButton.setVisible(isAdmin);
         adminAreaButton.setManaged(isAdmin);
     }
 
     /**
-     * Shows errors
+     * Configura la tabella per mostrare le Computazioni.
      */
-    private void showError(String error) {
-        if(errorLabel!=null){
-            errorLabel.setText(error);
-        }else{
-            System.err.println(error);
-        }
+    private void setupComputationColumns() {
+        tableTitleLabel.setText("My Computations");
+
+        column1.setText("Net Name");
+        column2.setText("Net Creator");
+        column3.setText("Date Started");
+        column4.setText("Status");
+
+        // Assicuriamoci che il casting sia corretto
+        column1.setCellValueFactory(cell -> {
+            Computation comp = (Computation) cell.getValue();
+            PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+            return new SimpleStringProperty(net != null ? net.getName() : "Unknown Net");
+        });
+        column2.setCellValueFactory(cell -> {
+            Computation comp = (Computation) cell.getValue();
+            PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+            User admin = (net != null) ? userRepository.getUserById(net.getAdminId()) : null;
+            return new SimpleStringProperty(admin != null ? admin.getEmail() : "Unknown");
+        });
+        column3.setCellValueFactory(cell -> {
+            Computation comp = (Computation) cell.getValue();
+            return new SimpleStringProperty(comp.getStartTime().format(formatter));
+        });
+        column4.setCellValueFactory(cell -> {
+            Computation comp = (Computation) cell.getValue();
+            return new SimpleStringProperty(comp.getStatus().toString());
+        });
+
+        // Questo bottone è nascosto su questa vista fissa
+        startButton.setVisible(false);
     }
+
+    private void refreshDashboardData() {
+        errorLabel.setText("");
+
+        int yourComps = processService.getComputationsForUser(currentUser.getId()).size();
+        yourComputationsCountLabel.setText(String.valueOf(yourComps));
+
+        int totalNets = processService.getAvailableNetsForUser(currentUser.getId()).size();
+        totalNetsCountLabel.setText(String.valueOf(totalNets));
+
+        int totalUsers = userRepository.getAllUsers().size();
+        totalUsersCountLabel.setText(String.valueOf(totalUsers));
+
+        // Ricarica la tabella con le computazioni dell'utente
+        List<Computation> userComputations = processService.getComputationsForUser(currentUser.getId());
+        tableData.setAll(userComputations);
+    }
+
+    // --- GESTORI DI EVENTI (Navigazione e Azione) ---
 
 
     /**
-     * Navigates to the AdminArea screen.
+     *  Naviga alla schermata ExploreNets.
      */
     @FXML
-    private void goToAdminArea(ActionEvent event) throws IOException {
+    void goToExploreNets(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNetsView.fxml"));
+        Parent root = loader.load();
+
+        ExploreNetsController controller = loader.getController();
+        controller.setCurrentUser(this.currentUser);
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    @FXML
+    void goToAdminArea(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminArea.fxml"));
         Parent root = loader.load();
 
@@ -157,18 +206,68 @@ public class MainViewController implements Initializable {
         stage.show();
     }
 
-
     @FXML
-    private void goToHelp() {
-        // TODO: implement help navigation
-        System.out.println("Help button clicked");
+    void goToHelp(ActionEvent event) {
+        showError("Help section not implemented yet.");
     }
 
-    /**
-     * Logs the user out and returns to the Login screen.
-     */
     @FXML
-    private void handleLogout(ActionEvent event) throws IOException {
+    void goToMyComputations(ActionEvent event) {
+        refreshDashboardData();
+    }
+
+    @FXML
+    void handleView(ActionEvent event) throws IOException {
+
+        Object selectedItem=mainTableView.getSelectionModel().getSelectedItem();
+        if(!(selectedItem instanceof Computation)){
+            showError("Please select a computation to view.");
+            return;
+        }
+
+        Computation computation = (Computation) selectedItem;
+
+        if(!computation.isActive()){
+            showError("Cannot view a completed computation.");
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
+        Parent root = loader.load();
+
+        ViewPetriNetController controller = loader.getController();
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+        controller.loadComputation(this.currentUser, computation);
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    @FXML
+    void handleStart(ActionEvent event) {
+        showError("Start must be done from the Explore Nets view.");
+    }
+
+    @FXML
+    void handleDelete(ActionEvent event) {
+        Object selectedItem=mainTableView.getSelectionModel().getSelectedItem();
+        if(!(selectedItem instanceof Computation)){
+            showError("Please select a computation to delete.");
+            return;
+        }
+        Computation selectedComp = (Computation) selectedItem;
+
+        try {
+            processService.deleteComputation(selectedComp.getId(), currentUser.getId());
+            refreshDashboardData();
+        } catch (IllegalStateException e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    void handleLogout(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent root = loader.load();
 
@@ -177,4 +276,13 @@ public class MainViewController implements Initializable {
         stage.show();
     }
 
+    private void showError(String error) {
+        if(errorLabel != null) {
+            errorLabel.setText(error);
+            errorClearer.stop();
+            errorClearer.playFromStart();
+        } else {
+            System.err.println(error);
+        }
+    }
 }

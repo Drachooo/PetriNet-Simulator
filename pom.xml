@@ -13,32 +13,29 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
+        <!-- MANTENIAMO 21 COME DESIDERATO -->
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <dependencies>
 
         <!-- JavaFX dependencies -->
-        <!-- Modulo base JavaFX per i controlli UI (bottoni, label, ecc) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>17.0.6</version>
         </dependency>
-        <!-- Supporto per layout FXML -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>17.0.6</version>
         </dependency>
-        <!-- Componente WebView per integrare pagine web -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
             <version>17.0.6</version>
         </dependency>
-        <!-- Integrazione con Swing (vecchio toolkit Java) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
@@ -46,13 +43,11 @@
         </dependency>
 
         <!-- UI utility libraries -->
-        <!-- Libreria con componenti UI avanzati per JavaFX -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>11.2.1</version>
         </dependency>
-        <!-- Libreria per creare form dinamici con validazione -->
         <dependency>
             <groupId>com.dlsc.formsfx</groupId>
             <artifactId>formsfx-core</artifactId>
@@ -64,13 +59,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Stili CSS ispirati a Bootstrap -->
         <dependency>
             <groupId>org.kordamp.bootstrapfx</groupId>
             <artifactId>bootstrapfx-core</artifactId>
             <version>0.4.0</version>
         </dependency>
-        <!-- Widget e dashboard (gauge, tiles, ecc) -->
         <dependency>
             <groupId>eu.hansolo</groupId>
             <artifactId>tilesfx</artifactId>
@@ -83,38 +76,29 @@
             </exclusions>
         </dependency>
 
-        <!-- NICHOLAS JACKSON!-->
-        <!-- Libreria principale per serializzazione e deserializzazione JSON -->
+        <!-- JACKSON (JSON) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.0</version>
         </dependency>
-
-        <!-- Usate per la serializzazione e la deserializzazione-->
-        <!-- Supporto per annotazioni che personalizzano la serializzazione -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>2.17.0</version>
         </dependency>
-        <!-- Parser e generator JSON core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.17.0</version>
         </dependency>
-
-        <!-- Per serializzare LocalDateTime -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.17.1</version>
         </dependency>
 
-
         <!-- BCrypt -->
-        <!-- Libreria per hashing sicuro delle password (bcrypt) -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
@@ -122,7 +106,6 @@
         </dependency>
 
         <!-- JUnit 5 -->
-        <!-- Framework per scrivere ed eseguire test automatici -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -136,8 +119,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- dependency per controllo sintattico mail -->
-        <!-- Libreria per validazione di email e altri formati -->
+        <!-- Commons Validator -->
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
@@ -145,8 +127,6 @@
         </dependency>
 
     </dependencies>
-
-
 
     <build>
         <plugins>
@@ -158,6 +138,9 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <!-- [SOLUZIONE] Forziamo Maven a usare il compilatore JDK 21 -->
+                    <fork>true</fork>
+                    <executable>C:\Program Files\Java\jdk-21\bin\javac.exe</executable>
                 </configuration>
             </plugin>
 
@@ -170,7 +153,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>Main</mainClass>
+                            <mainClass>petriNetApp.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
