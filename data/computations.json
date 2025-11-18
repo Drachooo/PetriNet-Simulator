@@ -1,1 +1,54 @@
-{ }
+{
+  "CO67fa16af-8dd1-4aa8-88d9-096e2b76c066" : {
+    "id" : "CO67fa16af-8dd1-4aa8-88d9-096e2b76c066",
+    "petriNetId" : "NP81060b4e-d7de-4e8f-b0cf-80a50b4e029d",
+    "userId" : "USR908e5f80-1e5e-4367-9892-f1a07bf80291",
+    "status" : "COMPLETED",
+    "startTime" : "18-11-2025 17:22:19",
+    "endTime" : "18-11-2025 17:22:34",
+    "steps" : [ {
+      "id" : "S0753f5ed-c052-469c-b2bf-50d17f8717fe",
+      "computationId" : "CO67fa16af-8dd1-4aa8-88d9-096e2b76c066",
+      "transitionId" : null,
+      "timeStamp" : "18-11-2025 17:22:19",
+      "markingData" : {
+        "tokensPerPlace" : {
+          "P346907de-3810-405b-bec8-9b4194b8dfbf" : 1
+        }
+      }
+    }, {
+      "id" : "S4ef85249-d459-48eb-90ad-db8c93ffc7b8",
+      "computationId" : "CO67fa16af-8dd1-4aa8-88d9-096e2b76c066",
+      "transitionId" : "T684651ef-7c3e-4ffd-83a5-7ecb6f00d1af",
+      "timeStamp" : "18-11-2025 17:22:34",
+      "markingData" : {
+        "tokensPerPlace" : {
+          "P4ec79347-93ca-46ad-989f-610a11d57577" : 1
+        }
+      }
+    } ],
+    "active" : false,
+    "lastStep" : {
+      "id" : "S4ef85249-d459-48eb-90ad-db8c93ffc7b8",
+      "computationId" : "CO67fa16af-8dd1-4aa8-88d9-096e2b76c066",
+      "transitionId" : "T684651ef-7c3e-4ffd-83a5-7ecb6f00d1af",
+      "timeStamp" : "18-11-2025 17:22:34",
+      "markingData" : {
+        "tokensPerPlace" : {
+          "P4ec79347-93ca-46ad-989f-610a11d57577" : 1
+        }
+      }
+    },
+    "initialStep" : {
+      "id" : "S0753f5ed-c052-469c-b2bf-50d17f8717fe",
+      "computationId" : "CO67fa16af-8dd1-4aa8-88d9-096e2b76c066",
+      "transitionId" : null,
+      "timeStamp" : "18-11-2025 17:22:19",
+      "markingData" : {
+        "tokensPerPlace" : {
+          "P346907de-3810-405b-bec8-9b4194b8dfbf" : 1
+        }
+      }
+    }
+  }
+}

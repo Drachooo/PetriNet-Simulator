@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -63,8 +64,14 @@
                         </Label>
                         <!-- fx:id aggiunto -->
                         <ListView fx:id="computationsListView" VBox.vgrow="ALWAYS" />
-                        <!-- fx:id e onAction aggiunti -->
-                        <Button fx:id="deleteComputationButton" mnemonicParsing="false" onAction="#handleDeleteComputation" text="Delete Selected Computation (5.3)" textFill="RED" />
+                  <HBox>
+                     <children>
+                        <Button fx:id="viewComputationButton" mnemonicParsing="false" onAction="#handleViewComputation" text="View Computation" />
+                        <Region prefHeight="25.0" prefWidth="18.0" />
+                              <!-- fx:id e onAction aggiunti -->
+                              <Button fx:id="deleteComputationButton" mnemonicParsing="false" onAction="#handleDeleteComputation" text="Delete Selected Computation (5.3)" textFill="RED" />
+                     </children>
+                  </HBox>
                     </children>
                 </VBox>
             </children>

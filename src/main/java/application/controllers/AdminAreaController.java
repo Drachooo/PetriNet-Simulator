@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -46,6 +47,14 @@ public class AdminAreaController implements Initializable {
     private ListView<PetriNet> myNetsListView;
     @FXML
     private ListView<Computation> computationsListView;
+    @FXML private Button backButton;
+    @FXML private Button createNewNetButton;
+    @FXML private Button editNetButton;
+    @FXML private Button deleteNetButton;
+    @FXML private Button deleteComputationButton;
+    @FXML private Button viewComputationButton;
+
+
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
@@ -289,6 +298,37 @@ public class AdminAreaController implements Initializable {
         controller.loadNetForEditing(selectedNet);
 
         // 5. Mostra la scena
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    /**
+     * Allows admin to view a computation and fire ADMIN Transitions
+     */
+    @FXML
+    void handleViewComputation(ActionEvent event) throws IOException {
+        Computation selectedComp = computationsListView.getSelectionModel().getSelectedItem();
+
+        if (selectedComp == null) {
+            showError("Please select a computation to view.");
+            return;
+        }
+
+        if (!selectedComp.isActive()) {
+            showError("Cannot view a completed computation. Only active processes are viewable.");
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
+        Parent root = loader.load();
+
+        ViewPetriNetController controller = loader.getController();
+        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
+
+        controller.loadComputation(this.currentUser, selectedComp);
+
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
