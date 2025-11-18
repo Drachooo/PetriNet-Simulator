@@ -4,14 +4,13 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 // Imports needed for Jackson
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.*;
 
 /**
  * Represents a single execution instance of a Petri net by a user.
  * Maps to data model 5.2.5.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Computation {
 
     /**
@@ -20,6 +19,7 @@ public class Computation {
     public enum ComputationStatus {
         ACTIVE, COMPLETED;
 
+        @JsonIgnore
         public boolean isActive() {
             return this == ACTIVE;
         }
@@ -105,6 +105,7 @@ public class Computation {
      * Gets the first step (which contains the initial marking).
      * @return The initial ComputationStep, or null.
      */
+    @JsonIgnore
     public ComputationStep getInitialStep() {
         for (ComputationStep step : steps) {
             if (step.getTransitionId() == null) {
@@ -118,6 +119,7 @@ public class Computation {
      * Gets the most recent step (which contains the current marking).
      * @return The last ComputationStep, or null.
      */
+    @JsonIgnore
     public ComputationStep getLastStep() {
         return steps.isEmpty() ? null : steps.get(steps.size() - 1);
     }

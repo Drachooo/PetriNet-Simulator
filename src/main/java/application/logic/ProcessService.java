@@ -201,11 +201,12 @@ public class ProcessService {
             if(!isNetAdmin) {
                 throw new IllegalStateException("Only the admin of this net can fire its transitions");
             }
-
-            /*2.3: "User transitions can only be fired by users"
-                    is implicitly handled: if not admin of the net you are considered as a valid user
-                    even if you are admin of another net (2.1)
-             */
+        }
+        /*2.3:  User transitions can only be fired by users (non admin) who have created a computation instance*/
+        else if(transitionType==Type.USER){
+            if(isNetAdmin) {
+                throw new IllegalStateException("Admin cannot fire transitions of a user");
+            }
         }
     }
 
