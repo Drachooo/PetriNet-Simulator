@@ -132,10 +132,9 @@ public class ProcessService {
      * @param computationId ID of computation to update.
      * @param transitionId ID of transition fo fire.
      * @param userId ID of user that wants to fire.
-     * @return upodated trabsition.
      * @throws IllegalStateException if any rule is violated.
      */
-    public Computation fireTransition(String computationId, String transitionId, String userId) throws IllegalStateException{
+    public void fireTransition(String computationId, String transitionId, String userId) throws IllegalStateException{
         Computation comp=computations.get(computationId);
 
         if(comp==null) throw new IllegalStateException("Computation not found");
@@ -183,7 +182,6 @@ public class ProcessService {
         }
 
         saveComputationsToFile();
-        return comp;
     }
 
     /**
