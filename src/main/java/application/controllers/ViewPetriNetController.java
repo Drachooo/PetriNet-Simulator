@@ -73,9 +73,17 @@ public class ViewPetriNetController implements Initializable {
     private final Map<String, Group> placeNodes = new HashMap<>();
     private final Map<String, Group> transitionNodes = new HashMap<>();
 
+    private ComputationViewObserver viewObserver;
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+    /*Used by observer to update state*/
+    public void setCurrentComputation(Computation comp) {
+        this.currentComputation = comp;
+    }
+
 
     /**
      * Loads the specific computation instance and its associated Petri Net structure
@@ -91,7 +99,7 @@ public class ViewPetriNetController implements Initializable {
             return;
         }
         try{
-            // Load coordinates from the persistent data path
+            // Load coordinates
             this.coordinates=PetriNetCoordinates.loadFromFile("data/coords/"+currentNet.getId()+"_coords.json");
 
         }catch (IOException e){
@@ -101,6 +109,9 @@ public class ViewPetriNetController implements Initializable {
 
         netNameLabel.setText(currentNet.getName());
         updateStatusLabel();
+
+        //Creates Observer
+        this.viewObserver = new ComputationViewObserver(computation, this);
 
         drawPetriNet();
 
@@ -255,11 +266,12 @@ public class ViewPetriNetController implements Initializable {
         }
 
         try{
-            // Attempt to fire the transition (security and token checks happen here)
-            this.currentComputation=processService.fireTransition(currentComputation.getId(),t.getId(),currentUser.getId());
+            //Observer now handles:
+            //1 ProcessService calls notifyObservers()
+            //2 Observer (this class) calls updata()
+            //3 update() calls refreshState()=
+            processService.fireTransition(currentComputation.getId(),t.getId(),currentUser.getId());
             showSuccess("Transition "+t.getName()+" fired");
-
-            refreshState(); // Update UI
         }catch(IllegalStateException e){
             // Error handling for permission denial or insufficient tokens
             showError("Action Denied: " + e.getMessage());
