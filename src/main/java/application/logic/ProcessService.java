@@ -191,20 +191,18 @@ public class ProcessService {
      */
     private void checkFirePermissions(User user, PetriNet net, Transition transition) {
         Type transitionType=transition.getType();
-        boolean isNetAdmin=user.isAdmin() && net.getAdminId().equals(user.getId());
+        TransitionExecutionStrategy strategy;
 
         if(transitionType==Type.ADMIN){
             /*2.3: Administrator transitions can only be fired by the administrator who created the Petri net*/
-            if(!isNetAdmin) {
-                throw new IllegalStateException("Only the admin of this net can fire its transitions");
-            }
+           strategy=new AdminExecutionStrategy();
         }
         /*2.3:  User transitions can only be fired by users (non admin) who have created a computation instance*/
-        else if(transitionType==Type.USER){
-            if(isNetAdmin) {
-                throw new IllegalStateException("Admin cannot fire transitions of a user");
-            }
+        else{
+            strategy=new UserExecutionStrategy();
         }
+
+        strategy.checkPermissions(user,net,transition);
     }
 
     /**
