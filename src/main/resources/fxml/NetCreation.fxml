@@ -13,7 +13,6 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.paint.Color?>
 
 <BorderPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.NetCreationController">
 
@@ -35,11 +34,12 @@
             <VBox prefWidth="210.0" spacing="8.0">
                 <Button fx:id="adminAreaButton" mnemonicParsing="false" onAction="#goToAdminArea" prefWidth="200.0" text="Admin Area" />
                 <Button fx:id="exploreNetsButton" mnemonicParsing="false" onAction="#goToExploreNets" prefWidth="200.0" text="Explore Nets" />
-                <Button fx:id="yourNetsButton" mnemonicParsing="false" onAction="#goToMainView" prefWidth="200.0" text="Your Nets" />
-                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#goToHelp" prefWidth="200.0" text="Help" />
             </VBox>
-
-            <Region VBox.vgrow="ALWAYS" />
+         <Region prefHeight="587.0" prefWidth="209.0" />
+             <Button fx:id="yourNetsButton" mnemonicParsing="false" onAction="#goToMainView" prefWidth="200.0" text="Go Back to Dashboard" />
+         <Region prefHeight="20.0" prefWidth="209.0" />
+             <Button fx:id="helpButton" mnemonicParsing="false" onAction="#goToHelp" prefWidth="200.0" text="Help" />
+         <Region prefHeight="20.0" prefWidth="209.0" />
             <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" prefWidth="200.0" text="Logout" />
         </VBox>
     </left>
@@ -76,7 +76,7 @@
                             </Label>
 
                             <Button fx:id="clearButton" onAction="#clearNet" text="Clear Net" />
-                            <Button fx:id="saveButton" onAction="#savePetriNet" text="Save Net" style="-fx-font-weight: bold;" />
+                            <Button fx:id="saveButton" onAction="#savePetriNet" style="-fx-font-weight: bold;" text="Save Net" />
                         </children>
                     </HBox>
                 </VBox>

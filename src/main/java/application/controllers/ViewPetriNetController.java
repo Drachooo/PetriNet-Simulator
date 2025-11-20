@@ -21,22 +21,24 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import javafx.fxml.Initializable;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.Color;
 
+/**
+ * Controller for the Petri Net execution view.
+ * This view allows the user to interact with an active Computation instance
+ * by firing enabled transitions. Implements Use Case 6.2.3.
+ */
 public class ViewPetriNetController implements Initializable {
 
     @FXML
@@ -48,7 +50,7 @@ public class ViewPetriNetController implements Initializable {
     @FXML
     private Label statusLabel;
     @FXML
-    private Label messageLabel;
+    private Label messageLabel; // Used for displaying success/error messages
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
@@ -75,6 +77,10 @@ public class ViewPetriNetController implements Initializable {
         this.stage = stage;
     }
 
+    /**
+     * Loads the specific computation instance and its associated Petri Net structure
+     * and visual layout data. This is the main entry point for the view.
+     */
     public void loadComputation(User user, Computation computation){
         this.currentUser = user;
         this.currentComputation = computation;
@@ -85,6 +91,7 @@ public class ViewPetriNetController implements Initializable {
             return;
         }
         try{
+            // Load coordinates from the persistent data path
             this.coordinates=PetriNetCoordinates.loadFromFile("data/coords/"+currentNet.getId()+"_coords.json");
 
         }catch (IOException e){
@@ -98,13 +105,11 @@ public class ViewPetriNetController implements Initializable {
         drawPetriNet();
 
         refreshState();
-
     }
 
 
-
     /**
-     * Draws the petriNet calling helper methods.
+     * Draws the static Petri Net structure (Places, Transitions, Arcs) using factory methods.
      */
     public void drawPetriNet() {
         drawingPane.getChildren().clear();
@@ -117,7 +122,7 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Draws all places
+     * Draws all Place nodes onto the drawing pane.
      */
     private void drawPlaces() {
         for (Place place : currentNet.getPlaces().values()) {
@@ -128,10 +133,10 @@ public class ViewPetriNetController implements Initializable {
 
             Group placeNode = PlaceViewFactory.createPlaceNode(
                     place, place.getName(), pos.x, pos.y,
-                    null, null //No menu (view only)
+                    null, null // No context menu in view-only mode
             );
 
-           //no drag and drop
+            // No drag and drop in execution view
             placeNode.setOnMousePressed(null);
             placeNode.setOnMouseDragged(null);
 
@@ -141,7 +146,7 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Draws all transitions
+     * Draws all Transition nodes onto the drawing pane and sets the click handler.
      */
     private void drawTransitions() {
         for (Transition transition : currentNet.getTransitions().values()) {
@@ -152,10 +157,11 @@ public class ViewPetriNetController implements Initializable {
 
             Group transitionNode = TransitionViewFactory.createTransitionNode(
                     transition, transition.getName(), pos.x, pos.y,
-                    (t) -> handleTransitionClick(t)
+                    (t) -> handleTransitionClick(t) // Pass the click handler
             );
 
 
+            // Set the handler explicitly on click (for ease of use)
             transitionNode.setOnMouseClicked(e -> handleTransitionClick(transition));
             transitionNode.setOnMousePressed(null);
             transitionNode.setOnMouseDragged(null);
@@ -164,8 +170,9 @@ public class ViewPetriNetController implements Initializable {
             transitionNodes.put(transition.getId(), transitionNode);
         }
     }
+
     /**
-     * Draws all arcs
+     * Draws all Arc connections between the Place and Transition nodes.
      */
     private void drawArcs() {
         for (Arc arc : currentNet.getArcs().values()) {
@@ -174,16 +181,21 @@ public class ViewPetriNetController implements Initializable {
 
             if (source != null && target != null) {
                 Line arcLine = ArcViewFactory.createArcLine(source, target);
-                drawingPane.getChildren().addFirst(arcLine);
+                drawingPane.getChildren().addFirst(arcLine); // Add behind nodes
             }
         }
     }
 
+    /**
+     * Refreshes the dynamic state of the view (Tokens and enabled Transitions).
+     */
     public void refreshState(){
         MarkingData curr= currentComputation.getLastStep().getMarkingData();
 
+        // Get transitions available based on marking AND user role permissions
         List<Transition> availableTransitions=processService.getAvailableTransitions(currentComputation.getId(),currentUser.getId());
 
+        // Update Place tokens
         for(Map.Entry<String,Group> entry: placeNodes.entrySet()){
             String placeId = entry.getKey();
             Group group = entry.getValue();
@@ -191,34 +203,38 @@ public class ViewPetriNetController implements Initializable {
             updatePlaceTokensVisual(group, tokens);
         }
 
+        // Update Transition colors and stroke (NFR2.2)
         for (Map.Entry<String, Group> entry : transitionNodes.entrySet()) {
             Transition t = currentNet.getTransitions().get(entry.getKey());
             Group group = entry.getValue();
-            Rectangle rect = (Rectangle) group.getChildren().getFirst();
+            Rectangle rect = (Rectangle) group.getChildren().getFirst(); // Assumes rectangle is the first child
 
             boolean isAvailable = availableTransitions.contains(t);
 
             if (isAvailable && currentComputation.isActive()) {
                 rect.setStroke(Color.LIMEGREEN);
-                rect.setStrokeWidth(4.0);
+                rect.setStrokeWidth(4.0); // Highlight
             } else {
                 rect.setStroke(Color.BLACK);
-                rect.setStrokeWidth(2.0);
+                rect.setStrokeWidth(2.0); // Default
             }
         }
         updateStatusLabel();
     }
 
+    /**
+     * Updates the visual representation of tokens within a Place node.
+     */
     private void updatePlaceTokensVisual(Group placeGroup, int tokenCount) {
-        //Clean all old tokens
+        // Clean all old tokens (nodes marked with id="token")
         placeGroup.getChildren().removeIf(node ->
                 node.getId() != null && node.getId().equals("token")
         );
 
-        //Add new tokens
+        // Add new tokens
         if (tokenCount > 0) {
             Circle token = new Circle(0, 0, 8, Color.BLACK);
-            token.setId("token"); // Marchialo per la prossima pulizia
+            token.setId("token"); // Mark for cleanup
 
             // TODO: add label if token count > 1
 
@@ -226,6 +242,10 @@ public class ViewPetriNetController implements Initializable {
         }
     }
 
+    /**
+     * Handles the user clicking on an interactive transition.
+     * Calls the ProcessService to attempt the transition execution (Use Case 6.2.3).
+     */
     private void handleTransitionClick(Transition t) {
         if(t==null) return;
 
@@ -235,36 +255,28 @@ public class ViewPetriNetController implements Initializable {
         }
 
         try{
+            // Attempt to fire the transition (security and token checks happen here)
             this.currentComputation=processService.fireTransition(currentComputation.getId(),t.getId(),currentUser.getId());
-            showSuccess("Transition"+t.getName()+"fired");
+            showSuccess("Transition "+t.getName()+" fired");
 
-            refreshState();
+            refreshState(); // Update UI
         }catch(IllegalStateException e){
-            showError(e.getMessage());
+            // Error handling for permission denial or insufficient tokens
+            showError("Action Denied: " + e.getMessage());
         }
     }
 
     /**
-     * Goes to Dashboard
+     * Navigates back to the main dashboard.
      */
     @FXML
     void handleGoBack(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-        Parent root = loader.load();
-
-        MainViewController controller = loader.getController();
-        controller.setSharedResources(SharedResources.getInstance());
-        controller.setCurrentUser(currentUser);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        NavigationHelper.navigate(event,"/fxml/MainView.fxml",currentUser);
     }
 
     @FXML
     public void goToHelp(ActionEvent event) throws IOException {
-        //TODO
+        // TODO
     }
 
     private void showSuccess(String message) {
@@ -290,8 +302,10 @@ public class ViewPetriNetController implements Initializable {
             statusLabel.setText(currentComputation.getStatus().toString());
         if (!currentComputation.isActive()) {
             statusLabel.setTextFill(Color.RED);
-            messageLabel.setText("Computation Completed.");
-            messageLabel.setTextFill(Color.BLACK);
+            if(messageLabel != null) {
+                messageLabel.setText("Computation Completed.");
+                messageLabel.setTextFill(Color.BLACK);
+            }
         } else {
             statusLabel.setTextFill(Color.GREEN);
         }

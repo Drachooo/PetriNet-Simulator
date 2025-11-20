@@ -5,16 +5,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 /**
- * Classe per creare graficamente un arco tra due nodi (Place o Transition).
+ * Factory class to create the visual representation (View) for an Arc (Line)
+ * connecting two nodes (Place or Transition).
  */
 public class ArcViewFactory {
 
     /**
-     * Crea una linea visiva che rappresenta un arco tra due nodi.
+     * Creates a visual line representing an arc between two nodes.
      *
-     * @param sourceNode Nodo sorgente (Place o Transition)
-     * @param targetNode Nodo destinazione (Place o Transition)
-     * @return Oggetto Line che rappresenta graficamente l’arco
+     * @param sourceNode The source node (Place or Transition).
+     * @param targetNode The target node (Place or Transition).
+     * @return A Line object representing the arc graphically.
      */
     public static Line createArcLine(Node sourceNode, Node targetNode) {
         Line arcLine = new Line();
@@ -24,13 +25,15 @@ public class ArcViewFactory {
     }
 
     /**
-     * Collega le estremità della linea alle posizioni dei due nodi.
+     * Binds the endpoints of the line to the layout positions of the two nodes.
+     * This ensures the line automatically moves when the nodes are dragged.
      *
-     * @param arcLine     Linea da collegare
-     * @param sourceNode  Nodo sorgente
-     * @param targetNode  Nodo destinazione
+     * @param arcLine     The Line to be connected.
+     * @param sourceNode  The source node.
+     * @param targetNode  The target node.
      */
     private static void bindLineToNodes(Line arcLine, Node sourceNode, Node targetNode) {
+        // Binds the line start/end points to the center coordinates of the nodes.
         arcLine.startXProperty().bind(sourceNode.layoutXProperty());
         arcLine.startYProperty().bind(sourceNode.layoutYProperty());
         arcLine.endXProperty().bind(targetNode.layoutXProperty());
@@ -38,9 +41,9 @@ public class ArcViewFactory {
     }
 
     /**
-     *  Applico uno stile all'arco.
+     * Applies the default visual style (color and width) to the arc line.
      *
-     * @param arcLine Linea da personalizzare
+     * @param arcLine The line to style.
      */
     private static void applyArcStyle(Line arcLine) {
         arcLine.setStroke(Color.BLACK);

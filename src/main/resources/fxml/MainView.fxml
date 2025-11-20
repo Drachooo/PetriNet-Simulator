@@ -31,7 +31,6 @@
 
 
             <VBox prefWidth="210.0" spacing="10.0">
-                <Button fx:id="myComputationsButton" onAction="#goToMyComputations" prefWidth="200.0" text="My Computations" />
                 <Button fx:id="exploreNetsButton" onAction="#goToExploreNets" prefWidth="200.0" text="Explore Nets" />
                 <Button fx:id="adminAreaButton" onAction="#goToAdminArea" prefWidth="200.0" text="Admin Area" />
                 <Button fx:id="helpButton" onAction="#goToHelp" prefWidth="200.0" text="Help" />

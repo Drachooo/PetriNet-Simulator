@@ -41,8 +41,6 @@ public class LoginViewController implements Initializable {
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
-                // L'azione da fare dopo 3 secondi (cancellare il testo)
-                // Sarà gestita nel metodo showError
             })
     );
     /**
@@ -118,18 +116,7 @@ public class LoginViewController implements Initializable {
      */
     @FXML
     private void goToMainView(ActionEvent event, User currentUser) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-        Parent mainPage = loader.load();
-
-        MainViewController controller = loader.getController();
-        // Pass services, stage, and the specific user to the next controller
-        controller.setSharedResources(sharedResources);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-        controller.setCurrentUser(currentUser);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(mainPage));
-        stage.show();
+        NavigationHelper.navigate(event,"/fxml/MainView.fxml",currentUser);
     }
 
     /**

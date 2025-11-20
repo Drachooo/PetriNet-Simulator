@@ -4,15 +4,12 @@ import application.logic.*;
 import application.repositories.PetriNetCoordinates;
 import application.ui.graphics.ArcViewFactory;
 import application.ui.graphics.TransitionViewFactory;
-import application.ui.utils.Delta;
+import application.ui.utils.UnsavedChangesGuard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -72,7 +69,7 @@ public class NetCreationController implements Initializable {
     private SharedResources sharedResources;
     private User currentUser;
     private Stage stage;
-
+    private boolean isDirty=false;
     // --- Initialization ---
 
     /**
@@ -230,6 +227,8 @@ public class NetCreationController implements Initializable {
         placeMap.put(group, place);
         placeViewMap.put(place, group);
         undoStack.push(group);
+
+        this.isDirty=true;
     }
 
     private void createTransition(double x, double y) {
@@ -243,6 +242,8 @@ public class NetCreationController implements Initializable {
         drawingPane.getChildren().add(group);
         transitionMap.put(group, t);
         undoStack.push(group);
+
+        this.isDirty=true;
     }
 
     private void createArcBetween(Node srcNode, Node tgtNode) {
@@ -267,6 +268,7 @@ public class NetCreationController implements Initializable {
         } catch (IllegalArgumentException ex) {
             showError("Invalid arc", ex.getMessage());
         }
+        this.isDirty=true;
     }
 
     // --- State Management (Initial/Final Places) ---
@@ -280,6 +282,8 @@ public class NetCreationController implements Initializable {
             // Ensure token is removed if it was previously the Initial place
             getToken(g).ifPresent(tok -> g.getChildren().remove(tok));
         }
+
+        this.isDirty=true;
     }
 
     private void designateInitial(Place p) {
@@ -294,6 +298,8 @@ public class NetCreationController implements Initializable {
                 g.getChildren().add(tok);
             }
         }
+
+        this.isDirty=true;
     }
 
     private void resetPlaceVisual(Place p) {
@@ -317,6 +323,8 @@ public class NetCreationController implements Initializable {
         } else {
             rect.setFill(Color.BLUE);
         }
+
+        this.isDirty=true;
     }
 
     private Group getGroupForTransition(Transition t) {
@@ -412,6 +420,8 @@ public class NetCreationController implements Initializable {
                 petriNet.getName(),
                 currentUser.getId()
         );
+
+        this.isDirty=true;
     }
 
     /**
@@ -440,7 +450,7 @@ public class NetCreationController implements Initializable {
                 coordsDir.mkdirs();
 
             coords.saveToFile("data/coords/" + petriNet.getId() + "_coords.json");
-
+            this.isDirty=false;
             showStatus("Net saved successfully!", false);
             return true;
 
@@ -459,6 +469,8 @@ public class NetCreationController implements Initializable {
         petriNet.removePlace(p.getId());
         removeConnectedArcs(p.getId());
         drawingPane.getChildren().remove(node);
+
+        this.isDirty=true;
     }
 
     private void removeTransition(Node node) {
@@ -467,6 +479,8 @@ public class NetCreationController implements Initializable {
         petriNet.removeTransition(t.getId());
         removeConnectedArcs(t.getId());
         drawingPane.getChildren().remove(node);
+
+        this.isDirty=true;
     }
 
     private void removeArc(Node node) {
@@ -474,6 +488,8 @@ public class NetCreationController implements Initializable {
         if (a == null) return;
         petriNet.removeArc(a.getId());
         drawingPane.getChildren().remove(node);
+
+        this.isDirty=true;
     }
 
     private void removeConnectedArcs(String nodeId) {
@@ -487,6 +503,8 @@ public class NetCreationController implements Initializable {
         for (Node arcNode : arcsToRemove) {
             removeArc(arcNode);
         }
+
+        this.isDirty=true;
     }
 
     // --- Graphic Helpers ---
@@ -521,81 +539,102 @@ public class NetCreationController implements Initializable {
 
     @FXML
     private void goToAdminArea(ActionEvent event) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Save Net");
-        alert.setHeaderText("Save changes before exiting?");
-        alert.setContentText("Choose an option:");
 
-        ButtonType saveButton = new ButtonType("Save");
-        ButtonType dontSaveButton = new ButtonType("Don't Save");
-        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        if (!isDirty) {
+            NavigationHelper.navigate(event,"/fxml/AdminArea.fxml",currentUser);
+            return;
+        }
 
-        alert.getButtonTypes().setAll(saveButton, dontSaveButton, cancelButton);
+        UnsavedChangesGuard.SaveChoice choice = UnsavedChangesGuard.promptUserForSaveConfirmation();
 
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isPresent()) {
-            if (result.get() == saveButton) {
+        switch (choice) {
+            case SAVE_AND_CONTINUE:
                 if (savePetriNet(event)) {
-                    switchToAdminArea(event);
+                    NavigationHelper.navigate(event,"/fxml/AdminArea.fxml",currentUser);
                 }
-            } else if (result.get() == dontSaveButton) {
-                switchToAdminArea(event);
-            }
+                break;
+            case DISCARD_AND_CONTINUE:
+                NavigationHelper.navigate(event,"/fxml/AdminArea.fxml",currentUser);
+                break;
+            case CANCEL_EXIT:
+                break;
         }
     }
 
-    private void switchToAdminArea(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminArea.fxml"));
-        Parent adminView = loader.load();
-
-        AdminAreaController controller = loader.getController();
-        controller.setCurrentUser(currentUser);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-
-        Scene adminScene = new Scene(adminView);
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(adminScene);
-        window.show();
-    }
 
     @FXML
     private void goToExploreNets(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNets.fxml"));
-        Parent root = loader.load();
 
-        ExploreNetsController controller = loader.getController();
-        controller.setCurrentUser(this.currentUser);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+        if (!isDirty) {
+            NavigationHelper.navigate(event,"/fxml/ExploreNetsView.fxml",currentUser);
+            return;
+        }
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        UnsavedChangesGuard.SaveChoice choice = UnsavedChangesGuard.promptUserForSaveConfirmation();
+
+        switch (choice) {
+            case SAVE_AND_CONTINUE:
+                if (savePetriNet(event)) {
+                    NavigationHelper.navigate(event,"/fxml/ExploreNetsView.fxml",currentUser);
+                }
+                break;
+            case DISCARD_AND_CONTINUE:
+                NavigationHelper.navigate(event,"/fxml/ExploreNetsView.fxml",currentUser);
+                break;
+            case CANCEL_EXIT:
+                break;
+        }
     }
 
     @FXML
     private void goToMainView(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-        Parent mainView = loader.load();
 
-        MainViewController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
-        controller.setCurrentUser(this.currentUser);
+        if (!isDirty) {
+            NavigationHelper.navigate(event,"/fxml/MainView.fxml",currentUser);
+            return;
+        }
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(mainView));
-        stage.show();
+        UnsavedChangesGuard.SaveChoice choice = UnsavedChangesGuard.promptUserForSaveConfirmation();
+
+        switch (choice) {
+            case SAVE_AND_CONTINUE:
+                if (savePetriNet(event)) {
+                    NavigationHelper.navigate(event,"/fxml/MainView.fxml",currentUser);
+                }
+                break;
+            case DISCARD_AND_CONTINUE:
+                NavigationHelper.navigate(event,"/fxml/MainView.fxml",currentUser);
+                break;
+            case CANCEL_EXIT:
+                break;
+        }
     }
 
     @FXML private void goToHelp() {
         showError("Help", "Not implemented yet.");
     }
 
-    @FXML private void handleLogout(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+    @FXML
+    private void handleLogout(ActionEvent event) throws IOException {
+
+        if (!isDirty) {
+            NavigationHelper.navigate(event,"/fxml/LoginView.fxml",currentUser);
+            return;
+        }
+
+        UnsavedChangesGuard.SaveChoice choice = UnsavedChangesGuard.promptUserForSaveConfirmation();
+
+        switch (choice) {
+            case SAVE_AND_CONTINUE:
+                if (savePetriNet(event)) {
+                    NavigationHelper.navigate(event,"/fxml/LoginView.fxml",currentUser);
+                }
+                break;
+            case DISCARD_AND_CONTINUE:
+                NavigationHelper.navigate(event,"/fxml/LoginView.fxml",currentUser);
+                break;
+            case CANCEL_EXIT:
+                break;
+        }
     }
 }

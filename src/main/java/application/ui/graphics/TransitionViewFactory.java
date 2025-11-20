@@ -24,36 +24,40 @@ public class TransitionViewFactory {
     /**
      * Creates a new graphic node for a Transition.
      *
-     * @param transition Oggetto logico Transition associato
-     * @param labelText  Etichetta della transizione (es. "T1")
-     * @param posX       Coordinata X della posizione iniziale
-     * @param posY       Coordinata Y della posizione iniziale
-     * @param onToggleType Callback per cambiare il tipo di transizione (ADMIN/USER).
-     * @return Gruppo grafico (Group) rappresentante la transizione
+     * @param transition The logical Transition object associated.
+     * @param labelText  The transition's label (e.g., "T1").
+     * @param posX       The initial X coordinate.
+     * @param posY       The initial Y coordinate.
+     * @param onToggleType The callback action to change the transition type (ADMIN/USER).
+     * @return The JavaFX Group node representing the transition.
      */
     public static Group createTransitionNode(Transition transition, String labelText, double posX, double posY,
                                              Consumer<Transition> onToggleType) {
+        // Create the rectangle (transition)
         Rectangle transitionRect = new Rectangle(
                 -TRANSITION_WIDTH / 2,
                 -TRANSITION_HEIGHT / 2,
                 TRANSITION_WIDTH,
                 TRANSITION_HEIGHT
         );
+        // Sets the initial color based on the type (Red for ADMIN, Blue for USER)
         transitionRect.setStroke(Color.BLACK);
         transitionRect.setStrokeWidth(2.0);
-
         transitionRect.setFill(Color.BLUE);
         transitionRect.setFill(transition.getType() == Type.ADMIN ? Color.RED : Color.BLUE);
+
+        // Create the label
         Text transitionLabel = new Text(labelText);
         transitionLabel.setMouseTransparent(true);
         transitionLabel.setY(33);
         transitionLabel.setX(-transitionLabel.getLayoutBounds().getWidth() / 2);
 
+        // Group node
         Group transitionGroup = new Group(transitionRect, transitionLabel);
         transitionGroup.setLayoutX(posX);
         transitionGroup.setLayoutY(posY);
 
-
+        // Drag handling
         Delta dragDelta = new Delta();
         transitionGroup.setOnMousePressed(event -> {
             dragDelta.x = event.getSceneX() - transitionGroup.getLayoutX();

@@ -14,16 +14,16 @@ import java.util.function.Consumer;
 
 public class PlaceViewFactory {
 
-    /**
-     * Crea un nodo grafico (cerchio con etichetta) per un place della rete di Petri.
+     /**
+     * Creates a graphical node (circle with label) for a Petri Net Place.
      *
-     * @param place        oggetto LOFICO Place
-     * @param labelText    testo da mostrare (es. "P1", "P2", ...)
-     * @param x            X iniziale
-     * @param y            Y iniziale
-     * @param onInitial    azione da eseguire se viene scelto come iniziale
-     * @param onFinal      azione da eseguire se viene scelto come finale
-     * @return             NODO JavaFX Group rappresentante il posto
+     * @param place        The logical Place object.
+     * @param labelText    The text to display (e.g., "P1", "P2", ...).
+     * @param x            The initial X coordinate.
+     * @param y            The initial Y coordinate.
+     * @param onInitial    The action to execute when designated as initial (controller callback).
+     * @param onFinal      The action to execute when designated as final (controller callback).
+     * @return             The JavaFX Group node representing the place.
      */
     public static Group createPlaceNode(
             Place place,
@@ -33,22 +33,22 @@ public class PlaceViewFactory {
             Consumer<Place> onInitial,
             Consumer<Place> onFinal
     ) {
-        // Cerchio grigio con bordo nero
+        //Gray circle, black border
         Circle placeCircle = new Circle(0, 0, 20, Color.GRAY);
         placeCircle.setStroke(Color.BLACK);
 
-        // Etichetta del place (es. "P1")
+        // Place Label (e.g "P1")
         Text placeLabel = new Text(labelText);
         placeLabel.setMouseTransparent(true);
         placeLabel.setY(35);
         placeLabel.setX(-placeLabel.getLayoutBounds().getWidth() / 2);
 
-        // Nodo di gruppo contenente il cerchio e l'etichetta
+        // Node that contains place and label
         Group placeNode = new Group(placeCircle, placeLabel);
         placeNode.setLayoutX(x);
         placeNode.setLayoutY(y);
 
-        // Gestione del trascinamento
+        //Dragging handling
         Delta dragDelta = new Delta();
         placeNode.setOnMousePressed(event -> {
             dragDelta.x = event.getSceneX() - placeNode.getLayoutX();
@@ -61,7 +61,7 @@ public class PlaceViewFactory {
             placeNode.setLayoutY(event.getSceneY() - dragDelta.y);
         });
 
-        // Menu per impostare iniziale/finale
+        // Menu to set place as initial or final
         ContextMenu contextMenu = new ContextMenu();
         MenuItem setInitialItem = new MenuItem("Set as Initial");
         MenuItem setFinalItem = new MenuItem("Set as Final");

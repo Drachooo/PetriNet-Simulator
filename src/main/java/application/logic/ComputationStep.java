@@ -51,7 +51,6 @@ public class ComputationStep {
             @JsonProperty("timeStamp") LocalDateTime timeStamp,
             @JsonProperty("markingData") MarkingData markingData)
     {
-        // Add null checks here for robustness during deserialization
         this.id = Objects.requireNonNull(id, "ID cannot be null");
         this.computationId = Objects.requireNonNull(computationId, "Computation ID cannot be null");
         this.transitionId = transitionId; // Can be null

@@ -57,7 +57,6 @@ public class ProcessService {
                     mapper.getTypeFactory().constructMapType(HashMap.class, String.class, Computation.class)
             );
             computations.putAll(loadedMap);
-            System.out.println("Loaded computations: " + computations.size()); // User's original text
         }catch (IOException e) {
             e.printStackTrace();
         }

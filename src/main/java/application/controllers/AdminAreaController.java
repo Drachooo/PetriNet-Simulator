@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -114,7 +116,10 @@ public class AdminAreaController implements Initializable {
 
 
     /**
-     * Configures the ListViews to display text.
+     * Configures the ListView components to display information
+     * by implementing custom cell factories.
+     * This method ensures that complex objects (PetriNet and Computation)
+     * are displayed using formatted strings.
      */
     private void setupListViewFormatters() {
         // Formatter for the Petri Nets list
@@ -148,20 +153,23 @@ public class AdminAreaController implements Initializable {
     }
 
     /**
-     * Filters all the nets to find the admin's ones.
-     * Calls getComptationsForAdmin to obtain computations on the nets
-     * Uses setItems to give these two lists to the ListView(s) that will show them using setCellFactory
+     * Reloads all data for the Admin Dashboard by filtering nets created by the current user (ADMIN)
+     * and fetching computations running on those nets.
+     * This method implements Use Cases 6.1.1 (view own nets) and 6.1.2 (view related computations).
      */
     private void refreshData() {
         errorLabel.setText("");
-        // 1. Populate "My Created Nets" (Use Case 6.1.1)
+
+        // Populate "My Created Nets" (Use Case 6.1.1): Filters the global list to include only nets
+        //    where the AdminID matches the current user's ID.
         List<PetriNet> myNets = petriNetRepository.getPetriNets().values().stream()
                 .filter(net -> net.getAdminId().equals(currentUser.getId()))
                 .collect(Collectors.toList());
 
         myNetsListView.setItems(FXCollections.observableArrayList(myNets));
 
-        // 2. Populate "Computations on My Nets" (Use Case 6.1.2)
+        // Populate "Computations on My Nets" (Use Case 6.1.2): Fetches all computation instances
+        //    that are associated with the nets found in step 1.
         List<Computation> adminComputations = processService.getComputationsForAdmin(currentUser.getId());
         computationsListView.setItems(FXCollections.observableArrayList(adminComputations));
     }
@@ -187,8 +195,9 @@ public class AdminAreaController implements Initializable {
     }
 
     /**
-     * Deletes computations (Req 5.3)
-     * Called by deleteComputationButton
+     * Handles the deletion of a selected Petri Net from the Admin Area.
+     * Implements Use Case 6.1.1 (Delete Net) and enforces the constraint against deleting
+     * nets that have active processes running.
      */
     @FXML
     void handleDeleteNet(ActionEvent event) throws IOException {
@@ -211,18 +220,16 @@ public class AdminAreaController implements Initializable {
         File coordsFile = new File(coordsPath);
 
         if (coordsFile.exists()) {
-            if (coordsFile.delete()) {
-                System.out.println("Coordinate file deleted successfully: " + coordsPath);
-            } else {
+            if (!coordsFile.delete()) {
                 System.err.println("Warning: Could not delete coordinates file.");
             }
+
         }
 
         //Delete Net
         petriNetRepository.deletePetriNet(selectedNet.getId());
 
         //Deletes all associated computations
-
         List<Computation> compsToDelete = processService.getComputationsForAdmin(currentUser.getId()).stream()
                 .filter(c -> c.getPetriNetId().equals(selectedNet.getId()))
                 .toList();
@@ -235,6 +242,9 @@ public class AdminAreaController implements Initializable {
         refreshData();
     }
 
+    /**
+     * Handles deletion of a specific computation
+     */
     @FXML
     void handleDeleteComputation(ActionEvent event) throws IOException {
         Computation selectedComputation=computationsListView.getSelectionModel().getSelectedItem();

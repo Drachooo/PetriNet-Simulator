@@ -180,30 +180,12 @@ public class MainViewController implements Initializable {
      */
     @FXML
     void goToExploreNets(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ExploreNetsView.fxml"));
-        Parent root = loader.load();
-
-        ExploreNetsController controller = loader.getController();
-        controller.setCurrentUser(this.currentUser);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        NavigationHelper.navigate(event,"/fxml/ExploreNetsView.fxml",currentUser);
     }
 
     @FXML
     void goToAdminArea(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminArea.fxml"));
-        Parent root = loader.load();
-
-        AdminAreaController controller = loader.getController();
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-        controller.setCurrentUser(this.currentUser);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        NavigationHelper.navigate(event,"/fxml/AdminArea.fxml",currentUser);
     }
 
     @FXML
@@ -211,10 +193,6 @@ public class MainViewController implements Initializable {
         showError("Help section not implemented yet.");
     }
 
-    @FXML
-    void goToMyComputations(ActionEvent event) {
-        refreshDashboardData();
-    }
 
     @FXML
     void handleView(ActionEvent event) throws IOException {
@@ -232,16 +210,7 @@ public class MainViewController implements Initializable {
             return;
         }
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
-        Parent root = loader.load();
-
-        ViewPetriNetController controller = loader.getController();
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-        controller.loadComputation(this.currentUser, computation);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        NavigationHelper.navigate(event,"/fxml/ViewPetriNet.fxml",currentUser);
     }
 
     @FXML
