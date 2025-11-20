@@ -185,7 +185,8 @@ public class ProcessService {
     }
 
     /**
-     * Implements rule 2.3
+     * Implements rule 2.3.
+     * Uses strategy pattern.
      * @throws IllegalStateException if user cannot fire transition
      *
      */

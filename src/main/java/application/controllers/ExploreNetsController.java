@@ -143,10 +143,19 @@ public class ExploreNetsController implements Initializable {
 
         try {
 
-            Computation newComp = processService.startNewComputation(currentUser.getId(), selectedNet.getId());
+            Computation computation = processService.startNewComputation(currentUser.getId(), selectedNet.getId());
 
 
-            NavigationHelper.navigate(event,"/fxml/ViewPetriNet.fxml",currentUser);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
+            Parent root = loader.load();
+
+            ViewPetriNetController controller = loader.getController();
+            controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+            controller.loadComputation(this.currentUser, computation);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
 
         } catch (IllegalStateException e) {
             showError("Start Error: " + e.getMessage());
