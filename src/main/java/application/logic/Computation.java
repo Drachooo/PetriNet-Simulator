@@ -39,6 +39,9 @@ public class Computation {
     // Holds the history of this computation
     private final List<ComputationStep> steps = new ArrayList<>();
 
+    /*Transient does not let jackson save on dislk*/
+    private transient List<ComputationObserver> observers = new ArrayList<>();
+
     /**
      * Business constructor for starting a new computation.
      * @param petriNetId The net being executed.
@@ -66,6 +69,8 @@ public class Computation {
             @JsonProperty("startTime") LocalDateTime startTime,
             @JsonProperty("endTime") LocalDateTime endTime,
             @JsonProperty("steps") List<ComputationStep> steps)
+
+
     {
         this.id = id;
         this.petriNetId = petriNetId;
@@ -73,8 +78,33 @@ public class Computation {
         this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.observers=new ArrayList<>();
         if (steps != null) {
             this.steps.addAll(steps);
+        }
+    }
+
+
+    //METHODS FOR PATTERN OBSERVER
+    /**
+     * Attaches an observer to this subject. The observer will be notified upon state changes.
+     */
+    public void attach(ComputationObserver observer) {
+        if(observers==null) {
+            observers = new ArrayList<>();
+        }
+        observers.add(observer);
+    }
+
+    /**
+     * Notifies all attached observers that the computation state has changed.
+     */
+    private void notifyObservers() {
+        if (observers == null) {
+            observers = new ArrayList<>();
+        }
+        for (ComputationObserver observer : observers) {
+            observer.update(this);
         }
     }
 
@@ -87,6 +117,7 @@ public class Computation {
         }
         this.status = ComputationStatus.COMPLETED;
         this.endTime = LocalDateTime.now();
+        notifyObservers();
     }
 
     /**
@@ -99,6 +130,7 @@ public class Computation {
             throw new IllegalArgumentException("Step does not belong to this computation");
         }
         steps.add(step);
+        notifyObservers();
     }
 
     /**
