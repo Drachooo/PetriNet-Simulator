@@ -13,8 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.io.IOException;
@@ -34,13 +37,29 @@ public class LoginViewController implements Initializable {
     @FXML
     private TextField emailTextField;
     @FXML
-    private PasswordField passwordTextField;
+    private PasswordField passwordFieldHidden;
+    @FXML
+    private TextField passwordTextVisible;
 
     @FXML
     private Label errorLabel;
 
+    //Tenere traccia dello stato della password(visibile / non visibile)
+    private boolean isPasswordVisible = false;
+
+    //Immagini occhio
+    @FXML private ImageView eyeOpen;
+    @FXML private ImageView eyeClosed;
+
+    @FXML private StackPane rootStackPane;
+    @FXML private ImageView backgroundImage;
+
+    //Il timer nasconde la label quando termina
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
+                if (errorLabel != null) {
+                    errorLabel.setVisible(false); // NASCONDE LA LABEL e Il bottone sotto torna cliccabile
+                }
             })
     );
     /**
@@ -52,10 +71,55 @@ public class LoginViewController implements Initializable {
         this.sharedResources = SharedResources.getInstance();
         this.userRepository = sharedResources.getUserRepository();
 
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
+
+
         if(errorLabel != null) {
+            errorLabel.setVisible(false); // Parte nascosta
             errorLabel.setText("");
         }
+
+        //per poter scrivere in 2 campi contemporaneamnete, password visibile e password invisibile
+        if(passwordFieldHidden != null && passwordTextVisible != null) {
+            passwordTextVisible.textProperty().bindBidirectional(passwordFieldHidden.textProperty());
+        }
     }
+
+    @FXML
+    private void togglePasswordVisibility(ActionEvent event) {
+        isPasswordVisible = !isPasswordVisible;
+
+        if(isPasswordVisible){
+            //Mostra il testo della label
+            passwordTextVisible.setVisible(true);
+            passwordFieldHidden.setVisible(false);
+
+            if(eyeOpen != null){
+                eyeOpen.setVisible(true);
+            }
+            if(eyeClosed != null){
+                eyeClosed.setVisible(false);
+            }
+        }else {
+            //Nasconde il testo della label
+            passwordTextVisible.setVisible(false);
+            passwordFieldHidden.setVisible(true);
+
+            if(eyeOpen != null){
+                eyeOpen.setVisible(false);
+            }
+            if(eyeClosed != null){
+                eyeClosed.setVisible(true);
+            }
+        }
+    }
+
+
 
     /**
      * Handles the 'Login' button click event.
@@ -66,7 +130,7 @@ public class LoginViewController implements Initializable {
     @FXML
     private void handleLogin(ActionEvent event) throws Exception {
         String email = emailTextField.getText();
-        String password = passwordTextField.getText();
+        String password = passwordFieldHidden.getText();
 
         if(email.isEmpty() || password.isEmpty()) {
             showError("Email and password cannot be empty");
@@ -87,7 +151,7 @@ public class LoginViewController implements Initializable {
             showError("Incorrect email or password");
         }
 
-        passwordTextField.clear();
+        passwordFieldHidden.clear();
     }
 
     /**
@@ -126,6 +190,8 @@ public class LoginViewController implements Initializable {
     private void showError(String message){
         if(errorLabel != null) {
             errorLabel.setText(message);
+            errorLabel.setVisible(true);
+
             errorClearer.stop();
             errorClearer.playFromStart();
         }
