@@ -5,18 +5,12 @@ import application.logic.User;
 import application.repositories.UserRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -34,15 +28,11 @@ public class LoginViewController implements Initializable {
     private UserRepository userRepository;
 
     // FXML Components
-    @FXML
-    private TextField emailTextField;
-    @FXML
-    private PasswordField passwordFieldHidden;
-    @FXML
-    private TextField passwordTextVisible;
+    @FXML private TextField emailTextField;
+    @FXML private PasswordField passwordFieldHidden;
+    @FXML private TextField passwordTextVisible;
 
-    @FXML
-    private Label errorLabel;
+    @FXML private Label errorLabel;
 
     //Tenere traccia dello stato della password(visibile / non visibile)
     private boolean isPasswordVisible = false;
@@ -162,12 +152,8 @@ public class LoginViewController implements Initializable {
      */
     @FXML
     private void goToRegisterView(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
-        Parent root = loader.load();
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        //Utilizza l'helper
+        NavigationHelper.navigate(event, "/fxml/RegisterView.fxml");
     }
 
     /**

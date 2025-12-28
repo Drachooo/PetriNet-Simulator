@@ -6,17 +6,12 @@ import application.logic.User;
 import application.repositories.UserRepository;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -29,17 +24,17 @@ public class RegisterViewController implements Initializable {
     private UserRepository userRepository;
 
     /*FXML COMPONENTS*/
-    @FXML
-    private TextField emailTextField;
-    @FXML
-    private PasswordField passwordFieldHidden;
-    @FXML
-    private TextField passwordTextVisible;
+    @FXML private TextField emailTextField;
+    @FXML private PasswordField passwordFieldHidden;
+    @FXML private TextField passwordTextVisible;
 
     @FXML
     private PasswordField confirmPasswordFieldHidden;
     @FXML
     private TextField confirmPasswordFieldVisible;
+
+    @FXML private ImageView backgroundImage;
+    @FXML private StackPane rootStackPane;
 
     //Tenere traccia dello stato della password(visibile / non visibile)
     private boolean isMainPasswordVisible = false;
@@ -59,7 +54,7 @@ public class RegisterViewController implements Initializable {
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
-                    errorLabel.setText("");
+                    errorLabel.setVisible(false); // NASCONDE LA LABEL e Il bottone sotto torna cliccabile
                 }
             })
     );
@@ -69,7 +64,15 @@ public class RegisterViewController implements Initializable {
         this.sharedResources = SharedResources.getInstance();
         this.userRepository = sharedResources.getUserRepository();
 
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
+
         if (errorLabel != null) {
+            errorLabel.setVisible(false); // Parte nascosta
             errorLabel.setText("");
         }
 
@@ -143,14 +146,10 @@ public class RegisterViewController implements Initializable {
      */
     @FXML
     private void goToLoginView(ActionEvent event) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
-        Parent root = loader.load();
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        //Utilizzo l'helper
+        NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
     }
+
 
 
     /**
@@ -202,6 +201,8 @@ public class RegisterViewController implements Initializable {
     private void showError(String message){
         if(errorLabel != null) {
             errorLabel.setText(message);
+            errorLabel.setVisible(true);
+
             errorClearer.stop();
             errorClearer.playFromStart();
         }

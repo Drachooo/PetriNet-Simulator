@@ -91,14 +91,14 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Login">
+                              <Button fx:id="loginButton" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Login">
                                  <font>
                                     <Font name="System Bold" size="22.0" />
                                  </font>
                               </Button>
                            </children>
                         </HBox>
-                        <Label fx:id="errorLabel" alignment="CENTER" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #c41e3a; -fx-background-radius: 25;" text="Credenziali Errate" textAlignment="CENTER" visible="false">
+                        <Label fx:id="errorLabel" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" minHeight="50.0" minWidth="190.0" style="-fx-background-color: #c41e3a; -fx-background-radius: 25; -fx-font-weight: bold;" text="Credenziali Errate" textAlignment="CENTER" visible="false">
                            <font>
                               <Font size="15.0" />
                            </font>
