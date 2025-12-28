@@ -62,7 +62,7 @@
                                     <children>
                                         <TextField fx:id="passwordTextVisible" prefHeight="40.0" prefWidth="232.0" promptText="Enter yout password" visible="false" />
                                         <PasswordField fx:id="passwordFieldHidden" prefHeight="40.0" prefWidth="232.0" promptText="Enter your password" />
-                                        <Button alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#toggleMainPassword" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
+                                        <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#toggleMainPassword" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
                                             <graphic>
                                                 <StackPane prefHeight="150.0" prefWidth="200.0">
                                                     <children>
@@ -98,7 +98,7 @@
                            <children>
                               <TextField fx:id="confirmPasswordFieldVisible" prefHeight="40.0" prefWidth="232.0" promptText="Enter yout password" visible="false" />
                               <PasswordField fx:id="confirmPasswordFieldHidden" prefHeight="40.0" prefWidth="232.0" promptText="Repeat your password" />
-                              <Button alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#toggleConfirmPassword" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
+                              <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#toggleConfirmPassword" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
                                  <graphic>
                                     <StackPane prefHeight="150.0" prefWidth="200.0">
                                        <children>
@@ -127,7 +127,7 @@
                             <children>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                     <children>
-                                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleRegister" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Register">
+                                        <Button fx:id="registerButton" defaultButton="true" mnemonicParsing="false" onAction="#handleRegister" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Register">
                                             <font>
                                                 <Font name="System Bold" size="22.0" />
                                             </font>

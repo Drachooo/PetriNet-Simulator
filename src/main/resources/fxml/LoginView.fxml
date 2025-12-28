@@ -62,7 +62,7 @@
                            <children>
                               <TextField fx:id="passwordTextVisible" prefHeight="40.0" prefWidth="232.0" promptText="Enter yout password" visible="false" />
                               <PasswordField fx:id="passwordFieldHidden" prefHeight="40.0" prefWidth="232.0" promptText="Enter your password" />
-                              <Button alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
+                              <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
                                  <graphic>
                                     <StackPane prefHeight="150.0" prefWidth="200.0">
                                        <children>
@@ -91,7 +91,7 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Button fx:id="loginButton" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Login">
+                              <Button fx:id="loginButton" defaultButton="true" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Login">
                                  <font>
                                     <Font name="System Bold" size="22.0" />
                                  </font>

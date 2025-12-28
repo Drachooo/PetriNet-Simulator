@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
 
 public class RegisterViewController implements Initializable {
 
-
     private SharedResources sharedResources;
     private UserRepository userRepository;
 
