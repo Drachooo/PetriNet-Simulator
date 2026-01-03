@@ -41,7 +41,6 @@ public class AdminAreaController implements Initializable {
     private UserRepository userRepository;
 
     private User currentUser;
-    private Stage stage;
 
     @FXML
     private Label errorLabel;
@@ -61,6 +60,7 @@ public class AdminAreaController implements Initializable {
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
+                    errorLabel.setVisible(false); //Nascondo la label di errore
                     errorLabel.setText("");
                 }
             })
@@ -74,16 +74,10 @@ public class AdminAreaController implements Initializable {
         this.userRepository=sharedResources.getUserRepository();
 
         if (errorLabel != null) {
+            errorLabel.setVisible(false);
             errorLabel.setText("");
         }
     }
-
-    /**
-     * Ingected by MainViewController
-     * @param stage
-     */
-    public void setStage(Stage stage) {this.stage=stage;}
-
 
     /**
      * Displays error message
@@ -91,6 +85,7 @@ public class AdminAreaController implements Initializable {
      */
     private void showError(String message) {
         if(errorLabel!=null){
+            errorLabel.setVisible(true); // Rendi visibile
             errorLabel.setText(message);
             errorClearer.stop();
             errorClearer.playFromStart();
@@ -181,17 +176,8 @@ public class AdminAreaController implements Initializable {
      */
     @FXML
     void handleGoBack(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-        Parent mainPage=loader.load();
-
-        MainViewController controller = loader.getController();
-        controller.setSharedResources(sharedResources);
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-        controller.setCurrentUser(currentUser);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(mainPage));
-        stage.show();
+        //Utilizzo NavigationHelperx
+        NavigationHelper.navigate(event, "/fxml/MainView.fxml", currentUser);
     }
 
     /**
@@ -275,13 +261,11 @@ public class AdminAreaController implements Initializable {
 
         NetCreationController controller = loader.getController();
 
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
         controller.setCurrentUser(currentUser);
         controller.initData();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
 
@@ -302,15 +286,13 @@ public class AdminAreaController implements Initializable {
 
         NetCreationController controller = loader.getController();
 
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
         controller.setCurrentUser(currentUser);
 
         controller.loadNetForEditing(selectedNet);
 
         // 5. Mostra la scena
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
     /**
@@ -334,14 +316,10 @@ public class AdminAreaController implements Initializable {
         Parent root = loader.load();
 
         ViewPetriNetController controller = loader.getController();
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-
-
         controller.loadComputation(this.currentUser, selectedComp);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
 
