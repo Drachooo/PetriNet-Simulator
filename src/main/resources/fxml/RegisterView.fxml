@@ -23,7 +23,7 @@
             <effect>
                 <GaussianBlur radius="5.0" />
             </effect></ImageView>
-        <VBox alignment="CENTER" maxHeight="450.0" maxWidth="500.0" minHeight="450.0" minWidth="500.0" prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: #141414; -fx-background-radius: 25;">
+        <VBox alignment="CENTER" maxHeight="450.0" maxWidth="500.0" minHeight="450.0" minWidth="500.0" prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: rgba(20, 20, 20, 0.75); -fx-background-radius: 25;">
             <children>
                 <HBox alignment="CENTER" prefHeight="115.0" prefWidth="600.0">
                     <children>

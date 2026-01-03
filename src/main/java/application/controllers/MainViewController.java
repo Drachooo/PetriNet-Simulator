@@ -18,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -76,6 +78,9 @@ public class MainViewController implements Initializable {
     @FXML private TableColumn<Object, String> column3;
     @FXML private TableColumn<Object, String> column4;
 
+    @FXML private StackPane rootStackPane;
+    @FXML private ImageView backgroundImage;
+
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
@@ -97,6 +102,17 @@ public class MainViewController implements Initializable {
         setupComputationColumns();
 
         if (errorLabel != null) errorLabel.setText("");
+
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
+
+
+
+
     }
 
     public void setSharedResources(SharedResources sharedResources) {
@@ -112,7 +128,7 @@ public class MainViewController implements Initializable {
     }
 
     private void initializeUIComponents() {
-        welcomeLabel.setText("Welcome," + currentUser.getEmail());
+        welcomeLabel.setText("Welcome, " + currentUser.getEmail());
 
         boolean isAdmin = currentUser.isAdmin();
         adminAreaButton.setVisible(isAdmin);
@@ -214,12 +230,10 @@ public class MainViewController implements Initializable {
         Parent root = loader.load();
 
         ViewPetriNetController controller = loader.getController();
-        controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
         controller.loadComputation(this.currentUser, computation);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
     @FXML
@@ -246,12 +260,8 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleLogout(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
-        Parent root = loader.load();
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        //Il passaggio di scena è gestito dal NavigationHelper
+        NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
     }
 
     private void showError(String error) {
