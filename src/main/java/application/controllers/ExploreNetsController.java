@@ -39,7 +39,6 @@ public class ExploreNetsController implements Initializable {
 
     // --- State ---
     private User currentUser;
-    private Stage stage;
 
     // --- FXML Components ---
     @FXML
@@ -51,6 +50,7 @@ public class ExploreNetsController implements Initializable {
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
+                    errorLabel.setVisible(false); // Nascondo la Label
                     errorLabel.setText(""); // <--- AZIONE DI PULIZIA
                 }
             })
@@ -68,6 +68,7 @@ public class ExploreNetsController implements Initializable {
         this.userRepository = sharedResources.getUserRepository();
 
         if (errorLabel != null) {
+            errorLabel.setVisible(false);
             errorLabel.setText("");
         }
         setupListViewFormatter();
@@ -79,13 +80,6 @@ public class ExploreNetsController implements Initializable {
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         refreshData();
-    }
-
-    /**
-     * Injected by MainViewController.
-     */
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 
     /**
@@ -112,8 +106,10 @@ public class ExploreNetsController implements Initializable {
      * Implements Use Case 6.2.1.
      */
     private void refreshData() {
-        if (errorLabel != null) errorLabel.setText("");
-
+        if (errorLabel != null) {
+            errorLabel.setVisible(false);
+            errorLabel.setText("");
+        }
         // Get all nets *except* the user's own (Req 2.1)
         List<PetriNet> availableNets = processService.getAvailableNetsForUser(currentUser.getId());
         availableNetsListView.setItems(FXCollections.observableArrayList(availableNets));
@@ -145,17 +141,14 @@ public class ExploreNetsController implements Initializable {
 
             Computation computation = processService.startNewComputation(currentUser.getId(), selectedNet.getId());
 
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
             Parent root = loader.load();
 
             ViewPetriNetController controller = loader.getController();
-            controller.setStage((Stage) ((Node) event.getSource()).getScene().getWindow());
             controller.loadComputation(this.currentUser, computation);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            stage.getScene().setRoot(root);
 
         } catch (IllegalStateException e) {
             showError("Start Error: " + e.getMessage());
@@ -164,6 +157,7 @@ public class ExploreNetsController implements Initializable {
 
     private void showError(String message) {
         if (errorLabel != null) {
+            errorLabel.setVisible(true);
             errorLabel.setText(message);
             errorLabel.setTextFill(Color.RED);
             errorClearer.stop();

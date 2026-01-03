@@ -57,19 +57,16 @@ public class NavigationHelper {
         if (controller instanceof AdminAreaController) {
             AdminAreaController adminController = (AdminAreaController) controller;
             adminController.setCurrentUser(currentUser);
-            adminController.setStage(window);
         } else if (controller instanceof MainViewController) {
             MainViewController mainController = (MainViewController) controller;
             // MainViewController è l'unico che ha ancora setSharedResources per via della sua initialize()
             mainController.setSharedResources(SharedResources.getInstance());
             mainController.setCurrentUser(currentUser);
-            mainController.setStage(window);
         }
         // Aggiungi qui gli altri controller (ExploreNetsController, NetCreationController)
         else if (controller instanceof ExploreNetsController) {
             ExploreNetsController exploreController = (ExploreNetsController) controller;
             exploreController.setCurrentUser(currentUser);
-            exploreController.setStage(window);
         }
 
         // 4. --- IL TRUCCO PULITO: CAMBIA SOLO LA RADICE -> Non rifaccio tutta la scena, ma cambio solo la radice, mantendendo la scena costante ---

@@ -23,7 +23,7 @@
                 <GaussianBlur />
             </effect>
          <image>
-            <Image url="@../images/sfondoLoginPage.jpg" />
+            <Image url="@../images/sfondoBase.jpg" />
          </image>
         </ImageView>
         <Region style="-fx-background-color: rgba(0, 0, 0, 0.7);" />

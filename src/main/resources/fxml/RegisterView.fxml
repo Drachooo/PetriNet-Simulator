@@ -18,7 +18,7 @@
     <children>
         <ImageView fx:id="backgroundImage" pickOnBounds="true">
             <image>
-                <Image url="@../images/sfondoLoginPage.jpg" />
+                <Image url="@../images/sfondoBase.jpg" />
             </image>
             <effect>
                 <GaussianBlur radius="5.0" />
