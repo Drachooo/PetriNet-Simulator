@@ -205,7 +205,7 @@
                                         </Button>
                                     </children>
                                 </HBox>
-                                <TableView fx:id="mainTableView" style="-fx-base: #1e1e1e; -fx-control-inner-background: #1e1e1e; -fx-background-color: transparent; -fx-table-cell-border-color: transparent;" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="mainTableView" style="-fx-base: #1e1e1e; -fx-control-inner-background: #1e1e1e; -fx-background-color: transparent; -fx-table-cell-border-color: transparent; -fx-control-inner-background-alt: #333333;" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="column1" prefWidth="300.0" text="NET NAME" />
                                         <TableColumn fx:id="column2" prefWidth="75.0" text="CREATOR" />

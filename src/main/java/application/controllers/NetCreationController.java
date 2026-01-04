@@ -8,9 +8,12 @@ import application.ui.utils.UnsavedChangesGuard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -45,6 +48,8 @@ public class NetCreationController implements Initializable {
     private Node arcSourceNode;
     private PetriNet petriNet;
 
+    private boolean isDeleteMode = false;
+
     // Maps associating visual JavaFX nodes with logical model objects
     private final Map<Node, Place> placeMap = new HashMap<>();
     private final Map<Place, Group> placeViewMap = new HashMap<>();
@@ -58,10 +63,15 @@ public class NetCreationController implements Initializable {
     @FXML private ScrollPane scrollPane;
     @FXML private Label statusLabel;
 
+    //cursore gomma
+    private ImageCursor eraserCursor;
+
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (statusLabel != null) {
-                    statusLabel.setText("");
+                    statusLabel.setText("Status: Ready.");
+
+                    statusLabel.setTextFill(Color.web("#4da6ff"));
                 }
             })
     );
@@ -70,6 +80,15 @@ public class NetCreationController implements Initializable {
     private User currentUser;
     private Stage stage;
     private boolean isDirty=false;
+
+    //ToggleButton
+    @FXML private ToggleButton placeButton;
+    @FXML private ToggleButton transitionButton;
+    @FXML private ToggleButton arcButton;
+    @FXML private ToggleButton deleteButton;
+
+
+
     // --- Initialization ---
 
     /**
@@ -87,10 +106,94 @@ public class NetCreationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.sharedResources = SharedResources.getInstance();
+        this.sharedResources = SharedResources.getInstance();
         scrollPane.setPannable(true);
         if(statusLabel != null)
             statusLabel.setText("Status: Ready");
+
+
+        //Cursore che diventa gomma quando attivo la modalità Cancella
+        try{
+            Image image = new Image(getClass().getResourceAsStream("/images/logo_gomma.png"));
+
+            // v , v1 indicano il punto di click (corrispondono al punto centrale della gomma) -> l'immagine ha dimnesione 48x48
+            eraserCursor = new ImageCursor(image, 18, 30);
+        } catch (Exception e) {
+            System.err.println("Impossibile caricare l'icona della gomma: " + e.getMessage());
+        }
+
+        //Listener per i toggleButton
+        setupToggleButtons();
+
+        // Enable mouse interactions
+        drawingPane.setOnMouseClicked(this::onDrawingPaneClicked);
     }
+
+
+    //Gestione deselezione tool
+    private void setupToggleButtons() {
+        // Lista dei bottoni
+        List<ToggleButton> tools = Arrays.asList(placeButton, transitionButton, arcButton, deleteButton);
+
+        for (ToggleButton button : tools) {
+            //Stile (Illuminato/Spento)
+            button.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    if(button == deleteButton)
+                        button.setStyle("-fx-background-color: rgba(196, 30, 58, 0.8); -fx-text-fill: white; -fx-background-radius: 10; -fx-border-color: #c41e3a; -fx-border-radius: 10;");
+                    else
+                        button.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3); -fx-text-fill: white; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.5); -fx-border-radius: 10;");
+                } else {
+                    if(button == deleteButton)
+                        button.setStyle("-fx-background-color: rgba(196, 30, 58, 0.2); -fx-text-fill: #ff6b6b; -fx-background-radius: 10; -fx-border-color: #c41e3a; -fx-border-radius: 10;");
+                    else
+                        button.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;");
+                }
+            });
+
+            //Deselezione
+            //EventFilter per intercettare il click PRIMA che il ToggleGroup agisca
+            button.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+                if (button.isSelected()) {
+                    //Se è GIÀ selezionato e lo clicco, voglio spegnerlo
+                    //Spengo lo stato logico e grafico
+                    button.setSelected(false);
+
+                    //Resetto il controller
+                    resetToolState();
+                    currentMode = DrawingMode.NONE;
+                    statusLabel.setText("Status: Ready");
+
+                    //Consumo l'evento per impedire a JavaFX di riaccenderlo
+                    e.consume();
+                }
+                //Se NON è selezionato, lascio passare l'evento così JavaFX lo accende normalmente
+            });
+        }
+    }
+
+
+
+    private void resetToolState(){
+        isDeleteMode = false;
+        arcSourceNode = null;
+
+        drawingPane.setCursor(Cursor.DEFAULT);
+        drawingPane.setStyle("-fx-background-color: #fcfcfc; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);");
+    }
+
+
+    private void addToggleListener(ToggleButton button){
+        button.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal) {
+                button.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3); -fx-text-fill: white; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.5); -fx-border-radius: 10;");
+            }else { //se deselezionato è trasparente
+                button.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;");
+            }
+        });
+    }
+
+
 
     /**
      * Initializes a new, empty Petri net for creation.
@@ -108,8 +211,6 @@ public class NetCreationController implements Initializable {
         String adminId = currentUser.getId();
         petriNet = new PetriNet(netName, adminId);
 
-        // Enable mouse interactions
-        drawingPane.setOnMouseClicked(this::onDrawingPaneClicked);
     }
 
     /**
@@ -210,7 +311,6 @@ public class NetCreationController implements Initializable {
             }
         }
 
-        drawingPane.setOnMouseClicked(this::onDrawingPaneClicked);
     }
 
     // --- Node Creation Logic ---
@@ -347,11 +447,13 @@ public class NetCreationController implements Initializable {
         switch (currentMode) {
             case PLACE -> {
                 createPlace(x, y);
-                currentMode = DrawingMode.NONE;
+                //Continuo a disegnare fino a quando non cambio strumento
+                //currentMode = DrawingMode.NONE;
             }
             case TRANSITION -> {
                 createTransition(x, y);
-                currentMode = DrawingMode.NONE;
+                //Continuo a disegnare fino a quando non cambio strumento
+                //currentMode = DrawingMode.NONE;
             }
             case ARC -> {
                 Node clicked = findNodeAt(x, y);
@@ -361,7 +463,8 @@ public class NetCreationController implements Initializable {
                 } else {
                     createArcBetween(arcSourceNode, clicked);
                     arcSourceNode = null;
-                    currentMode = DrawingMode.NONE;
+                    //Continuo a disegnare fino a quando non cambio strumento
+                    //currentMode = DrawingMode.NONE;
                 }
             }
             case DELETE -> {
@@ -388,24 +491,69 @@ public class NetCreationController implements Initializable {
         return null;
     }
 
-    // --- Toolbar Button Actions ---
 
-    @FXML private void drawPlace() { if(currentMode==DrawingMode.DELETE) exitDeleteMode(); currentMode = DrawingMode.PLACE; }
-    @FXML private void drawTransition() { if(currentMode==DrawingMode.DELETE) exitDeleteMode(); currentMode = DrawingMode.TRANSITION; }
-    @FXML private void drawArc() { if(currentMode==DrawingMode.DELETE) exitDeleteMode(); currentMode = DrawingMode.ARC; arcSourceNode = null; }
+    // --- TOOLBAR Button Actions ---
+    @FXML private void drawPlace() {
+        resetToolState(); // Pulisce tutto prima di iniziare
+
+        if (placeButton.isSelected()) {
+            currentMode = DrawingMode.PLACE;
+            statusLabel.setText("Tool: Place Active (Click to create)");
+        } else {
+            //Continuo a disegnare fino a quando non cambio strumento
+            //currentMode = DrawingMode.NONE;
+            statusLabel.setText("Status: Ready");
+        }
+    }
+
+    @FXML private void drawTransition() {
+        resetToolState();
+
+        if (transitionButton.isSelected()) {
+            currentMode = DrawingMode.TRANSITION;
+            statusLabel.setText("Tool: Transition Active (Click to create)");
+        } else {
+            //Continuo a disegnare fino a quando non cambio strumento
+            //currentMode = DrawingMode.NONE;
+            statusLabel.setText("Status: Ready");
+        }
+    }
+
+    @FXML private void drawArc() {
+        resetToolState();
+
+        if (arcButton.isSelected()) {
+            currentMode = DrawingMode.ARC;
+            statusLabel.setText("Tool: Arc Active (Click Source -> Click Target)");
+        } else {
+            //Continuo a disegnare fino a quando non cambio strumento
+            //currentMode = DrawingMode.NONE;
+            statusLabel.setText("Status: Ready");
+        }
+    }
 
     @FXML private void deleteMode() {
         if (currentMode == DrawingMode.DELETE) {
             exitDeleteMode();
         } else {
             currentMode = DrawingMode.DELETE;
-            drawingPane.setStyle("-fx-background-color: rgba(255,0,0,0.2);");
+            //cambio lo sfondo della lavagna in rosso
+            //drawingPane.setStyle("-fx-background-color: rgba(255,0,0,0.2);");
+
+            if(eraserCursor != null){
+                drawingPane.setCursor(eraserCursor);
+            }else{
+                //Se non trova l'immagine usa la croce
+                drawingPane.setCursor(Cursor.CROSSHAIR);
+            }
+
+            statusLabel.setText("Mode: DELETE (Click to erase)");
         }
     }
 
     private void exitDeleteMode() {
+        resetToolState();
         currentMode = DrawingMode.NONE;
-        drawingPane.setStyle("");
     }
 
     @FXML
@@ -429,6 +577,7 @@ public class NetCreationController implements Initializable {
      */
     @FXML
     private boolean savePetriNet(ActionEvent e) {
+
         try {
             // 1. Validate the net logic
             petriNet.validate();
@@ -523,7 +672,7 @@ public class NetCreationController implements Initializable {
     private void showStatus(String message, boolean isError) {
         if (statusLabel != null) {
             statusLabel.setText(message);
-            statusLabel.setTextFill(isError ? Color.RED : Color.BLUE);
+            statusLabel.setTextFill(isError ? Color.RED : Color.web("#4da6ff"));
             errorClearer.stop();
             errorClearer.playFromStart();
         } else {
