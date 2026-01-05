@@ -106,7 +106,6 @@ public class NetCreationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.sharedResources = SharedResources.getInstance();
-        this.sharedResources = SharedResources.getInstance();
         scrollPane.setPannable(true);
         if(statusLabel != null)
             statusLabel.setText("Status: Ready");

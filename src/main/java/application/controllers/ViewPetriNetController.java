@@ -41,16 +41,10 @@ import javafx.scene.paint.Color;
  */
 public class ViewPetriNetController implements Initializable {
 
-    @FXML
-    private Pane drawingPane;
-    @FXML
-    private ScrollPane scrollPane;
-    @FXML
-    private Label netNameLabel;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private Label messageLabel; // Used for displaying success/error messages
+    @FXML private Pane drawingPane;
+    @FXML private Label netNameLabel;
+    @FXML private Label statusLabel;
+    @FXML private Label messageLabel; // Used for displaying success/error messages
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {

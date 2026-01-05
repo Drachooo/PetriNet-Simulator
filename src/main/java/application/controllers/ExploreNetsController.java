@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -41,12 +40,10 @@ public class ExploreNetsController implements Initializable {
     private User currentUser;
 
     // --- FXML Components ---
-    @FXML
-    private Label errorLabel;
-    @FXML
-    private ListView<PetriNet> availableNetsListView;
+    @FXML private Label errorLabel;
+    @FXML private ListView<PetriNet> availableNetsListView;
 
-    // [CORREZIONE] Aggiunta l'azione di pulizia al KeyFrame
+    // Aggiunta l'azione di pulizia al KeyFrame
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {

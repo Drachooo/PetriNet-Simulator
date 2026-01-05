@@ -12,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -106,16 +105,15 @@ public class MainViewController implements Initializable {
             backgroundImage.setPreserveRatio(false);
         }
 
-
-
-
     }
 
     public void setSharedResources(SharedResources sharedResources) {
         if (this.sharedResources == null) { this.initialize(null, null); }
     }
 
-    public void setStage(Stage stage) { this.stage = stage; }
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;

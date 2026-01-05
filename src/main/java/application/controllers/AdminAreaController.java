@@ -8,15 +8,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.stage.Screen;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -42,20 +39,9 @@ public class AdminAreaController implements Initializable {
 
     private User currentUser;
 
-    @FXML
-    private Label errorLabel;
-    @FXML
-    private ListView<PetriNet> myNetsListView;
-    @FXML
-    private ListView<Computation> computationsListView;
-    @FXML private Button backButton;
-    @FXML private Button createNewNetButton;
-    @FXML private Button editNetButton;
-    @FXML private Button deleteNetButton;
-    @FXML private Button deleteComputationButton;
-    @FXML private Button viewComputationButton;
-
-
+    @FXML private Label errorLabel;
+    @FXML private ListView<PetriNet> myNetsListView;
+    @FXML private ListView<Computation> computationsListView;
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
@@ -141,6 +127,16 @@ public class AdminAreaController implements Initializable {
                         setText(net.getName() + " - Run by: " + user.getEmail() + " - Status: " + comp.getStatus());
                     } else {
                         setText("Loading data...");
+                    }
+
+                    String statusStr = comp.getStatus().toString();
+
+                    if("COMPLETED".equalsIgnoreCase(statusStr)){
+                        setTextFill(Color.RED);
+                    } else if ("RUNNING".equalsIgnoreCase(statusStr) || "ACTIVE".equalsIgnoreCase(statusStr)){
+                        setTextFill(Color.LIMEGREEN);
+                    } else {
+                        setTextFill(Color.WHITE);
                     }
                 }
             }
