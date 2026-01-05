@@ -13,11 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -166,6 +162,33 @@ public class MainViewController implements Initializable {
             Computation comp = (Computation) cell.getValue();
             return new SimpleStringProperty(comp.getStatus().toString());
         });
+
+        column4.setCellFactory(column -> new TableCell<Object, String>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(status);
+
+                    // COLORI dello status della rete
+                    if ("COMPLETED".equalsIgnoreCase(status)) {
+                        setTextFill(javafx.scene.paint.Color.RED);
+                        setStyle("-fx-font-weight: bold;");
+                    } else if ("ACTIVE".equalsIgnoreCase(status)) {
+                        setTextFill(javafx.scene.paint.Color.LIMEGREEN);
+                        setStyle("-fx-font-weight: bold;");
+                    } else {
+                        setTextFill(javafx.scene.paint.Color.WHITE);
+                        setStyle("");
+                    }
+                }
+            }
+        });
+
 
         // Questo bottone è nascosto su questa vista fissa
         startButton.setVisible(false);
