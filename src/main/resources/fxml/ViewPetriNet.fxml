@@ -4,77 +4,119 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.GaussianBlur?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.ViewPetriNetController">
+<StackPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.ViewPetriNetController">
+    <children>
 
-    <left>
-        <VBox prefWidth="250.0" style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-            <Label text="Computation View">
-                <font>
-                    <Font name="System Bold" size="18.0" />
-                </font>
-                <VBox.margin>
-                    <Insets bottom="30.0" />
-                </VBox.margin>
-            </Label>
-            <Region VBox.vgrow="ALWAYS" />
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleGoBack" prefWidth="210.0" text="← Back to Dashboard" />
-        </VBox>
-    </left>
+        <ImageView fitHeight="900.0" fitWidth="1440.0" pickOnBounds="true">
+            <effect>
+                <GaussianBlur radius="10.0" />
+            </effect>
+            <image>
+                <Image url="@../images/sfondoBase.jpg" />
+            </image>
+        </ImageView>
 
-    <center>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <Region style="-fx-background-color: rgba(0, 0, 0, 0.7);" />
 
-            <top>
-                <VBox style="-fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
+        <BorderPane>
+
+            <left>
+                <VBox prefWidth="250.0" style="-fx-background-color: rgba(20, 20, 20, 0.5); -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
+                    </padding>
                     <children>
+                        <Label text="Computation View" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="22.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets bottom="30.0" />
+                            </VBox.margin>
+                        </Label>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="10.0" style="-fx-background-color: #FAFAFA;">
-                            <padding> <Insets left="20.0" right="20.0" /> </padding>
-                            <children>
-                                <Label text="Viewing Net:">
-                                    <font><Font name="System Bold" size="16.0" /></font>
-                                </Label>
-                                <Label fx:id="netNameLabel" text="[Net Name]">
-                                    <font><Font size="16.0" /></font>
-                                </Label>
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label text="Status:">
-                                    <font><Font name="System Bold" size="16.0" /></font>
-                                </Label>
-                                <Label fx:id="statusLabel" text="ACTIVE" textFill="GREEN">
-                                    <font><Font name="System Bold" size="16.0" /></font>
-                                </Label>
-                            </children>
-                        </HBox>
+                        <Label text="DETAILS" textFill="#888888">
+                            <font> <Font name="System Bold" size="11.0" /> </font>
+                            <VBox.margin> <Insets bottom="10.0" /> </VBox.margin>
+                        </Label>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="30.0" style="-fx-background-color: #E6F7FF;">
-                            <padding> <Insets left="20.0" right="20.0" /> </padding>
-                            <children>
-                                <Label fx:id="messageLabel" text="Click on highlighted transitions to fire them." textFill="#0056b3" />
-                            </children>
-                        </HBox>
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <Button fx:id="backButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleGoBack" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="← Back to Dashboard">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Button>
                     </children>
                 </VBox>
-            </top>
+            </left>
 
             <center>
-                <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background: white;" BorderPane.alignment="CENTER">
-                    <content>
-                        <Pane fx:id="drawingPane" prefHeight="2000.0" prefWidth="2000.0" style="-fx-background-color: white;" />
-                    </content>
-                </ScrollPane>
-            </center>
+                <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
 
+                    <top>
+                        <VBox style="-fx-background-color: rgba(255, 255, 255, 0.08); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;">
+                            <BorderPane.margin>
+                                <Insets bottom="20.0" />
+                            </BorderPane.margin>
+                            <children>
+
+                                <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="15.0" style="-fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 0 0 1 0;">
+                                    <padding> <Insets left="20.0" right="20.0" /> </padding>
+                                    <children>
+                                        <Label text="Viewing Net:" textFill="#aaaaaa">
+                                            <font><Font name="System Bold" size="14.0" /></font>
+                                        </Label>
+                                        <Label fx:id="netNameLabel" text="[Net Name]" textFill="WHITE">
+                                            <font><Font name="System Bold" size="18.0" /></font>
+                                        </Label>
+
+                                        <Region HBox.hgrow="ALWAYS" />
+
+                                        <Label text="Status:" textFill="#aaaaaa">
+                                            <font><Font name="System Bold" size="14.0" /></font>
+                                        </Label>
+                                        <Label fx:id="statusLabel" text="ACTIVE" textFill="#45a45f"> <font><Font name="System Bold" size="16.0" /></font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+
+                                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                                    <padding> <Insets left="20.0" right="20.0" /> </padding>
+                                    <children>
+                                        <Label fx:id="messageLabel" text="Click on highlighted transitions to fire them." textFill="#4da6ff">
+                                            <font> <Font size="14.0" /> </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </top>
+
+                    <center>
+                        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background: transparent; -fx-background-color: transparent;" BorderPane.alignment="CENTER">
+                            <content>
+                                <Pane fx:id="drawingPane" prefHeight="2000.0" prefWidth="2000.0" style="-fx-background-color: #fcfcfc; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);" />
+                            </content>
+                        </ScrollPane>
+                    </center>
+
+                </BorderPane>
+            </center>
         </BorderPane>
-    </center>
-</BorderPane>
+    </children>
+</StackPane>
