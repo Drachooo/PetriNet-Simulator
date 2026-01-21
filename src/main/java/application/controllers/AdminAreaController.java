@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -42,6 +44,8 @@ public class AdminAreaController implements Initializable {
     @FXML private Label errorLabel;
     @FXML private ListView<PetriNet> myNetsListView;
     @FXML private ListView<Computation> computationsListView;
+    @FXML private ImageView backgroundImage;
+    @FXML private StackPane rootStackPane;
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
@@ -58,6 +62,13 @@ public class AdminAreaController implements Initializable {
         this.processService=sharedResources.getProcessService();
         this.petriNetRepository=sharedResources.getPetriNetRepository();
         this.userRepository=sharedResources.getUserRepository();
+
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
 
         if (errorLabel != null) {
             errorLabel.setVisible(false);

@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -42,6 +44,8 @@ public class ExploreNetsController implements Initializable {
     // --- FXML Components ---
     @FXML private Label errorLabel;
     @FXML private ListView<PetriNet> availableNetsListView;
+    @FXML private ImageView backgroundImage;
+    @FXML private StackPane rootStackPane;
 
     // Aggiunta l'azione di pulizia al KeyFrame
     private final Timeline errorClearer = new Timeline(
@@ -63,6 +67,13 @@ public class ExploreNetsController implements Initializable {
         this.processService = sharedResources.getProcessService();
         this.petriNetRepository = sharedResources.getPetriNetRepository();
         this.userRepository = sharedResources.getUserRepository();
+
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
 
         if (errorLabel != null) {
             errorLabel.setVisible(false);

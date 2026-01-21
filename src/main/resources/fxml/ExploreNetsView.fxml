@@ -14,10 +14,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.ExploreNetsController">
+<StackPane fx:id="rootStackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.ExploreNetsController">
     <children>
 
-        <ImageView fitHeight="900.0" fitWidth="1440.0" pickOnBounds="true"> <effect>
+        <ImageView fx:id="backgroundImage" pickOnBounds="true"> <effect>
             <GaussianBlur radius="10.0" />
         </effect>
             <image>

@@ -18,7 +18,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -45,6 +47,9 @@ public class ViewPetriNetController implements Initializable {
     @FXML private Label netNameLabel;
     @FXML private Label statusLabel;
     @FXML private Label messageLabel; // Used for displaying success/error messages
+
+    @FXML private StackPane rootStackPane;
+    @FXML private ImageView backgroundImage;
 
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
@@ -323,5 +328,12 @@ public class ViewPetriNetController implements Initializable {
         this.sharedResources = SharedResources.getInstance();
         this.processService = sharedResources.getProcessService();
         this.petriNetRepository = sharedResources.getPetriNetRepository();
+
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
     }
 }

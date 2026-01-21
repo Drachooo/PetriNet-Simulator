@@ -14,8 +14,10 @@ import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -62,6 +64,8 @@ public class NetCreationController implements Initializable {
     @FXML private Pane drawingPane;
     @FXML private ScrollPane scrollPane;
     @FXML private Label statusLabel;
+    @FXML private StackPane rootStackPane;
+    @FXML private ImageView backgroundImage;
 
     //cursore gomma
     private ImageCursor eraserCursor;
@@ -107,6 +111,14 @@ public class NetCreationController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.sharedResources = SharedResources.getInstance();
         scrollPane.setPannable(true);
+
+        if(backgroundImage != null && rootStackPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
+
+            backgroundImage.setPreserveRatio(false);
+        }
+
         if(statusLabel != null)
             statusLabel.setText("Status: Ready");
 
