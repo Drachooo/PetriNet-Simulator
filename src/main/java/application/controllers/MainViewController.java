@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -109,10 +110,6 @@ public class MainViewController implements Initializable {
 
     public void setSharedResources(SharedResources sharedResources) {
         if (this.sharedResources == null) { this.initialize(null, null); }
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 
     public void setCurrentUser(User currentUser) {
@@ -206,6 +203,17 @@ public class MainViewController implements Initializable {
 
         // Ricarica la tabella con le computazioni dell'utente
         List<Computation> userComputations = processService.getComputationsForUser(currentUser.getId());
+
+        userComputations.sort((column1, column2) -> {
+            LocalDateTime t1 = column1.getStartTime();
+            LocalDateTime t2 = column2.getStartTime();
+
+            if(t1 == null) return 1;
+            if(t2 == null) return -1;
+
+            return t2.compareTo(t1);
+        });
+
         tableData.setAll(userComputations);
     }
 
