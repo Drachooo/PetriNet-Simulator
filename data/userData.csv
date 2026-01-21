@@ -1,7 +1,9 @@
-id,email,password,type
+id,email,password,aa
 ADM40895446-f591-4657-9c25-7ff8baa86ad8,pietro.sala@univr.it,$2a$10$I8PIqqZiJgus68q01ZJSCuLdYAT/VOUgruKEJQ84ETbdAP0.U0ZaW,ADMIN
 ADMd72848af-5aa2-4b32-942f-194dd0ac5fa7,carlo.combi@univr.it,$2a$10$TE79kotlSqeszo6g.akx0OAAjIosJ6m.cRCL/R8tT/LwJcsnq/U62,ADMIN
 ADM9f0abe7d-fb86-4ac3-8937-8e50c76c9116,matteo.drago@studenti.univr.it,$2a$10$nrRws7ZYQoT7oCuoVJkzteZO2gYZxYb8AiKl/VPGaZfeBt9XkOsHi,ADMIN
 ADMcb472075-455b-44e5-a55c-edbcf5825fe4,luca.quaresima@studenti.univr.it,$2a$10$9hrOt.SsPoPm4v45LZV6v.mvrnYiu5W2KEbJ5a5o5gSFVj97OhwXC,ADMIN
 ADMabce1aeb-5728-46f6-80b3-441ba09590b7,aa,$2a$10$xScfwhpikFW5zHoCyB6Gc.1OjDWDhEgIEi57MGFxAq5n6l.k00UsG,ADMIN
-USR908e5f80-1e5e-4367-9892-f1a07bf80291,g@gmail.com,$2a$10$yG7DgezMRZTAGnpQPmCaxOiwJWstf3rkM3loZoSyrBDzRi6kDxRgu,USER
+ADMb5e51485-5e89-4ebb-94c1-cc9b427af27c,admin,aa,ADMIN
+USRf5ee7143-c4d7-4b13-8bfa-59e12640c3e7,utente,$2a$10$i17jv27WQzkgAoPLSnuyIuRL5qQyKoIUBHF.hANI4wml9dJXkAc4S,USER
+USRfc18f13c-3796-4cf5-be6c-d0af29386824,uu,$2a$10$94o.5cuNhvWssoYHRXTZ8.1VaKc9VfjIQCeIy8NpNkj6Bx5/Dsjnm,USER

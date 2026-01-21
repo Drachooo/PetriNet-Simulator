@@ -17,7 +17,13 @@ public class UserRepository {
             new User("carlo.combi@univr.it", "ananas37", Type.ADMIN),
             new User("matteo.drago@studenti.univr.it", "fragola82", Type.ADMIN),
             new User("luca.quaresima@studenti.univr.it", "lampone83", Type.ADMIN),
-            new User("aa", "aa", Type.ADMIN)
+            new User("aa", "aa", Type.ADMIN),
+            new User("admin", "admin", Type.ADMIN)
+    );
+
+    private final List<User> defaultUsers = List.of(
+            new User("utente", "utente", Type.USER),
+            new User("uu", "uu", Type.USER)
     );
 
     private final Map<String, User> usersById = new HashMap<>();
@@ -28,22 +34,23 @@ public class UserRepository {
     public UserRepository() {
         if (!file.exists() || file.length() == 0) {
             try {
-                createFileWithAdmins();
+                initializeFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            loadUsersFromFile();
         }
+        loadUsersFromFile();
+        syncAdmins();
+        syncUsers();
     }
 
-    private void createFileWithAdmins() throws IOException {
+    private void initializeFile() throws IOException {
+        if(file.getParentFile() != null){
+            file.getParentFile().mkdirs();
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writeHeader(writer);
-            for (User admin : admins) {
-                writeUser(writer, admin);
-                addUserToMaps(admin);
-            }
         }
     }
 
@@ -86,13 +93,33 @@ public class UserRepository {
     public void saveUser(User user) {
         try {
             if (!file.exists() || file.length() == 0) {
-                createFileWithAdmins();
+                initializeFile();
             }
             appendUserToFile(user);
             addUserToMaps(user);
             System.out.println("Utente salvato: " + user.getEmail());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void syncAdmins(){
+        for(User admin : admins) {
+            if(!usersByEmail.containsKey(admin.getEmail().toLowerCase())) {
+                saveUser(admin);
+
+                System.out.println("Utente salvato: " + admin.getEmail());
+            }
+        }
+    }
+
+    private void syncUsers(){
+        for(User user : defaultUsers) {
+            if(!usersByEmail.containsKey(user.getEmail().toLowerCase())) {
+                saveUser(user);
+
+                System.out.println("Utente salvato: " + user.getEmail());
+            }
         }
     }
 
