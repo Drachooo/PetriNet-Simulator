@@ -10,10 +10,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -22,11 +22,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+
+import javax.swing.*;
 
 /**
  * Controller for AdminArea.fxml
@@ -74,6 +77,44 @@ public class AdminAreaController implements Initializable {
             errorLabel.setVisible(false);
             errorLabel.setText("");
         }
+
+        computationsListView.setOnKeyPressed((keyEvent -> {
+            if(keyEvent.getCode() == KeyCode.DELETE){
+
+                if(computationsListView.getSelectionModel().getSelectedItem() != null) {
+
+                    //PopUp
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Conferma Eliminazione");
+                    alert.setHeaderText("Stai per eliminare una computazione");
+                    alert.setContentText("Sei sicuro di voler procedere?");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    if (result.isPresent() && result.get() == ButtonType.OK) {
+                        DeleteComputation();
+                    }
+                }
+                keyEvent.consume();
+            }
+        }));
+
+        myNetsListView.setOnKeyPressed(KeyEvent ->{
+            if(KeyEvent.getCode() == KeyCode.DELETE){
+                if(myNetsListView.getSelectionModel().getSelectedItem() != null){
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Conferma Eliminazione Net");
+                    alert.setHeaderText("Stai per eliminare una Rete di Petri");
+                    alert.setContentText("Attenzione: Verranno eliminate anche tutte le computazioni associate.");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.OK) {
+                        deleteSelectedNet();
+                    }
+                }
+                KeyEvent.consume();
+            }
+        });
     }
 
     /**
@@ -193,7 +234,12 @@ public class AdminAreaController implements Initializable {
      * nets that have active processes running.
      */
     @FXML
-    void handleDeleteNet(ActionEvent event) throws IOException {
+    void handleDeleteNet(ActionEvent event){
+        deleteSelectedNet();
+    }
+
+
+    private void deleteSelectedNet() {
         //Obtain selected net from listview
         PetriNet selectedNet=myNetsListView.getSelectionModel().getSelectedItem();
         if(selectedNet==null){
@@ -240,22 +286,28 @@ public class AdminAreaController implements Initializable {
      */
     @FXML
     void handleDeleteComputation(ActionEvent event) throws IOException {
-        Computation selectedComputation=computationsListView.getSelectionModel().getSelectedItem();
+        DeleteComputation();
+    }
+
+    private void DeleteComputation(){
+        Computation selectedComputation = computationsListView.getSelectionModel().getSelectedItem();
 
         if(selectedComputation==null){
             showError("Please select a computation to delete");
             return;
         }
 
+
         try{
             processService.deleteComputation(selectedComputation.getId(),currentUser.getId());
-
             refreshData();
-        }
-        catch(IllegalStateException e){
+            computationsListView.getSelectionModel().clearSelection();
+        }catch(IllegalStateException e){
             showError(e.getMessage());
         }
     }
+
+
 
     /**
      * Implements Use Case 6.1.1: Create Petri Net
