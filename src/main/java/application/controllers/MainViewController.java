@@ -10,10 +10,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
@@ -25,6 +27,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -119,9 +122,10 @@ public class MainViewController implements Initializable {
     }
 
     private void initializeUIComponents() {
-        welcomeLabel.setText("Welcome, " + currentUser.getEmail());
+        welcomeLabel.setText("Welcome, " + currentUser.getUsername());
 
         boolean isAdmin = currentUser.isAdmin();
+        adminAreaButton.setVisible(isAdmin);
         adminAreaButton.setVisible(isAdmin);
         adminAreaButton.setManaged(isAdmin);
     }
@@ -219,7 +223,6 @@ public class MainViewController implements Initializable {
 
     // --- GESTORI DI EVENTI (Navigazione e Azione) ---
 
-
     /**
      *  Naviga alla schermata ExploreNets.
      */
@@ -286,6 +289,92 @@ public class MainViewController implements Initializable {
             showError(e.getMessage());
         }
     }
+
+    @FXML
+    void handleEditProfile(ActionEvent event) {
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Edit Profile");
+        dialog.setHeaderText("Modifica Username o Password");
+
+        ButtonType saveButtonType = new ButtonType("Salva", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField usernameField = new TextField();
+        usernameField.setText(currentUser.getUsername()); //recarica quello attuale
+        usernameField.setPromptText("Username");
+
+        //Password
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Nuova Password");
+
+        //Conferma password
+        PasswordField confirmPasswordField = new PasswordField();
+        confirmPasswordField.setPromptText("Ripeti la nuova password");
+
+        grid.add(new Label("Username:"), 0, 0);
+        grid.add(usernameField, 1, 0);
+        grid.add(new Label("Nuova Password:"), 0, 1);
+        grid.add(passwordField, 1, 1);
+        grid.add(new Label("Conferma Password:"), 0, 2);
+        grid.add(confirmPasswordField, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        //Gestione Risultato
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        if(result.isPresent() && result.get() == saveButtonType) {
+            boolean changed = false;
+
+            String newPass = passwordField.getText();
+            String confirmPass = confirmPasswordField.getText();
+            String newUsername = usernameField.getText();
+
+            if (!newPass.isEmpty()) {
+                if (!newPass.equals(confirmPass)) { //password non coincidono
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Errore Password");
+                    errorAlert.setHeaderText("Le password non coincidono");
+                    errorAlert.setContentText("La nuova password e la conferma devono essere identiche.");
+                    errorAlert.showAndWait();
+                    return; //Non salvo nulla
+                } else {
+                    currentUser.setPassword(newPass); //aggiorno la password
+                    changed = true;
+                }
+            }
+
+            // VALIDAZIONE USERNAME
+            if (!newUsername.isEmpty() && !newUsername.equals(currentUser.getUsername())) {
+                currentUser.setUsername(newUsername);
+                changed = true;
+            }
+
+            // SALVATAGGIO
+            if (changed) {
+                // Salva nel file CSV
+                userRepository.updateUser(currentUser);
+
+                // Aggiorna UI principale
+                welcomeLabel.setText("Welcome, " + currentUser.getUsername());
+
+                //Feedback Positivo -> passowrd cambiata
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successo");
+                alert.setHeaderText(null);
+                alert.setContentText("Profilo aggiornato correttamente!");
+                alert.showAndWait();
+            }
+        }
+    }
+
+
 
     @FXML
     void handleLogout(ActionEvent event) throws IOException {

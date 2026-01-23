@@ -55,18 +55,13 @@ public class UserRepository {
     }
 
     private void writeHeader(BufferedWriter writer) throws IOException {
-        writer.write("id,email,password,type");
+        writer.write("id,email,password,type, username");
         writer.newLine();
     }
 
     private void writeUser(BufferedWriter writer, User user) throws IOException {
-        writer.write(user.getId() + "," + user.getEmail() + "," + user.getHashedpw() + "," + user.getType());
+        writer.write(user.getId() + "," + user.getEmail() + "," + user.getHashedpw() + "," + user.getType() + "," + user.getUsername());
         writer.newLine();
-    }
-
-    private void addUserToMaps(User user) {
-        usersById.put(user.getId(), user);
-        usersByEmail.put(user.getEmail().toLowerCase(), user);
     }
 
     private void loadUsersFromFile() {
@@ -76,14 +71,40 @@ public class UserRepository {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 4) {
+                if (parts.length == 5) {
                     String id = parts[0];
                     String email = parts[1];
                     String hashedPassword = parts[2];
                     Type type = Type.valueOf(parts[3]);
-                    User user = new User(id, email, hashedPassword, type);
+                    String username = parts[4];
+                    User user = new User(id, email, hashedPassword, type, username);
                     addUserToMaps(user);
                 }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addUserToMaps(User user) {
+        usersById.put(user.getId(), user);
+        usersByEmail.put(user.getEmail().toLowerCase(), user);
+    }
+
+    public void updateUser(User user) {
+        // Aggiorna la memoria RAM
+        usersById.put(user.getId(), user);
+        usersByEmail.put(user.getEmail().toLowerCase(), user);
+
+        // Sovrascrivi il file
+        rewriteAllUsersToFile();
+    }
+
+    private void rewriteAllUsersToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writeHeader(writer);
+            for (User u : usersById.values()) {
+                writeUser(writer, u);
             }
         } catch (IOException e) {
             e.printStackTrace();

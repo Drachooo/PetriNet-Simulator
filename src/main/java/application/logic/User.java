@@ -9,6 +9,7 @@ public class User {
     private String email;
     private String hashedpw; // password hashata
     private Type type;
+    private String username;
 
     /**
      * Costruttore per creare un nuovo utente da password in chiaro.
@@ -19,6 +20,12 @@ public class User {
         this.hashedpw = hashPassword(plainPassword);
         this.type = type;
 
+        if(email.contains("@")) {
+            this.username = email.split("@")[0];
+        }else {
+            this.username = email;
+        }
+
         if (type == Type.ADMIN)
             this.id = "ADM" + UUID.randomUUID().toString();
         else
@@ -28,11 +35,12 @@ public class User {
     /**
      * Costruttore per caricare un utente esistente, con password già hashata (es. da file CSV)
      */
-    public User(String id, String email, String hashedpw, Type type) {
+    public User(String id, String email, String hashedpw, Type type, String username) {
         this.id = id;
         this.email = email;
         this.hashedpw = hashedpw;
         this.type = type;
+        this.username = username;
     }
 
     private String hashPassword(String password) {
@@ -44,6 +52,10 @@ public class User {
      */
     public boolean checkPassword(String password) {
         return BCrypt.checkpw(password, this.hashedpw);
+    }
+
+    public void setPassword(String plainPassword) {
+        this.hashedpw = hashPassword(plainPassword);
     }
 
     /* Getters */
@@ -61,6 +73,14 @@ public class User {
 
     public String getHashedpw() {
         return this.hashedpw;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /*Metodo per controllare se una email è admin*/
