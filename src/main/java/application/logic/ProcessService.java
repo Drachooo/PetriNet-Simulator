@@ -243,6 +243,35 @@ public class ProcessService {
         return available;
     }
 
+    /**
+     * Restituisce TUTTE le transizioni meccanicamente abilitate dalla marcatura attuale,
+     * ignorando i permessi dell'utente.
+     * (per vedere se c'è una transizione ADMIN in attesa).
+     *
+     * @param computationId ID della computazione
+     * @return Lista di transizioni abilitate
+     */
+    public List<Transition> getEnabledTransitions(String computationId) {
+        Computation comp = computations.get(computationId);
+
+        // Se la computazione non esiste o è finita, nessuna transizione è abilitata
+        if (comp == null || !comp.isActive()) {
+            return new ArrayList<>();
+        }
+
+        PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+        if (net == null) {
+            return new ArrayList<>();
+        }
+
+        MarkingData currentMarking = comp.getLastStep().getMarkingData();
+
+        // Filtra tutte le transizioni della rete per trovare quelle abilitate dai token attuali
+        return net.getTransitions().values().stream()
+                .filter(t -> net.isEnabled(t.getId(), currentMarking))
+                .collect(Collectors.toList());
+    }
+
     /*UI HELPER METHOIDS*/
 
     /**

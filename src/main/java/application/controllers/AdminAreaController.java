@@ -186,7 +186,14 @@ public class AdminAreaController implements Initializable {
                     if("COMPLETED".equalsIgnoreCase(statusStr)){
                         setTextFill(Color.RED);
                     } else if ("RUNNING".equalsIgnoreCase(statusStr) || "ACTIVE".equalsIgnoreCase(statusStr)){
-                        setTextFill(Color.LIMEGREEN);
+
+                        boolean adminActionRequired = processService.getEnabledTransitions(comp.getId()).stream().anyMatch(t -> t.getType() == Type.ADMIN);
+
+                        if(adminActionRequired){
+                            setTextFill(Color.ORANGE);
+                        }else{
+                            setTextFill(Color.LIMEGREEN);
+                        }
                     } else {
                         setTextFill(Color.WHITE);
                     }
