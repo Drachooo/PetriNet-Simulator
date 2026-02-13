@@ -198,6 +198,11 @@ public class NetCreationController implements Initializable {
         isDeleteMode = false;
         arcSourceNode = null;
 
+
+        if (arcSourceNode != null) {
+            highlightValidTargets(false);
+        }
+
         //pulisce il GhostNode per il cambio di strumento
         removeGhostNode();
 
@@ -481,11 +486,18 @@ public class NetCreationController implements Initializable {
             case ARC -> {
                 Node clicked = findNodeAt(x, y);
                 if (clicked == null) return;
+
                 if (arcSourceNode == null) {
+                    //click della sorgente, si illumina la destinazione
                     arcSourceNode = clicked;
+                    highlightValidTargets(true);
+                    statusLabel.setText("Source selected, Click a valid Target");
                 } else {
+                    //click della destinazione, si spegne l'illuminazione
+                    highlightValidTargets(false);
                     createArcBetween(arcSourceNode, clicked);
                     arcSourceNode = null;
+                    statusLabel.setText("Tool: Arc Active (Click Source -> Click Target)");
                     //Continuo a disegnare fino a quando non cambio strumento
                     //currentMode = DrawingMode.NONE;
                 }
@@ -856,5 +868,36 @@ public class NetCreationController implements Initializable {
             ghostNode = null;
         }
     }
+
+    private void highlightValidTargets(boolean highlight){
+        if (arcSourceNode == null) return;
+
+        //determino quali nodi devono essere illuminati in base alla sorgente
+        boolean isSourcePlace = placeMap.containsKey(arcSourceNode);
+
+        //se Source = place, illumino transizione
+        //se Source = transition, illumino place
+        if(isSourcePlace){
+            transitionMap.keySet().forEach(node -> setGlow(node, highlight, Color.web("Gold")));
+        }else {
+            placeMap.keySet().forEach(node -> setGlow(node, highlight, Color.web("Gold")));
+        }
+    }
+
+    //Effetto illuminato per i target corretti
+    private void setGlow(Node node, boolean highlight, Color color) {
+        if(highlight){
+            javafx.scene.effect.DropShadow glow = new javafx.scene.effect.DropShadow();
+            glow.setColor(color);
+            glow.setRadius(20);
+            glow.setSpread(0.5);
+            node.setEffect(glow);
+        } else {
+            node.setEffect(null);
+        }
+    }
+
+
+
     
 }
