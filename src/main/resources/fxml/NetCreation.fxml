@@ -60,6 +60,36 @@
                             </Button>
                         </VBox>
 
+                        <VBox spacing="10.0" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 10; -fx-padding: 15;">
+                            <VBox.margin>
+                                <Insets top="20.0" bottom="10.0"/>
+                            </VBox.margin>
+                            <children>
+                                <Label text="LEGEND" textFill="#bbbbbb">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets bottom="5.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Rectangle fill="RED" height="15" width="30" stroke="BLACK" strokeWidth="1"/>
+                                    <Label text="Admin Transition" textFill="WHITE" style="-fx-font-size: 12;" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Rectangle fill="BLUE" height="15" width="30" stroke="BLACK" strokeWidth="1"/>
+                                    <Label text="User Transition" textFill="WHITE" style="-fx-font-size: 12;" />
+                                </HBox>
+
+                                <Label text="Click on a placed transition to change its type" textFill="#888888" wrapText="true" style="-fx-font-size: 10; -fx-font-style: italic;">
+                                    <VBox.margin>
+                                        <Insets top="5.0" />
+                                    </VBox.margin>
+                                </Label>
+                            </children>
+                        </VBox>
+
                         <Region VBox.vgrow="ALWAYS" />
 
                         <Button fx:id="yourNetsButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToMainView" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="← Back to Dashboard">
@@ -101,7 +131,7 @@
                                 </ToggleButton>
 
                                 <ToggleButton fx:id="transitionButton" onAction="#drawTransition" toggleGroup="$toolsGroup" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;" text="Transition">
-                                    <graphic> <Rectangle fill="#e74c3c" height="10" width="20" /> </graphic>
+                                    <graphic> <Rectangle fill="blue" height="10" width="20" /> </graphic>
                                 </ToggleButton>
 
                                 <ToggleButton fx:id="arcButton" onAction="#drawArc" toggleGroup="$toolsGroup" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;" text="Arc">

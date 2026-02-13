@@ -833,8 +833,8 @@ public class NetCreationController implements Initializable {
         if(ghostNode == null){
             if(currentMode == DrawingMode.PLACE){
                 //raggio 20 per essere una copia di quello reale
-                ghostNode = new Circle(20, Color.web("gray", 0.5));
-                ((Circle)ghostNode).setStroke(Color.web("gray"));
+                ghostNode = new Circle(20, Color.web("LIGHTBLUE", 0.5));
+                ((Circle)ghostNode).setStroke(Color.web("LIGHTBLUE"));
             }else if(currentMode == DrawingMode.TRANSITION){
                 //dimensioni tali per essere una copia di quello reale
                 ghostNode = new Rectangle(15, 40, Color.web("blue", 0.5));
