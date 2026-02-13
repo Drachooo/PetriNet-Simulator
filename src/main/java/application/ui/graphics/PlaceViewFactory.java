@@ -5,7 +5,6 @@ import application.ui.utils.Delta;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -34,7 +33,7 @@ public class PlaceViewFactory {
             Consumer<Place> onFinal
     ) {
         //Gray circle, black border
-        Circle placeCircle = new Circle(0, 0, 20, Color.GRAY);
+        Circle placeCircle = new Circle(0, 0, 20, Color.LIGHTBLUE);
         placeCircle.setStroke(Color.BLACK);
 
         // Place Label (e.g "P1")
