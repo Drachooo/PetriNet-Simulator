@@ -92,6 +92,7 @@ public class NetCreationController implements Initializable {
     @FXML private ToggleButton deleteButton;
 
 
+    private Node ghostNode = null; // Il nodo che segue il mouse
 
     // --- Initialization ---
 
@@ -138,6 +139,14 @@ public class NetCreationController implements Initializable {
 
         // Enable mouse interactions
         drawingPane.setOnMouseClicked(this::onDrawingPaneClicked);
+
+
+        //Listener per far seguire il ghost node al mouse
+        drawingPane.setOnMouseMoved(e -> updateGhostNode(e.getX(), e.getY()));
+
+        //Rimuovi il ghost se il mouse esce dal pannello
+        drawingPane.setOnMouseExited(e -> removeGhostNode());
+
     }
 
 
@@ -188,6 +197,9 @@ public class NetCreationController implements Initializable {
     private void resetToolState(){
         isDeleteMode = false;
         arcSourceNode = null;
+
+        //pulisce il GhostNode per il cambio di strumento
+        removeGhostNode();
 
         drawingPane.setCursor(Cursor.DEFAULT);
         drawingPane.setStyle("-fx-background-color: #fcfcfc; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);");
@@ -797,4 +809,52 @@ public class NetCreationController implements Initializable {
                 break;
         }
     }
+
+    private void updateGhostNode(double x, double y) {
+        //se non c'è modalità di disegno attiva o siamo in modalità delete/arc, rimuoviamo il ghost
+        if(currentMode == DrawingMode.NONE || currentMode == DrawingMode.DELETE || currentMode == DrawingMode.ARC){
+            removeGhostNode();
+            return;
+        }
+
+        //Se il ghostNode non esiste, viene creato in base alla struttura cliccata
+        if(ghostNode == null){
+            if(currentMode == DrawingMode.PLACE){
+                //raggio 20 per essere una copia di quello reale
+                ghostNode = new Circle(20, Color.web("gray", 0.5));
+                ((Circle)ghostNode).setStroke(Color.web("gray"));
+            }else if(currentMode == DrawingMode.TRANSITION){
+                //dimensioni tali per essere una copia di quello reale
+                ghostNode = new Rectangle(15, 40, Color.web("blue", 0.5));
+                ((Rectangle)ghostNode).setStroke(Color.web("blue"));
+            }
+
+            if(ghostNode != null){
+                ghostNode.setMouseTransparent(true);
+                drawingPane.getChildren().add(ghostNode);
+            }
+        }
+
+        //Aggiornamento posizione del ghostNode
+        if (ghostNode != null) {
+            //il cerchio usa come riferimento il centro
+            if (currentMode == DrawingMode.PLACE) {
+                ghostNode.setLayoutX(x);
+                ghostNode.setLayoutY(y);
+            } else if (currentMode == DrawingMode.TRANSITION) {
+                // Il rettangolo usa l'angolo in alto a sinistra, quindi lo abbasso
+                ghostNode.setLayoutX(x - 7.5);
+                ghostNode.setLayoutY(y - 20);
+            }
+        }
+    }
+
+    //pulisce il ghostNode in caso di cambio di strumento o deselezionamento
+    private void removeGhostNode() {
+        if (ghostNode != null) {
+            drawingPane.getChildren().remove(ghostNode);
+            ghostNode = null;
+        }
+    }
+    
 }
