@@ -3,6 +3,10 @@ package application.controllers;
 import application.logic.*;
 import application.repositories.PetriNetRepository;
 import application.repositories.UserRepository;
+import application.exceptions.UnauthorizedAccessException;
+import application.exceptions.EntityNotFoundException;
+import application.exceptions.ActiveComputationExistsException;
+import application.exceptions.InvalidComputationStateException;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,12 +51,12 @@ public class ExploreNetsController implements Initializable {
     @FXML private ImageView backgroundImage;
     @FXML private StackPane rootStackPane;
 
-    // Aggiunta l'azione di pulizia al KeyFrame
+    // Added clear action to the KeyFrame
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
-                    errorLabel.setVisible(false); // Nascondo la Label
-                    errorLabel.setText(""); // <--- AZIONE DI PULIZIA
+                    errorLabel.setVisible(false); // Hide the Label
+                    errorLabel.setText(""); // <--- CLEAR ACTION
                 }
             })
     );
@@ -158,7 +162,7 @@ public class ExploreNetsController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
 
-        } catch (IllegalStateException e) {
+        } catch (UnauthorizedAccessException | EntityNotFoundException | ActiveComputationExistsException | InvalidComputationStateException | IllegalStateException e) {
             showError("Start Error: " + e.getMessage());
         }
     }
