@@ -1,6 +1,6 @@
 package application.logic;
 
-// Import per Jackson (JSON) e gestione file
+// Imports for Jackson (JSON) and file management
 import application.repositories.PetriNetRepository;
 import application.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import application.exceptions.UnauthorizedAccessException;
 import application.exceptions.TransitionNotEnabledException;
+import application.exceptions.EntityNotFoundException;
+import application.exceptions.InvalidComputationStateException;
+import application.exceptions.ActiveComputationExistsException;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,15 +90,18 @@ public class ProcessService {
      * @param userId ID of user that starts the process
      * @param netId ID of PetriNet
      * @return created computation
-     * @throws IllegalStateException se altre regole di business sono violate
-     * @throws UnauthorizedAccessException se l'utente non ha i permessi
+     * @throws IllegalStateException if other business rules are violated
+     * @throws UnauthorizedAccessException if the user does not have permissions
+     * @throws EntityNotFoundException if the user or the net is not found
+     * @throws ActiveComputationExistsException if the user already has an active computation for this net
+     * @throws InvalidComputationStateException if the initial place is not defined
      */
     public Computation startNewComputation(String userId, String netId) throws IllegalStateException {
         User user=userRepository.getUserById(userId);
         PetriNet net=petriNetRepository.getPetriNets().get(netId);
 
-        if(user==null) throw new IllegalStateException("User not found");
-        if (net==null) throw new IllegalStateException("PetriNet not found");
+        if(user==null) throw new EntityNotFoundException("User not found");
+        if (net==null) throw new EntityNotFoundException("PetriNet not found");
 
         if(user.isAdmin() && net.getAdminId().equals(user.getId()))
             throw new UnauthorizedAccessException("Admin cannot start computation of his own net");
@@ -103,7 +109,7 @@ public class ProcessService {
         boolean hasActive=computations.values().stream().anyMatch(c->c.getUserId().equals(user.getId()) && c.getPetriNetId().equals(netId) && c.isActive());
 
         if(hasActive) {
-            throw new IllegalStateException("User already has an active computation for this net");
+            throw new ActiveComputationExistsException("User already has an active computation for this net");
         }
 
         /*6.2.2*/
@@ -113,7 +119,7 @@ public class ProcessService {
         String initialPlaceId=net.getInitialPlaceId();
 
         if(initialPlaceId==null) {
-            throw new IllegalStateException("Could not start net: initialPlace was not defined");
+            throw new InvalidComputationStateException("Could not start net: initialPlace was not defined");
         }
         /*Rule 1.1.3 "exactly one token"*/
         initialMarking.setTokens(initialPlaceId,1);
@@ -135,26 +141,28 @@ public class ProcessService {
      * @param computationId ID of computation to update.
      * @param transitionId ID of transition fo fire.
      * @param userId ID of user that wants to fire.
-     * @throws IllegalStateException se lo stato non lo permette.
-     * @throws UnauthorizedAccessException se l'utente non ha i permessi.
-     * @throws TransitionNotEnabledException se la transizione non ha token sufficienti.
+     * @throws IllegalStateException if the state does not allow it.
+     * @throws UnauthorizedAccessException if the user does not have permissions.
+     * @throws TransitionNotEnabledException if the transition does not have enough tokens.
+     * @throws EntityNotFoundException if the computation, user, net, or transition is not found.
+     * @throws InvalidComputationStateException if the computation is not active.
      */
     public void fireTransition(String computationId, String transitionId, String userId) throws IllegalStateException{
         Computation comp=computations.get(computationId);
 
-        if(comp==null) throw new IllegalStateException("Computation not found");
+        if(comp==null) throw new EntityNotFoundException("Computation not found");
 
         User user=userRepository.getUserById(userId);
-        if(user==null) throw new IllegalStateException("User not found");
+        if(user==null) throw new EntityNotFoundException("User not found");
 
         PetriNet net=petriNetRepository.getPetriNets().get(comp.getPetriNetId());
-        if(net==null) throw new IllegalStateException("PetriNet not found");
+        if(net==null) throw new EntityNotFoundException("PetriNet not found");
 
         Transition transition=net.getTransitions().get(transitionId);
-        if(transition==null) throw new IllegalStateException("Transition not found");
+        if(transition==null) throw new EntityNotFoundException("Transition not found");
 
         /*Computation must be active*/
-        if(!comp.isActive()) throw new IllegalStateException("Computation is not active");
+        if(!comp.isActive()) throw new InvalidComputationStateException("Computation is not active");
 
         /*User must have permission (owner or admin of net)*/
         // (Req 5.4: "Users shall be able to delete their own computations")
@@ -249,17 +257,17 @@ public class ProcessService {
     }
 
     /**
-     * Restituisce TUTTE le transizioni meccanicamente abilitate dalla marcatura attuale,
-     * ignorando i permessi dell'utente.
-     * (per vedere se c'è una transizione ADMIN in attesa).
+     * Returns ALL transitions mechanically enabled by the current marking,
+     * ignoring user permissions.
+     * (To check if there is an ADMIN transition waiting).
      *
-     * @param computationId ID della computazione
-     * @return Lista di transizioni abilitate
+     * @param computationId ID of the computation
+     * @return List of enabled transitions
      */
     public List<Transition> getEnabledTransitions(String computationId) {
         Computation comp = computations.get(computationId);
 
-        // Se la computazione non esiste o è finita, nessuna transizione è abilitata
+        // If the computation does not exist or is finished, no transitions are enabled
         if (comp == null || !comp.isActive()) {
             return new ArrayList<>();
         }
@@ -271,21 +279,22 @@ public class ProcessService {
 
         MarkingData currentMarking = comp.getLastStep().getMarkingData();
 
-        // Filtra tutte le transizioni della rete per trovare quelle abilitate dai token attuali
+        // Filters all network transitions to find those enabled by current tokens
         return net.getTransitions().values().stream()
                 .filter(t -> net.isEnabled(t.getId(), currentMarking))
                 .collect(Collectors.toList());
     }
 
-    /*UI HELPER METHOIDS*/
+    /*UI HELPER METHODS*/
 
     /**
      * Implements Use Case 5.3 and 5.4: Delete Computation.
      *
      * @param computationId ID of computation to delete
      * @param userId ID of user that wants to delete computation
-     * @throws IllegalStateException se lo stato non lo permette.
-     * @throws UnauthorizedAccessException se l'utente non ha i permessi.
+     * @throws IllegalStateException if the state does not allow it.
+     * @throws UnauthorizedAccessException if the user does not have permissions.
+     * @throws EntityNotFoundException if the user is not found.
      */
 
     public void deleteComputation(String computationId, String userId) throws IllegalStateException {
@@ -293,7 +302,7 @@ public class ProcessService {
         if(comp==null) return;
 
         User user=userRepository.getUserById(userId);
-        if(user==null) throw new IllegalStateException("User not found");
+        if(user==null) throw new EntityNotFoundException("User not found");
 
         PetriNet net=petriNetRepository.getPetriNets().get(comp.getPetriNetId());
 
@@ -327,8 +336,8 @@ public class ProcessService {
     /**
      * Implements Use case 6.2.2
      *
-     * @param userId L'ID dell'utente.
-     * @return Una lista di Computazioni.
+     * @param userId The user ID.
+     * @return A list of computations.
      */
     public List<Computation> getComputationsForUser(String userId) {
         return computations.values().stream()
