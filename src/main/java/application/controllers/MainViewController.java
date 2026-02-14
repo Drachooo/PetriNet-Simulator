@@ -111,6 +111,11 @@ public class MainViewController implements Initializable {
             backgroundImage.setPreserveRatio(false);
         }
 
+        //Listener per la ricerca delle net
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterTable(newValue);
+        });
+
     }
 
     public void setSharedResources(SharedResources sharedResources) {
@@ -222,7 +227,37 @@ public class MainViewController implements Initializable {
         tableData.setAll(userComputations);
     }
 
+
     // --- EVENT HANDLERS (Navigation and Action) ---
+
+    private void filterTable(String searchNet){
+        if(searchNet == null || searchNet.isEmpty()){
+            //barra di ricerca vuota, viene mostrato tutto il catalogo
+            refreshDashboardData();
+            return;
+        }
+
+        String lowerCaseFilter = searchNet.toLowerCase();
+
+        List<Computation> userComputations = processService.getComputationsForUser(currentUser.getId());
+
+        //Filtro la lista
+        List<Computation> filteredList = userComputations.stream()
+                .filter(comp -> {
+                    PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
+                    String netName = (net != null) ? net.getName().toLowerCase() : "";
+                    return netName.contains(lowerCaseFilter);
+                })
+                .toList();
+
+        tableData.setAll(filteredList);
+
+    }
+
+
+
+    // --- GESTORI DI EVENTI (Navigazione e Azione) ---
+
 
     /**
      * Navigates to the ExploreNets view.
