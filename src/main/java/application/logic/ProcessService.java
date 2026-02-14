@@ -6,6 +6,8 @@ import application.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import application.exceptions.UnauthorizedAccessException;
+import application.exceptions.TransitionNotEnabledException;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +87,8 @@ public class ProcessService {
      * @param userId ID of user that starts the process
      * @param netId ID of PetriNet
      * @return created computation
-     * @throws IllegalStateException if rule is violated
+     * @throws IllegalStateException se altre regole di business sono violate
+     * @throws UnauthorizedAccessException se l'utente non ha i permessi
      */
     public Computation startNewComputation(String userId, String netId) throws IllegalStateException {
         User user=userRepository.getUserById(userId);
@@ -95,7 +98,7 @@ public class ProcessService {
         if (net==null) throw new IllegalStateException("PetriNet not found");
 
         if(user.isAdmin() && net.getAdminId().equals(user.getId()))
-            throw new IllegalStateException("Admin cannot start computation of his own net");
+            throw new UnauthorizedAccessException("Admin cannot start computation of his own net");
 
         boolean hasActive=computations.values().stream().anyMatch(c->c.getUserId().equals(user.getId()) && c.getPetriNetId().equals(netId) && c.isActive());
 
@@ -132,7 +135,9 @@ public class ProcessService {
      * @param computationId ID of computation to update.
      * @param transitionId ID of transition fo fire.
      * @param userId ID of user that wants to fire.
-     * @throws IllegalStateException if any rule is violated.
+     * @throws IllegalStateException se lo stato non lo permette.
+     * @throws UnauthorizedAccessException se l'utente non ha i permessi.
+     * @throws TransitionNotEnabledException se la transizione non ha token sufficienti.
      */
     public void fireTransition(String computationId, String transitionId, String userId) throws IllegalStateException{
         Computation comp=computations.get(computationId);
@@ -158,7 +163,7 @@ public class ProcessService {
         boolean isAdmin=user.isAdmin() && net.getAdminId().equals(user.getId());
 
         if(!isOwner && !isAdmin) {
-            throw new IllegalStateException("User is not owner or admin");
+            throw new UnauthorizedAccessException("User is not owner or admin");
         }
 
         checkFirePermissions(user,net,transition);
@@ -167,7 +172,7 @@ public class ProcessService {
         MarkingData curr=comp.getLastStep().getMarkingData();
 
         if(!net.isEnabled(transitionId,curr)){
-            throw new IllegalStateException("Transition is not enabled (insuff token)");
+            throw new TransitionNotEnabledException("Transition is not enabled (insuff token)");
         }
 
         MarkingData newMarking= net.fire(transitionId,curr);
@@ -196,7 +201,7 @@ public class ProcessService {
 
         if(transitionType==Type.ADMIN){
             /*2.3: Administrator transitions can only be fired by the administrator who created the Petri net*/
-           strategy=new AdminExecutionStrategy();
+            strategy=new AdminExecutionStrategy();
         }
         /*2.3:  User transitions can only be fired by users (non admin) who have created a computation instance*/
         else{
@@ -237,7 +242,7 @@ public class ProcessService {
                 try{
                     checkFirePermissions(user,net,t);
                     available.add(t);
-                }catch(IllegalStateException e){}
+                }catch(IllegalStateException | UnauthorizedAccessException e){}
             }
         }
         return available;
@@ -279,7 +284,8 @@ public class ProcessService {
      *
      * @param computationId ID of computation to delete
      * @param userId ID of user that wants to delete computation
-     * @throws IllegalStateException if user does not have permissions.
+     * @throws IllegalStateException se lo stato non lo permette.
+     * @throws UnauthorizedAccessException se l'utente non ha i permessi.
      */
 
     public void deleteComputation(String computationId, String userId) throws IllegalStateException {
@@ -301,7 +307,7 @@ public class ProcessService {
             computations.remove(computationId);
             saveComputationsToFile();
         }else{
-            throw new IllegalStateException("User is not owner or admin");
+            throw new UnauthorizedAccessException("User is not owner or admin");
         }
     }
 
@@ -350,10 +356,5 @@ public class ProcessService {
     public Computation getComputationById(String computationId) {
         return computations.get(computationId);
     }
-
-
-
-
-
 
 }
