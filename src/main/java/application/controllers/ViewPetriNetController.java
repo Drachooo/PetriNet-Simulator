@@ -1,5 +1,9 @@
 package application.controllers;
 
+import application.exceptions.EntityNotFoundException;
+import application.exceptions.InvalidComputationStateException;
+import application.exceptions.SystemContextException;
+import application.exceptions.TransitionNotEnabledException;
 import application.logic.*;
 import application.repositories.PetriNetCoordinates;
 import application.repositories.PetriNetRepository;
@@ -38,19 +42,26 @@ import javafx.scene.paint.Color;
 
 /**
  * Controller for the Petri Net execution view.
- * This view allows the user to interact with an active Computation instance
- * by firing enabled transitions. Implements Use Case 6.2.3.
+ * Allows users to interact with an active Computation instance by firing enabled transitions.
+ * Implements Use Case 6.2.3.
  */
 public class ViewPetriNetController implements Initializable {
 
-    @FXML private Pane drawingPane;
-    @FXML private Label netNameLabel;
-    @FXML private Label statusLabel;
-    @FXML private Label messageLabel; // Used for displaying success/error messages
+    @FXML
+    private Pane drawingPane;
+    @FXML
+    private Label netNameLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label messageLabel; // Displays success/error messages
 
-    @FXML private StackPane rootStackPane;
-    @FXML private ImageView backgroundImage;
+    @FXML
+    private StackPane rootStackPane;
+    @FXML
+    private ImageView backgroundImage;
 
+    // Timeline to auto-clear messages after 3 seconds
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (messageLabel != null) {
@@ -74,49 +85,69 @@ public class ViewPetriNetController implements Initializable {
 
     private ComputationViewObserver viewObserver;
 
+    /**
+     * Sets the primary stage for this controller.
+     *
+     * @param stage The primary stage
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    /*Used by observer to update state*/
+    /**
+     * Updates the current computation instance.
+     * Called by the observer when computation state changes.
+     *
+     * @param comp The updated computation
+     */
     public void setCurrentComputation(Computation comp) {
         this.currentComputation = comp;
     }
 
-
     /**
-     * Loads the specific computation instance and its associated Petri Net structure
-     * and visual layout data. This is the main entry point for the view.
+     * Loads a computation instance and its associated Petri Net structure.
+     * This is the main entry point for the view.
+     *
+     * @param user        The current user viewing the computation
+     * @param computation The computation instance to load
+     * @throws EntityNotFoundException if the associated Petri Net cannot be found
      */
-    public void loadComputation(User user, Computation computation){
+    public void loadComputation(User user, Computation computation) {
+        if (user == null) {
+            throw new SystemContextException("Cannot load computation: user is null");
+        }
+        if (computation == null) {
+            throw new EntityNotFoundException("Cannot load a null computation");
+        }
+
         this.currentUser = user;
         this.currentComputation = computation;
-        this.currentNet=petriNetRepository.getPetriNets().get(computation.getPetriNetId());
+        this.currentNet = petriNetRepository.getPetriNets().get(computation.getPetriNetId());
 
-        if(this.currentNet==null){
-            showError("FATAL: load net failed");
-            return;
+        if (this.currentNet == null) {
+            throw new EntityNotFoundException("Petri Net with ID " + computation.getPetriNetId() +
+                    " not found for computation " + computation.getId());
         }
-        try{
-            // Load coordinates
-            this.coordinates=PetriNetCoordinates.loadFromFile("data/coords/"+currentNet.getId()+"_coords.json");
 
-        }catch (IOException e){
-            showError("Coords file not found. using default layout");
-            this.coordinates=new PetriNetCoordinates();
+        try {
+            // Load coordinate layout
+            this.coordinates = PetriNetCoordinates.loadFromFile(
+                    "data/coords/" + currentNet.getId() + "_coords.json"
+            );
+        } catch (IOException e) {
+            showError("Coordinate file not found. Using default layout.");
+            this.coordinates = new PetriNetCoordinates();
         }
 
         netNameLabel.setText(currentNet.getName());
         updateStatusLabel();
 
-        //Creates Observer
+        // Create observer to watch for computation state changes
         this.viewObserver = new ComputationViewObserver(computation, this);
 
         drawPetriNet();
-
         refreshState();
     }
-
 
     /**
      * Draws the static Petri Net structure (Places, Transitions, Arcs) using factory methods.
@@ -146,7 +177,7 @@ public class ViewPetriNetController implements Initializable {
                     null, null // No context menu in view-only mode
             );
 
-            // No drag and drop in execution view
+            // Disable drag and drop in execution view
             placeNode.setOnMousePressed(null);
             placeNode.setOnMouseDragged(null);
 
@@ -156,7 +187,7 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Draws all Transition nodes onto the drawing pane and sets the click handler.
+     * Draws all Transition nodes onto the drawing pane and sets click handlers.
      */
     private void drawTransitions() {
         for (Transition transition : currentNet.getTransitions().values()) {
@@ -167,11 +198,10 @@ public class ViewPetriNetController implements Initializable {
 
             Group transitionNode = TransitionViewFactory.createTransitionNode(
                     transition, transition.getName(), pos.x, pos.y,
-                    (t) -> handleTransitionClick(t) // Pass the click handler
+                    (t) -> handleTransitionClick(t) // Pass click handler
             );
 
-
-            // Set the handler explicitly on click (for ease of use)
+            // Set click handler for firing transitions
             transitionNode.setOnMouseClicked(e -> handleTransitionClick(transition));
             transitionNode.setOnMousePressed(null);
             transitionNode.setOnMouseDragged(null);
@@ -182,12 +212,17 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Draws all Arc connections between the Place and Transition nodes.
+     * Draws all Arc connections between Place and Transition nodes.
      */
     private void drawArcs() {
         for (Arc arc : currentNet.getArcs().values()) {
-            Node source = arc.isSourcePlace() ? placeNodes.get(arc.getSourceId()) : transitionNodes.get(arc.getSourceId());
-            Node target = arc.isSourcePlace() ? transitionNodes.get(arc.getTargetId()) : placeNodes.get(arc.getTargetId());
+            Node source = arc.isSourcePlace()
+                    ? placeNodes.get(arc.getSourceId())
+                    : transitionNodes.get(arc.getSourceId());
+
+            Node target = arc.isSourcePlace()
+                    ? transitionNodes.get(arc.getTargetId())
+                    : placeNodes.get(arc.getTargetId());
 
             if (source != null && target != null) {
                 Line arcLine = ArcViewFactory.createArcLine(source, target);
@@ -197,54 +232,62 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Refreshes the dynamic state of the view (Tokens and enabled Transitions).
+     * Refreshes the dynamic state of the view (tokens and enabled transitions).
+     * Updates visual elements based on current marking and user permissions.
      */
-    public void refreshState(){
-        MarkingData curr= currentComputation.getLastStep().getMarkingData();
+    public void refreshState() {
+        MarkingData curr = currentComputation.getLastStep().getMarkingData();
 
-        // Get transitions available based on marking AND user role permissions
-        List<Transition> availableTransitions=processService.getAvailableTransitions(currentComputation.getId(),currentUser.getId());
+        // Get transitions available based on marking and user role permissions
+        List<Transition> availableTransitions = processService.getAvailableTransitions(
+                currentComputation.getId(),
+                currentUser.getId()
+        );
 
-        // Update Place tokens
-        for(Map.Entry<String,Group> entry: placeNodes.entrySet()){
+        // Update token counts in places
+        for (Map.Entry<String, Group> entry : placeNodes.entrySet()) {
             String placeId = entry.getKey();
             Group group = entry.getValue();
             int tokens = curr.getTokens(placeId);
             updatePlaceTokensVisual(group, tokens);
         }
 
-        // Update Transition colors and stroke (NFR2.2)
+        // Update transition appearance based on availability (NFR2.2)
         for (Map.Entry<String, Group> entry : transitionNodes.entrySet()) {
             Transition t = currentNet.getTransitions().get(entry.getKey());
             Group group = entry.getValue();
-            Rectangle rect = (Rectangle) group.getChildren().getFirst(); // Assumes rectangle is the first child
+            Rectangle rect = (Rectangle) group.getChildren().getFirst(); // Rectangle is first child
 
             boolean isAvailable = availableTransitions.contains(t);
 
             if (isAvailable && currentComputation.isActive()) {
                 rect.setStroke(Color.LIMEGREEN);
-                rect.setStrokeWidth(4.0); // Highlight
+                rect.setStrokeWidth(4.0); // Highlight enabled transitions
             } else {
                 rect.setStroke(Color.BLACK);
-                rect.setStrokeWidth(2.0); // Default
+                rect.setStrokeWidth(2.0); // Default appearance
             }
         }
+
         updateStatusLabel();
     }
 
     /**
      * Updates the visual representation of tokens within a Place node.
+     *
+     * @param placeGroup The place group node
+     * @param tokenCount The number of tokens to display
      */
     private void updatePlaceTokensVisual(Group placeGroup, int tokenCount) {
-        // Clean all old tokens (nodes marked with id="token")
+        // Remove all existing tokens (nodes marked with id="token")
         placeGroup.getChildren().removeIf(node ->
                 node.getId() != null && node.getId().equals("token")
         );
 
-        // Add new tokens
+        // Add new tokens if present
         if (tokenCount > 0) {
             Circle token = new Circle(0, 0, 8, Color.BLACK);
-            token.setId("token"); // Mark for cleanup
+            token.setId("token"); // Mark for future cleanup
 
             // TODO: add label if token count > 1
 
@@ -253,43 +296,68 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Handles the user clicking on an interactive transition.
-     * Calls the ProcessService to attempt the transition execution (Use Case 6.2.3).
+     * Handles user clicks on transition nodes.
+     * Attempts to fire the transition through the ProcessService (Use Case 6.2.3).
+     *
+     * @param t The transition to fire
      */
     private void handleTransitionClick(Transition t) {
-        if(t==null) return;
+        if (t == null) return;
 
-        if(!currentComputation.isActive()){
-            showError("Computation is " +currentComputation.getStatus());
-            return;
+        if (!currentComputation.isActive()) {
+            throw new InvalidComputationStateException(
+                    "Cannot fire transition: computation is " + currentComputation.getStatus()
+            );
         }
 
-        try{
-            //Observer now handles:
-            //1 ProcessService calls notifyObservers()
-            //2 Observer (this class) calls updata()
-            //3 update() calls refreshState()=
-            processService.fireTransition(currentComputation.getId(),t.getId(),currentUser.getId());
-            showSuccess("Transition "+t.getName()+" fired");
-        }catch(IllegalStateException e){
-            // Error handling for permission denial or insufficient tokens
-            showError("Action Denied: " + e.getMessage());
+        try {
+            // Observer pattern handles the flow:
+            // 1. ProcessService fires transition and calls notifyObservers()
+            // 2. Observer (this class) receives update notification
+            // 3. Observer calls refreshState() to update the view
+            processService.fireTransition(
+                    currentComputation.getId(),
+                    t.getId(),
+                    currentUser.getId()
+            );
+            showSuccess("Transition " + t.getName() + " fired");
+
+        } catch (TransitionNotEnabledException e) {
+            showError("Transition not enabled: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            // Handle permission denial or other state errors
+            showError("Action denied: " + e.getMessage());
         }
     }
 
     /**
      * Navigates back to the main dashboard.
+     *
+     * @param event The action event
+     * @throws IOException if navigation fails
      */
     @FXML
     void handleGoBack(ActionEvent event) throws IOException {
-        NavigationHelper.navigate(event,"/fxml/MainView.fxml",currentUser);
+        NavigationHelper.navigate(event, "/fxml/MainView.fxml", currentUser);
     }
 
+    /**
+     * Opens the help dialog.
+     *
+     * @param event The action event
+     * @throws IOException if navigation fails
+     */
     @FXML
     public void goToHelp(ActionEvent event) throws IOException {
-        // TODO
+        // TODO: Implement help dialog
     }
 
+    /**
+     * Displays a success message to the user.
+     * Message auto-clears after 3 seconds.
+     *
+     * @param message The success message to display
+     */
     private void showSuccess(String message) {
         if (messageLabel != null) {
             messageLabel.setText(message);
@@ -299,6 +367,12 @@ public class ViewPetriNetController implements Initializable {
         errorClearer.playFromStart();
     }
 
+    /**
+     * Displays an error message to the user.
+     * Message auto-clears after 3 seconds.
+     *
+     * @param message The error message to display
+     */
     private void showError(String message) {
         if (messageLabel != null) {
             messageLabel.setText(message);
@@ -308,12 +382,16 @@ public class ViewPetriNetController implements Initializable {
         errorClearer.playFromStart();
     }
 
+    /**
+     * Updates the status label to reflect the current computation state.
+     */
     private void updateStatusLabel() {
-        if(statusLabel!=null)
+        if (statusLabel != null)
             statusLabel.setText(currentComputation.getStatus().toString());
+
         if (!currentComputation.isActive()) {
             statusLabel.setTextFill(Color.RED);
-            if(messageLabel != null) {
+            if (messageLabel != null) {
                 messageLabel.setText("Computation Completed.");
                 messageLabel.setTextFill(Color.BLACK);
             }
@@ -322,17 +400,24 @@ public class ViewPetriNetController implements Initializable {
         }
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.sharedResources = SharedResources.getInstance();
+
+        if (sharedResources == null) {
+            throw new SystemContextException("SharedResources service is not initialized");
+        }
+
         this.processService = sharedResources.getProcessService();
         this.petriNetRepository = sharedResources.getPetriNetRepository();
 
-        if(backgroundImage != null && rootStackPane != null) {
+        if (processService == null || petriNetRepository == null) {
+            throw new SystemContextException("Required services not available in SharedResources");
+        }
+
+        if (backgroundImage != null && rootStackPane != null) {
             backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
             backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
-
             backgroundImage.setPreserveRatio(false);
         }
     }
