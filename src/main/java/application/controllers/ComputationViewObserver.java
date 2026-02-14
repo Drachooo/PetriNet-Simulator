@@ -25,7 +25,8 @@ public class ComputationViewObserver extends ComputationObserver {
     }
 
     /**
-     * Called by the Subject (Computation) when its state changes.
+     * Called by the
+     * Subject (Computation) when its state changes.
      */
     @Override
     public void update(Computation updatedComputation) {
