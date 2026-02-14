@@ -2,7 +2,6 @@ package application.controllers;
 
 import application.logic.SharedResources;
 import application.logic.User;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,74 +14,76 @@ import java.net.URL;
 
 /**
  * Utility class to centralize JavaFX scene navigation logic.
- * This prevents code duplication in all controller classes.
+ * Manages FXML loading and state injection between controllers to prevent code duplication.
  */
 public class NavigationHelper {
 
+    /**
+     * Executes a basic navigation without passing user state.
+     * * @param event The event that triggered the navigation.
+     * @param fxmlPath The resource path to the target FXML file.
+     */
     public static void navigate(Event event, String fxmlPath) {
         try {
             navigate(event, fxmlPath, null);
         } catch (IOException e) {
-            System.err.println("Errore navigazione semplice verso: " + fxmlPath);
+            System.err.println("Navigation failed for path: " + fxmlPath);
             e.printStackTrace();
         }
     }
 
     /**
-     * Centralized method to navigate to a new FXML view, passing the User state.
-     * * @param event The ActionEvent that triggered the navigation (used to get the current Stage).
-     * @param fxmlPath The path to the target FXML file (e.g., "/fxml/AdminArea.fxml").
-     * @param currentUser The User object to pass to the next controller.
-     * @throws IOException If the FXML file fails to load.
+     * Loads a new FXML view and injects the current User state into the destination controller.
+     * Handles root replacement to maintain window state (size, maximization) without flickering.
+     * * @param event The event used to retrieve the current Stage.
+     * @param fxmlPath The path to the target FXML resource.
+     * @param currentUser The User entity to be passed to the next controller.
+     * @throws IOException If the FXML file is missing or cannot be loaded.
      */
     public static void navigate(Event event, String fxmlPath, User currentUser) throws IOException {
 
-        // 1. Ottieni l'URL della risorsa FXML
+        // Locate FXML resource
         URL fxmlUrl = NavigationHelper.class.getResource(fxmlPath);
         if (fxmlUrl == null) {
-            System.err.println("FATAL: Cannot find FXML resource at: " + fxmlPath);
+            System.err.println("FATAL: Resource not found at " + fxmlPath);
             throw new IOException("FXML resource not found.");
         }
 
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
 
-        // 2. Ottieni Stage attuale
+        // Identify current window stage
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        // 3. Ottieni il controller della destinazione
+        // Controller state injection logic
         Object controller = loader.getController();
 
-        // 4. Imposta lo stato nel controller (Assumendo che tutti i controller abbiano setCurrentUser e setStage)
         if (controller instanceof AdminAreaController) {
-            AdminAreaController adminController = (AdminAreaController) controller;
-            adminController.setCurrentUser(currentUser);
-        } else if (controller instanceof MainViewController) {
+            ((AdminAreaController) controller).setCurrentUser(currentUser);
+        }
+        else if (controller instanceof MainViewController) {
             MainViewController mainController = (MainViewController) controller;
-            // MainViewController è l'unico che ha ancora setSharedResources per via della sua initialize()
             mainController.setSharedResources(SharedResources.getInstance());
             mainController.setCurrentUser(currentUser);
         }
-        // Aggiungi qui gli altri controller (ExploreNetsController, NetCreationController)
         else if (controller instanceof ExploreNetsController) {
-            ExploreNetsController exploreController = (ExploreNetsController) controller;
-            exploreController.setCurrentUser(currentUser);
+            ((ExploreNetsController) controller).setCurrentUser(currentUser);
         }
+        // To be extended as more controllers are implemented
 
-        // 4. --- IL TRUCCO PULITO: CAMBIA SOLO LA RADICE -> Non rifaccio tutta la scena, ma cambio solo la radice, mantendendo la scena costante ---
+        // Scene graph update
         Scene currentScene = window.getScene();
 
         if (currentScene != null) {
-            // Se la scena esiste già, cambiamo solo il contenuto interno.
-            // Questo NON resetta la finestra, NON toglie il massimizzato e NON sfarfalla.
+            /* * Root swapping: We replace only the root of the existing scene.
+             * This avoids creating a new Scene object, preserving maximization and window properties.
+             */
             currentScene.setRoot(root);
         } else {
-            // Solo per la primissima volta (o se qualcosa è andato storto)
+            // Initial scene setup if none exists
             window.setScene(new Scene(root));
         }
 
-        // 5. Mostra (per sicurezza, ma lo stato finestra non cambia)
         window.show();
-
     }
 }
