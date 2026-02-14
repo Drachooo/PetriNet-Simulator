@@ -3,6 +3,8 @@ package application.controllers;
 import application.logic.*;
 import application.repositories.PetriNetRepository;
 import application.repositories.UserRepository;
+import application.exceptions.UnauthorizedAccessException;
+import application.exceptions.EntityNotFoundException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,19 +60,19 @@ public class MainViewController implements Initializable {
     @FXML private Label errorLabel;
     @FXML private TextField searchTextField;
 
-    // Bottoni Sidebar
+    // Sidebar Buttons
     @FXML private Button myComputationsButton;
     @FXML private Button exploreNetsButton;
     @FXML private Button adminAreaButton;
     @FXML private Button helpButton;
     @FXML private Button logoutButton;
 
-    // Bottoni Azione Tabella
+    // Table Action Buttons
     @FXML private Button viewButton;
     @FXML private Button startButton;
     @FXML private Button deleteButton;
 
-    // Tabella
+    // Table
     @FXML private TableView<Object> mainTableView;
     @FXML private TableColumn<Object, String> column1;
     @FXML private TableColumn<Object, String> column2;
@@ -88,7 +90,7 @@ public class MainViewController implements Initializable {
             })
     );
 
-    // --- METODI DI INIZIALIZZAZIONE ---
+    // --- INITIALIZATION METHODS ---
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -126,12 +128,11 @@ public class MainViewController implements Initializable {
 
         boolean isAdmin = currentUser.isAdmin();
         adminAreaButton.setVisible(isAdmin);
-        adminAreaButton.setVisible(isAdmin);
         adminAreaButton.setManaged(isAdmin);
     }
 
     /**
-     * Configura la tabella per mostrare le Computazioni.
+     * Configures the table to show Computations.
      */
     private void setupComputationColumns() {
         tableTitleLabel.setText("My Computations");
@@ -141,7 +142,7 @@ public class MainViewController implements Initializable {
         column3.setText("Date Started");
         column4.setText("Status");
 
-        // Assicuriamoci che il casting sia corretto
+        // Ensure correct casting
         column1.setCellValueFactory(cell -> {
             Computation comp = (Computation) cell.getValue();
             PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
@@ -173,7 +174,7 @@ public class MainViewController implements Initializable {
                 } else {
                     setText(status);
 
-                    // COLORI dello status della rete
+                    // Net status COLORS
                     if ("COMPLETED".equalsIgnoreCase(status)) {
                         setTextFill(javafx.scene.paint.Color.RED);
                         setStyle("-fx-font-weight: bold;");
@@ -189,7 +190,7 @@ public class MainViewController implements Initializable {
         });
 
 
-        // Questo bottone è nascosto su questa vista fissa
+        // This button is hidden on this fixed view
         startButton.setVisible(false);
     }
 
@@ -205,12 +206,12 @@ public class MainViewController implements Initializable {
         int totalUsers = userRepository.getAllUsers().size();
         totalUsersCountLabel.setText(String.valueOf(totalUsers));
 
-        // Ricarica la tabella con le computazioni dell'utente
+        // Reload the table with the user's computations
         List<Computation> userComputations = processService.getComputationsForUser(currentUser.getId());
 
-        userComputations.sort((column1, column2) -> {
-            LocalDateTime t1 = column1.getStartTime();
-            LocalDateTime t2 = column2.getStartTime();
+        userComputations.sort((c1, c2) -> {
+            LocalDateTime t1 = c1.getStartTime();
+            LocalDateTime t2 = c2.getStartTime();
 
             if(t1 == null) return 1;
             if(t2 == null) return -1;
@@ -221,10 +222,10 @@ public class MainViewController implements Initializable {
         tableData.setAll(userComputations);
     }
 
-    // --- GESTORI DI EVENTI (Navigazione e Azione) ---
+    // --- EVENT HANDLERS (Navigation and Action) ---
 
     /**
-     *  Naviga alla schermata ExploreNets.
+     * Navigates to the ExploreNets view.
      */
     @FXML
     void goToExploreNets(ActionEvent event) throws IOException {
@@ -285,7 +286,7 @@ public class MainViewController implements Initializable {
         try {
             processService.deleteComputation(selectedComp.getId(), currentUser.getId());
             refreshDashboardData();
-        } catch (IllegalStateException e) {
+        } catch (UnauthorizedAccessException | EntityNotFoundException | IllegalStateException e) {
             showError(e.getMessage());
         }
     }
@@ -295,9 +296,9 @@ public class MainViewController implements Initializable {
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Edit Profile");
-        dialog.setHeaderText("Modifica Username o Password");
+        dialog.setHeaderText("Change Username or Password");
 
-        ButtonType saveButtonType = new ButtonType("Salva", ButtonBar.ButtonData.OK_DONE);
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
@@ -306,27 +307,27 @@ public class MainViewController implements Initializable {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField usernameField = new TextField();
-        usernameField.setText(currentUser.getUsername()); //recarica quello attuale
+        usernameField.setText(currentUser.getUsername()); // reload the current one
         usernameField.setPromptText("Username");
 
-        //Password
+        // Password
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Nuova Password");
+        passwordField.setPromptText("New Password");
 
-        //Conferma password
+        // Confirm password
         PasswordField confirmPasswordField = new PasswordField();
-        confirmPasswordField.setPromptText("Ripeti la nuova password");
+        confirmPasswordField.setPromptText("Repeat new password");
 
         grid.add(new Label("Username:"), 0, 0);
         grid.add(usernameField, 1, 0);
-        grid.add(new Label("Nuova Password:"), 0, 1);
+        grid.add(new Label("New Password:"), 0, 1);
         grid.add(passwordField, 1, 1);
-        grid.add(new Label("Conferma Password:"), 0, 2);
+        grid.add(new Label("Confirm Password:"), 0, 2);
         grid.add(confirmPasswordField, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
 
-        //Gestione Risultato
+        // Result Handling
         Optional<ButtonType> result = dialog.showAndWait();
 
         if(result.isPresent() && result.get() == saveButtonType) {
@@ -337,38 +338,38 @@ public class MainViewController implements Initializable {
             String newUsername = usernameField.getText();
 
             if (!newPass.isEmpty()) {
-                if (!newPass.equals(confirmPass)) { //password non coincidono
+                if (!newPass.equals(confirmPass)) { // passwords do not match
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setTitle("Errore Password");
-                    errorAlert.setHeaderText("Le password non coincidono");
-                    errorAlert.setContentText("La nuova password e la conferma devono essere identiche.");
+                    errorAlert.setTitle("Password Error");
+                    errorAlert.setHeaderText("Passwords do not match");
+                    errorAlert.setContentText("The new password and the confirmation must be identical.");
                     errorAlert.showAndWait();
-                    return; //Non salvo nulla
+                    return; // Do not save anything
                 } else {
-                    currentUser.setPassword(newPass); //aggiorno la password
+                    currentUser.setPassword(newPass); // update the password
                     changed = true;
                 }
             }
 
-            // VALIDAZIONE USERNAME
+            // USERNAME VALIDATION
             if (!newUsername.isEmpty() && !newUsername.equals(currentUser.getUsername())) {
                 currentUser.setUsername(newUsername);
                 changed = true;
             }
 
-            // SALVATAGGIO
+            // SAVE
             if (changed) {
-                // Salva nel file CSV
+                // Save to the CSV file
                 userRepository.updateUser(currentUser);
 
-                // Aggiorna UI principale
+                // Update main UI
                 welcomeLabel.setText("Welcome, " + currentUser.getUsername());
 
-                //Feedback Positivo -> passowrd cambiata
+                // Positive Feedback -> password changed
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Successo");
+                alert.setTitle("Success");
                 alert.setHeaderText(null);
-                alert.setContentText("Profilo aggiornato correttamente!");
+                alert.setContentText("Profile updated successfully!");
                 alert.showAndWait();
             }
         }
@@ -378,7 +379,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleLogout(ActionEvent event) throws IOException {
-        //Il passaggio di scena è gestito dal NavigationHelper
+        // Scene transition is handled by the NavigationHelper
         NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
     }
 
