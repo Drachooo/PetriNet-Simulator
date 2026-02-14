@@ -39,6 +39,5 @@ build/
 
 .idea/
 
-data/coords/
-data/computations.json
-data/petriNetRepository.json
+#Ignore all json files
+data/**/*.json
