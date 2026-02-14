@@ -34,24 +34,25 @@ public class LoginViewController implements Initializable {
 
     @FXML private Label errorLabel;
 
-    //Tenere traccia dello stato della password(visibile / non visibile)
+    // Keep track of password state (visible / not visible)
     private boolean isPasswordVisible = false;
 
-    //Immagini occhio
+    // Eye images
     @FXML private ImageView eyeOpen;
     @FXML private ImageView eyeClosed;
 
     @FXML private StackPane rootStackPane;
     @FXML private ImageView backgroundImage;
 
-    //Il timer nasconde la label quando termina
+    // The timer hides the label when it finishes
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
-                    errorLabel.setVisible(false); // NASCONDE LA LABEL e Il bottone sotto torna cliccabile
+                    errorLabel.setVisible(false); // HIDES THE LABEL and the button below becomes clickable again
                 }
             })
     );
+
     /**
      * Called by JavaFX when the FXML is loaded.
      * Initializes services and controllers.
@@ -70,11 +71,11 @@ public class LoginViewController implements Initializable {
 
 
         if(errorLabel != null) {
-            errorLabel.setVisible(false); // Parte nascosta
+            errorLabel.setVisible(false); // Starts hidden
             errorLabel.setText("");
         }
 
-        //per poter scrivere in 2 campi contemporaneamnete, password visibile e password invisibile
+        // To be able to write in 2 fields simultaneously, visible password and invisible password
         if(passwordFieldHidden != null && passwordTextVisible != null) {
             passwordTextVisible.textProperty().bindBidirectional(passwordFieldHidden.textProperty());
         }
@@ -85,7 +86,7 @@ public class LoginViewController implements Initializable {
         isPasswordVisible = !isPasswordVisible;
 
         if(isPasswordVisible){
-            //Mostra il testo della label
+            // Shows the visible password text field
             passwordTextVisible.setVisible(true);
             passwordFieldHidden.setVisible(false);
 
@@ -96,7 +97,7 @@ public class LoginViewController implements Initializable {
                 eyeClosed.setVisible(false);
             }
         }else {
-            //Nasconde il testo della label
+            // Hides the visible password text field
             passwordTextVisible.setVisible(false);
             passwordFieldHidden.setVisible(true);
 
@@ -152,7 +153,7 @@ public class LoginViewController implements Initializable {
      */
     @FXML
     private void goToRegisterView(ActionEvent event) throws IOException {
-        //Utilizza l'helper
+        // Uses the helper
         NavigationHelper.navigate(event, "/fxml/RegisterView.fxml");
     }
 
