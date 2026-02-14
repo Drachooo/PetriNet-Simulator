@@ -81,6 +81,7 @@ public class AdminAreaController implements Initializable {
             errorLabel.setText("");
         }
 
+        //Listener per interazione con propria rete
         computationsListView.setOnKeyPressed((keyEvent -> {
             if(keyEvent.getCode() == KeyCode.DELETE){
 
@@ -98,10 +99,20 @@ public class AdminAreaController implements Initializable {
                         DeleteComputation();
                     }
                 }
-                keyEvent.consume();
+            }else if (keyEvent.getCode() == KeyCode.ENTER){
+                if(computationsListView.getSelectionModel().getSelectedItem() != null){
+                    try{
+                        handleViewComputation( new ActionEvent(computationsListView, null));
+                    }catch(IOException e){
+                        showError("Errore nell'apertura dei dettagli: " + e.getMessage());
+                    }
+                }
             }
+            keyEvent.consume();
         }));
 
+
+        //Listener per Modifica reti admin
         myNetsListView.setOnKeyPressed(KeyEvent ->{
             if(KeyEvent.getCode() == KeyCode.DELETE){
                 if(myNetsListView.getSelectionModel().getSelectedItem() != null){
@@ -115,8 +126,16 @@ public class AdminAreaController implements Initializable {
                         deleteSelectedNet();
                     }
                 }
-                KeyEvent.consume();
+            }else if(KeyEvent.getCode() == KeyCode.ENTER){
+                if(myNetsListView.getSelectionModel().getSelectedItem() != null){
+                    try{
+                        handleEditNet(new ActionEvent(myNetsListView, null));
+                    }catch (IOException e){
+                        showError("Errore nell'apertura dell'editor");
+                    }
+                }
             }
+            KeyEvent.consume();
         });
     }
 
