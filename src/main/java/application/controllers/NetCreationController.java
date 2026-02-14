@@ -70,11 +70,15 @@ public class NetCreationController implements Initializable {
     //cursore gomma
     private ImageCursor eraserCursor;
 
+    //Dopo il messaggio di errore si ricorda l'azione precedente
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (statusLabel != null) {
-                    statusLabel.setText("Status: Ready.");
-
+                    if(currentMode == DrawingMode.NONE){
+                        statusLabel.setText("Status: Ready.");
+                    }else{
+                        statusLabel.setText("Tool: " + currentMode.name() + " Active");
+                    }
                     statusLabel.setTextFill(Color.web("#4da6ff"));
                 }
             })
@@ -375,13 +379,19 @@ public class NetCreationController implements Initializable {
     }
 
     private void createArcBetween(Node srcNode, Node tgtNode) {
-        String sourceId = placeMap.containsKey(srcNode) ? placeMap.get(srcNode).getId()
-                : transitionMap.containsKey(srcNode) ? transitionMap.get(srcNode).getId()
-                : null;
 
-        String targetId = placeMap.containsKey(tgtNode) ? placeMap.get(tgtNode).getId()
-                : transitionMap.containsKey(tgtNode) ? transitionMap.get(tgtNode).getId()
-                : null;
+        //Controllo se sto provando a collegare due nodi dello stesso tipo
+        boolean srcIsPlace = placeMap.containsKey(srcNode);
+        boolean tgtIsPlace = placeMap.containsKey(tgtNode);
+
+        if (srcIsPlace == tgtIsPlace) {
+            showError("Invalid Arc", "Arcs must connect a Place to a Transition (or vice versa).");
+            return;
+        }
+
+
+        String sourceId = placeMap.containsKey(srcNode) ? placeMap.get(srcNode).getId() : transitionMap.containsKey(srcNode) ? transitionMap.get(srcNode).getId() : null;
+        String targetId = placeMap.containsKey(tgtNode) ? placeMap.get(tgtNode).getId() : transitionMap.containsKey(tgtNode) ? transitionMap.get(tgtNode).getId() : null;
 
         if (sourceId == null || targetId == null) return;
 
@@ -491,15 +501,25 @@ public class NetCreationController implements Initializable {
                     //click della sorgente, si illumina la destinazione
                     arcSourceNode = clicked;
                     highlightValidTargets(true);
-                    statusLabel.setText("Source selected, Click a valid Target");
+                    showStatus("Source selected, Click a valid Target", false, false);
                 } else {
+
+                    if(arcSourceNode == clicked){
+                        showError("Invalid Target", "Source and Target must be different!");
+                        highlightValidTargets(false);
+                        arcSourceNode = null;
+                        return;
+                    }
+
                     //click della destinazione, si spegne l'illuminazione
                     highlightValidTargets(false);
                     createArcBetween(arcSourceNode, clicked);
                     arcSourceNode = null;
-                    statusLabel.setText("Tool: Arc Active (Click Source -> Click Target)");
                     //Continuo a disegnare fino a quando non cambio strumento
                     //currentMode = DrawingMode.NONE;
+
+                    //Collegata la sorgente alla destinazione ripristino il messaggio base
+                    showStatus("Tool: Arc Active (Click Source)", false, false);
                 }
             }
             case DELETE -> {
@@ -533,11 +553,11 @@ public class NetCreationController implements Initializable {
 
         if (placeButton.isSelected()) {
             currentMode = DrawingMode.PLACE;
-            statusLabel.setText("Tool: Place Active (Click to create)");
+            showStatus("Tool: Place Active (Click to create)", false, false);
         } else {
             //Continuo a disegnare fino a quando non cambio strumento
             //currentMode = DrawingMode.NONE;
-            statusLabel.setText("Status: Ready");
+            showStatus("Status: Ready", false, false);
         }
     }
 
@@ -546,11 +566,11 @@ public class NetCreationController implements Initializable {
 
         if (transitionButton.isSelected()) {
             currentMode = DrawingMode.TRANSITION;
-            statusLabel.setText("Tool: Transition Active (Click to create)");
+            showStatus("Tool: Transition Active (Click to create)", false, false);
         } else {
             //Continuo a disegnare fino a quando non cambio strumento
             //currentMode = DrawingMode.NONE;
-            statusLabel.setText("Status: Ready");
+            showStatus("Status: Ready", false, false);
         }
     }
 
@@ -559,11 +579,11 @@ public class NetCreationController implements Initializable {
 
         if (arcButton.isSelected()) {
             currentMode = DrawingMode.ARC;
-            statusLabel.setText("Tool: Arc Active (Click Source -> Click Target)");
+            showStatus("Tool: Arc Active (Click Source)", false, false);
         } else {
             //Continuo a disegnare fino a quando non cambio strumento
             //currentMode = DrawingMode.NONE;
-            statusLabel.setText("Status: Ready");
+            showStatus("Status: Ready", false, false);
         }
     }
 
@@ -581,8 +601,7 @@ public class NetCreationController implements Initializable {
                 //Se non trova l'immagine usa la croce
                 drawingPane.setCursor(Cursor.CROSSHAIR);
             }
-
-            statusLabel.setText("Mode: DELETE (Click to erase)");
+            showStatus("Mode: DELETE (Click to erase)", false, false);
         }
     }
 
@@ -635,7 +654,7 @@ public class NetCreationController implements Initializable {
 
             coords.saveToFile("data/coords/" + petriNet.getId() + "_coords.json");
             this.isDirty=false;
-            showStatus("Net saved successfully!", false);
+            showStatus("Net saved successfully!", false, false);
             return true;
 
         } catch (IllegalArgumentException | IllegalStateException | IOException ex) {
@@ -704,19 +723,26 @@ public class NetCreationController implements Initializable {
                 .findFirst();
     }
 
-    private void showStatus(String message, boolean isError) {
+    private void showStatus(String message, boolean isError, boolean isTemporary) {
         if (statusLabel != null) {
+            //fermo il timer di precedenti azioni
+            errorClearer.stop();
+
+            //messaggio corrente
             statusLabel.setText(message);
             statusLabel.setTextFill(isError ? Color.RED : Color.web("#4da6ff"));
-            errorClearer.stop();
-            errorClearer.playFromStart();
+
+            //Il timer è impostato solo per i messaggi di errore
+            if(isTemporary) {
+                errorClearer.playFromStart();
+            }
         } else {
             System.err.println(message);
         }
     }
 
     private void showError(String header, String msg) {
-        showStatus(header + ": " + msg, true);
+        showStatus(header + ": " + msg, true, true);
     }
 
     // --- Navigation ---
