@@ -1,6 +1,6 @@
 id,email,password,type, username
 USRa1b11a94-315b-4d1f-a61d-48faced55e3f,uu,$2a$10$UlYDCYC9c4xHFyDZDOmED.eID7/mppl7Y0o0y/wSdowG1Oro1WTLC,USER,uu
-ADM70a43a53-9755-4f1e-a691-8cdd8f0d6ba0,aa,$2a$10$yPRV.9qCBWqt4Wyz8F/Wl.Wu3mvouk2iV6BYwHm.KWrbcXqh5rI4q,ADMIN,Combee
+ADM70a43a53-9755-4f1e-a691-8cdd8f0d6ba0,aa,$2a$10$yPRV.9qCBWqt4Wyz8F/Wl.Wu3mvouk2iV6BYwHm.KWrbcXqh5rI4q,ADMIN,MaLu
 ADMfdd941d5-d52d-462c-bfdb-fd777c4fe5c2,admin,$2a$10$g1ZXbR7fqIWdcYqVc.T2lOX5E9yLUk5dTzI3a4AWu8gVkmAxoDTb6,ADMIN,admin
 ADMa2e086ed-d526-4318-8e2d-0de275cde938,pietro.sala@univr.it,$2a$10$UPScuQ54ZEGMJbRfxBled.5qFMYVymDMTSBkFtfbcm/JP4J.dBOOC,ADMIN,pietro.sala
 ADMb4892d99-a716-4fdf-9924-45ec3920777f,matteo.drago@studenti.univr.it,$2a$10$Pw0haEyKP8Ga7QnSvtmQJeZu/5B44/Je9zBKnSQFh/89gJEsBXJka,ADMIN,matteo.drago
