@@ -37,26 +37,43 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
                     </padding>
                     <children>
-                        <Label text="Computation View" textFill="WHITE">
+                        <Label text="Net Execution" textFill="WHITE">
                             <font>
                                 <Font name="System Bold" size="22.0" />
                             </font>
                             <VBox.margin>
-                                <Insets bottom="30.0" />
+                                <Insets bottom="40.0" />
                             </VBox.margin>
                         </Label>
 
-                        <Label text="DETAILS" textFill="#888888">
-                            <font> <Font name="System Bold" size="11.0" /> </font>
-                            <VBox.margin> <Insets bottom="10.0" /> </VBox.margin>
+                        <Label text="NAVIGATION" textFill="#888888">
+                            <font><Font name="System Bold" size="11.0" /></font>
+                            <VBox.margin><Insets bottom="10.0" /></VBox.margin>
                         </Label>
+
+                        <VBox spacing="10.0">
+                            <children>
+                                <Button fx:id="adminAreaButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToAdminArea" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Admin Area">
+                                    <font> <Font size="15.0" /> </font>
+                                </Button>
+                                <Button fx:id="exploreNetsButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToExploreNets" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Explore Nets">
+                                    <font> <Font size="15.0" /> </font>
+                                </Button>
+                                <Button fx:id="helpButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Help">
+                                    <font> <Font size="15.0" /> </font>
+                                </Button>
+                            </children>
+                        </VBox>
 
                         <Region VBox.vgrow="ALWAYS" />
 
                         <Button fx:id="backButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleGoBack" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="← Back to Dashboard">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
+                            <font> <Font name="System Bold" size="14.0" /> </font>
+                        </Button>
+
+                        <Button fx:id="logoutButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleLogout" prefHeight="40.0" prefWidth="210.0" style="-fx-background-color: rgba(196, 30, 58, 0.2); -fx-text-fill: #ff6b6b; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #c41e3a; -fx-border-radius: 8;" text="Logout">
+                            <font> <Font name="System Bold" size="14.0" /> </font>
+                            <VBox.margin> <Insets top="10.0" /> </VBox.margin>
                         </Button>
                     </children>
                 </VBox>
