@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ComboBox?>
 
 <StackPane fx:id="rootStackPane" prefHeight="824.0" prefWidth="1332.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.MainViewController">
     <children>
@@ -196,7 +197,16 @@
                                             </font>
                                         </Label>
                                         <Region HBox.hgrow="ALWAYS" />
+
+                                        <ComboBox fx:id="searchTypeComboBox" prefHeight="35.0" prefWidth="125.0"
+                                                  promptText="Filter by..." style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 20; -fx-cursor: hand;">
+                                            <HBox.margin>
+                                                <Insets right="5.0" />
+                                            </HBox.margin>
+                                        </ComboBox>
+
                                         <TextField fx:id="searchTextField" prefHeight="35.0" prefWidth="250.0" promptText="Search computation..." style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white; -fx-background-radius: 20; -fx-prompt-text-fill: #999;" />
+
                                         <Button fx:id="viewButton" mnemonicParsing="false" onAction="#handleView" prefHeight="35.0" style="-fx-background-color: #4da6ff; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand; -fx-padding: 0 20 0 20;" text="View Details">
                                             <font>
                                                 <Font name="System Bold" size="13.0" />
