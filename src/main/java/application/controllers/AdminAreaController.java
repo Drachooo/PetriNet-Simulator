@@ -29,6 +29,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
+import application.exceptions.UnauthorizedAccessException;
+import application.exceptions.EntityNotFoundException;
+
 import javax.swing.*;
 
 /**
@@ -53,7 +56,7 @@ public class AdminAreaController implements Initializable {
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
-                    errorLabel.setVisible(false); //Nascondo la label di errore
+                    errorLabel.setVisible(false); // Hide the error label
                     errorLabel.setText("");
                 }
             })
@@ -83,11 +86,11 @@ public class AdminAreaController implements Initializable {
 
                 if(computationsListView.getSelectionModel().getSelectedItem() != null) {
 
-                    //PopUp
+                    // PopUp
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Conferma Eliminazione");
-                    alert.setHeaderText("Stai per eliminare una computazione");
-                    alert.setContentText("Sei sicuro di voler procedere?");
+                    alert.setTitle("Confirm Deletion");
+                    alert.setHeaderText("You are about to delete a computation");
+                    alert.setContentText("Are you sure you want to proceed?");
 
                     Optional<ButtonType> result = alert.showAndWait();
 
@@ -103,9 +106,9 @@ public class AdminAreaController implements Initializable {
             if(KeyEvent.getCode() == KeyCode.DELETE){
                 if(myNetsListView.getSelectionModel().getSelectedItem() != null){
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Conferma Eliminazione Net");
-                    alert.setHeaderText("Stai per eliminare una Rete di Petri");
-                    alert.setContentText("Attenzione: Verranno eliminate anche tutte le computazioni associate.");
+                    alert.setTitle("Confirm Net Deletion");
+                    alert.setHeaderText("You are about to delete a Petri Net");
+                    alert.setContentText("Warning: All associated computations will also be deleted.");
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -123,7 +126,7 @@ public class AdminAreaController implements Initializable {
      */
     private void showError(String message) {
         if(errorLabel!=null){
-            errorLabel.setVisible(true); // Rendi visibile
+            errorLabel.setVisible(true); // Make visible
             errorLabel.setText(message);
             errorClearer.stop();
             errorClearer.playFromStart();
@@ -231,7 +234,7 @@ public class AdminAreaController implements Initializable {
      */
     @FXML
     void handleGoBack(ActionEvent event) throws IOException {
-        //Utilizzo NavigationHelperx
+        // Use NavigationHelper
         NavigationHelper.navigate(event, "/fxml/MainView.fxml", currentUser);
     }
 
@@ -247,14 +250,14 @@ public class AdminAreaController implements Initializable {
 
 
     private void deleteSelectedNet() {
-        //Obtain selected net from listview
+        // Obtain selected net from listview
         PetriNet selectedNet=myNetsListView.getSelectionModel().getSelectedItem();
         if(selectedNet==null){
             showError("Please select a net to delete");
             return;
         }
 
-        //Are there active computations on this net?
+        // Are there active computations on this net?
         boolean hasActiveComputations=processService.getComputationsForAdmin(currentUser.getId()).stream().anyMatch(c->c.getPetriNetId().equals(selectedNet.getId()) && c.isActive());
 
         if(hasActiveComputations){
@@ -272,10 +275,10 @@ public class AdminAreaController implements Initializable {
 
         }
 
-        //Delete Net
+        // Delete Net
         petriNetRepository.deletePetriNet(selectedNet.getId());
 
-        //Deletes all associated computations
+        // Deletes all associated computations
         List<Computation> compsToDelete = processService.getComputationsForAdmin(currentUser.getId()).stream()
                 .filter(c -> c.getPetriNetId().equals(selectedNet.getId()))
                 .toList();
@@ -283,7 +286,9 @@ public class AdminAreaController implements Initializable {
         for(Computation c:compsToDelete){
             try{
                 processService.deleteComputation(c.getId(),currentUser.getId());
-            }catch(IllegalStateException e){}
+            }catch(UnauthorizedAccessException | EntityNotFoundException | IllegalStateException e){
+                System.err.println("Silently ignoring deletion error for nested dependency: " + e.getMessage());
+            }
         }
         refreshData();
     }
@@ -309,7 +314,7 @@ public class AdminAreaController implements Initializable {
             processService.deleteComputation(selectedComputation.getId(),currentUser.getId());
             refreshData();
             computationsListView.getSelectionModel().clearSelection();
-        }catch(IllegalStateException e){
+        }catch(UnauthorizedAccessException | EntityNotFoundException | IllegalStateException e){
             showError(e.getMessage());
         }
     }
@@ -356,7 +361,7 @@ public class AdminAreaController implements Initializable {
 
         controller.loadNetForEditing(selectedNet);
 
-        // 5. Mostra la scena
+        // 5. Show the scene
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
