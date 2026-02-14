@@ -69,7 +69,6 @@ public class MainViewController implements Initializable {
 
     // Table Action Buttons
     @FXML private Button viewButton;
-    @FXML private Button startButton;
     @FXML private Button deleteButton;
 
     // Table
@@ -210,7 +209,6 @@ public class MainViewController implements Initializable {
                 }
             }
         });
-        startButton.setVisible(false);
     }
 
     private void refreshDashboardData() {
@@ -298,11 +296,6 @@ public class MainViewController implements Initializable {
         controller.loadComputation(this.currentUser, computation);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
-    }
-
-    @FXML
-    void handleStart(ActionEvent event) {
-        showError("Start must be done from the Explore Nets view.");
     }
 
     @FXML

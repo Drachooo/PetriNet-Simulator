@@ -212,11 +212,7 @@
                                                 <Font name="System Bold" size="13.0" />
                                             </font>
                                         </Button>
-                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStart" prefHeight="35.0" style="-fx-background-color: #45a45f; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand; -fx-padding: 0 20 0 20;" text="Start New">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
-                                        </Button>
+
                                         <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" prefHeight="35.0" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand; -fx-padding: 0 20 0 20;" text="Delete">
                                             <font>
                                                 <Font name="System Bold" size="13.0" />
