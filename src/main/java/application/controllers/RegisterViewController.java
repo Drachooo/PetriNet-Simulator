@@ -17,43 +17,54 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the user registration view.
+ * Handles user input validation, password visibility toggling, and new user creation.
+ */
 public class RegisterViewController implements Initializable {
 
     private SharedResources sharedResources;
     private UserRepository userRepository;
 
-    /*FXML COMPONENTS*/
-    @FXML private TextField emailTextField;
-    @FXML private PasswordField passwordFieldHidden;
-    @FXML private TextField passwordTextVisible;
-
+    // FXML Components
+    @FXML
+    private TextField emailTextField;
+    @FXML
+    private PasswordField passwordFieldHidden;
+    @FXML
+    private TextField passwordTextVisible;
     @FXML
     private PasswordField confirmPasswordFieldHidden;
     @FXML
     private TextField confirmPasswordFieldVisible;
-
-    @FXML private ImageView backgroundImage;
-    @FXML private StackPane rootStackPane;
-
-    //Tenere traccia dello stato della password(visibile / non visibile)
-    private boolean isMainPasswordVisible = false;
-    private boolean isConfirmPasswordVisible = false;
-
+    @FXML
+    private ImageView backgroundImage;
+    @FXML
+    private StackPane rootStackPane;
     @FXML
     private Label errorLabel;
 
-    //Immagini occhio
-    @FXML private ImageView eyeOpenPassword;
-    @FXML private ImageView eyeClosedPassword;
+    // Eye icons for main password field
+    @FXML
+    private ImageView eyeOpenPassword;
+    @FXML
+    private ImageView eyeClosedPassword;
 
-    //Immagini occhio CONFIRM
-    @FXML private ImageView eyeOpenConfirm;
-    @FXML private ImageView eyeClosedConfirm;
+    // Eye icons for confirm password field
+    @FXML
+    private ImageView eyeOpenConfirm;
+    @FXML
+    private ImageView eyeClosedConfirm;
 
+    // Track password visibility state
+    private boolean isMainPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
+
+    // Timeline to auto-hide error messages after 3 seconds
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
-                    errorLabel.setVisible(false); // NASCONDE LA LABEL e Il bottone sotto torna cliccabile
+                    errorLabel.setVisible(false); // Hides the label and button below becomes clickable again
                 }
             })
     );
@@ -63,100 +74,104 @@ public class RegisterViewController implements Initializable {
         this.sharedResources = SharedResources.getInstance();
         this.userRepository = sharedResources.getUserRepository();
 
-        if(backgroundImage != null && rootStackPane != null) {
+        if (backgroundImage != null && rootStackPane != null) {
             backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
             backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
-
             backgroundImage.setPreserveRatio(false);
         }
 
         if (errorLabel != null) {
-            errorLabel.setVisible(false); // Parte nascosta
+            errorLabel.setVisible(false); // Starts hidden
             errorLabel.setText("");
         }
 
-        //BINDING password
-        if(passwordFieldHidden != null && passwordTextVisible != null) {
+        // Bind visible and hidden password fields for main password
+        if (passwordFieldHidden != null && passwordTextVisible != null) {
             passwordTextVisible.textProperty().bindBidirectional(passwordFieldHidden.textProperty());
         }
 
-        //BINDING confirm password
-        if(confirmPasswordFieldHidden != null && confirmPasswordFieldVisible != null) {
+        // Bind visible and hidden password fields for confirm password
+        if (confirmPasswordFieldHidden != null && confirmPasswordFieldVisible != null) {
             confirmPasswordFieldVisible.textProperty().bindBidirectional(confirmPasswordFieldHidden.textProperty());
         }
-
     }
 
+    /**
+     * Toggles visibility of the main password field.
+     * Switches between PasswordField (hidden) and TextField (visible).
+     *
+     * @param event The action event
+     */
     @FXML
     private void toggleMainPassword(ActionEvent event) {
         isMainPasswordVisible = !isMainPasswordVisible;
 
         if (isMainPasswordVisible) {
-            // MOSTRA
-            if(passwordTextVisible != null) passwordTextVisible.setVisible(true);
-            if(passwordFieldHidden != null) passwordFieldHidden.setVisible(false);
+            // Show password
+            if (passwordTextVisible != null) passwordTextVisible.setVisible(true);
+            if (passwordFieldHidden != null) passwordFieldHidden.setVisible(false);
 
-            // Icone: APERTO visibile, CHIUSO nascosto
-            if(eyeOpenPassword != null) eyeOpenPassword.setVisible(true);
-            if(eyeClosedPassword != null) eyeClosedPassword.setVisible(false);
+            // Icons: open visible, closed hidden
+            if (eyeOpenPassword != null) eyeOpenPassword.setVisible(true);
+            if (eyeClosedPassword != null) eyeClosedPassword.setVisible(false);
         } else {
-            // NASCONDI
-            if(passwordTextVisible != null) passwordTextVisible.setVisible(false);
-            if(passwordFieldHidden != null) passwordFieldHidden.setVisible(true);
+            // Hide password
+            if (passwordTextVisible != null) passwordTextVisible.setVisible(false);
+            if (passwordFieldHidden != null) passwordFieldHidden.setVisible(true);
 
-            // Icone: APERTO nascosto, CHIUSO visibile
-            if(eyeOpenPassword != null) eyeOpenPassword.setVisible(false);
-            if(eyeClosedPassword != null) eyeClosedPassword.setVisible(true);
+            // Icons: open hidden, closed visible
+            if (eyeOpenPassword != null) eyeOpenPassword.setVisible(false);
+            if (eyeClosedPassword != null) eyeClosedPassword.setVisible(true);
         }
     }
 
     /**
-     * GESTIONE PASSWORD DI CONFERMA (Confirm)
+     * Toggles visibility of the confirm password field.
+     * Switches between PasswordField (hidden) and TextField (visible).
+     *
+     * @param event The action event
      */
     @FXML
     private void toggleConfirmPassword(ActionEvent event) {
         isConfirmPasswordVisible = !isConfirmPasswordVisible;
 
         if (isConfirmPasswordVisible) {
-            // MOSTRA
-            if(confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(true);
-            if(confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(false);
+            // Show password
+            if (confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(true);
+            if (confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(false);
 
-            // Icone: APERTO visibile, CHIUSO nascosto
-            if(eyeOpenConfirm != null) eyeOpenConfirm.setVisible(true);
-            if(eyeClosedConfirm != null) eyeClosedConfirm.setVisible(false);
+            // Icons: open visible, closed hidden
+            if (eyeOpenConfirm != null) eyeOpenConfirm.setVisible(true);
+            if (eyeClosedConfirm != null) eyeClosedConfirm.setVisible(false);
         } else {
-            // NASCONDI
-            if(confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(false);
-            if(confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(true);
+            // Hide password
+            if (confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(false);
+            if (confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(true);
 
-            // Icone: APERTO nascosto, CHIUSO visibile
-            if(eyeOpenConfirm != null) eyeOpenConfirm.setVisible(false);
-            if(eyeClosedConfirm != null) eyeClosedConfirm.setVisible(true);
+            // Icons: open hidden, closed visible
+            if (eyeOpenConfirm != null) eyeOpenConfirm.setVisible(false);
+            if (eyeClosedConfirm != null) eyeClosedConfirm.setVisible(true);
         }
     }
 
     /**
-     * Handles click on button "BACK TO LOGIN"
-     * Goes back to login page
+     * Navigates back to the login view.
      *
-     * @param event
-     * @throws Exception
+     * @param event The action event
+     * @throws Exception if navigation fails
      */
     @FXML
     private void goToLoginView(ActionEvent event) throws Exception {
-        //Utilizzo l'helper
         NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
     }
 
-
-
     /**
-     * Handles click on button "REGISTER"
-     * Validates input and creates new user
+     * Handles user registration.
+     * Validates input fields, checks password match, verifies email availability,
+     * and creates a new user account.
      *
-     * @param event
-     * @throws Exception
+     * @param event The action event
+     * @throws Exception if navigation fails after successful registration
      */
     @FXML
     private void handleRegister(ActionEvent event) throws Exception {
@@ -164,7 +179,7 @@ public class RegisterViewController implements Initializable {
         String password = passwordFieldHidden.getText();
         String confirmPassword = confirmPasswordFieldHidden.getText();
 
-        // --- VALIDATION ---
+        // Validation
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             showError("All fields are required.");
             return;
@@ -186,26 +201,25 @@ public class RegisterViewController implements Initializable {
         }
 
         User newUser = new User(email, password, Type.USER);
-
         userRepository.saveUser(newUser);
 
         goToLoginView(event);
     }
 
-
     /**
      * Displays an error message in the UI label.
-     * @param message The error message to display.
+     * The message auto-hides after 3 seconds.
+     *
+     * @param message The error message to display
      */
-    private void showError(String message){
-        if(errorLabel != null) {
+    private void showError(String message) {
+        if (errorLabel != null) {
             errorLabel.setText(message);
             errorLabel.setVisible(true);
 
             errorClearer.stop();
             errorClearer.playFromStart();
-        }
-        else{
+        } else {
             System.err.println("errorLabel not found in FXML file");
         }
     }
