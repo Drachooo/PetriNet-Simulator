@@ -39,4 +39,6 @@ build/
 
 .idea/
 
-data/
+data/coords/
+data/computations.json
+data/petriNetRepository.json

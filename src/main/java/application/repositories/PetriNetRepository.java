@@ -20,6 +20,8 @@ public class PetriNetRepository {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         if (!file.exists() || file.length() == 0) {
             try {
                 createFile();

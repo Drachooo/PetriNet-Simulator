@@ -1,9 +1,9 @@
-id,email,password,aa
-ADM40895446-f591-4657-9c25-7ff8baa86ad8,pietro.sala@univr.it,$2a$10$I8PIqqZiJgus68q01ZJSCuLdYAT/VOUgruKEJQ84ETbdAP0.U0ZaW,ADMIN
-ADMd72848af-5aa2-4b32-942f-194dd0ac5fa7,carlo.combi@univr.it,$2a$10$TE79kotlSqeszo6g.akx0OAAjIosJ6m.cRCL/R8tT/LwJcsnq/U62,ADMIN
-ADM9f0abe7d-fb86-4ac3-8937-8e50c76c9116,matteo.drago@studenti.univr.it,$2a$10$nrRws7ZYQoT7oCuoVJkzteZO2gYZxYb8AiKl/VPGaZfeBt9XkOsHi,ADMIN
-ADMcb472075-455b-44e5-a55c-edbcf5825fe4,luca.quaresima@studenti.univr.it,$2a$10$9hrOt.SsPoPm4v45LZV6v.mvrnYiu5W2KEbJ5a5o5gSFVj97OhwXC,ADMIN
-ADMabce1aeb-5728-46f6-80b3-441ba09590b7,aa,$2a$10$xScfwhpikFW5zHoCyB6Gc.1OjDWDhEgIEi57MGFxAq5n6l.k00UsG,ADMIN
-ADMb5e51485-5e89-4ebb-94c1-cc9b427af27c,admin,aa,ADMIN
-USRf5ee7143-c4d7-4b13-8bfa-59e12640c3e7,utente,$2a$10$i17jv27WQzkgAoPLSnuyIuRL5qQyKoIUBHF.hANI4wml9dJXkAc4S,USER
-USRfc18f13c-3796-4cf5-be6c-d0af29386824,uu,$2a$10$94o.5cuNhvWssoYHRXTZ8.1VaKc9VfjIQCeIy8NpNkj6Bx5/Dsjnm,USER
+id,email,password,type, username
+USRa1b11a94-315b-4d1f-a61d-48faced55e3f,uu,$2a$10$UlYDCYC9c4xHFyDZDOmED.eID7/mppl7Y0o0y/wSdowG1Oro1WTLC,USER,uu
+ADM70a43a53-9755-4f1e-a691-8cdd8f0d6ba0,aa,$2a$10$yPRV.9qCBWqt4Wyz8F/Wl.Wu3mvouk2iV6BYwHm.KWrbcXqh5rI4q,ADMIN,Combee
+ADMfdd941d5-d52d-462c-bfdb-fd777c4fe5c2,admin,$2a$10$g1ZXbR7fqIWdcYqVc.T2lOX5E9yLUk5dTzI3a4AWu8gVkmAxoDTb6,ADMIN,admin
+ADMa2e086ed-d526-4318-8e2d-0de275cde938,pietro.sala@univr.it,$2a$10$UPScuQ54ZEGMJbRfxBled.5qFMYVymDMTSBkFtfbcm/JP4J.dBOOC,ADMIN,pietro.sala
+ADMb4892d99-a716-4fdf-9924-45ec3920777f,matteo.drago@studenti.univr.it,$2a$10$Pw0haEyKP8Ga7QnSvtmQJeZu/5B44/Je9zBKnSQFh/89gJEsBXJka,ADMIN,matteo.drago
+USR96a64c43-80f6-4a3d-8542-fd1c06ecdb3a,utente,$2a$10$ZijvYXzc8l3Dz9WG4kV.l.K/CI0GIYwSJdpuVeCcaF6DXUn58EmE6,USER,utente
+ADMa61e0ed5-60a1-4efb-8b09-ad49c5be105b,carlo.combi@univr.it,$2a$10$H3FTOG2x3W5ie5fN9m0CR.T/SqUIQCckmAaYB0hx2fCUCE4Sfmx7C,ADMIN,carlo.combi
+ADMe1e554e7-ddd6-4593-a9eb-044f44d21784,luca.quaresima@studenti.univr.it,$2a$10$Lrv/fdmIVlaqH8M0gcTj2ewQXPTQ.KfNqRUF4993eTOKRMQ9ATGbm,ADMIN,luca.quaresima
