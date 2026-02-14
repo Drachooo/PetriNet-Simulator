@@ -60,29 +60,54 @@
                             </Button>
                         </VBox>
 
-                        <VBox spacing="10.0" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 10; -fx-padding: 15;">
+                        <Button fx:id="helpButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Help">
+                            <font> <Font size="15.0" /> </font>
+                        </Button>
+
+                        <VBox spacing="15.0" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;">
                             <VBox.margin>
                                 <Insets top="20.0" bottom="10.0"/>
                             </VBox.margin>
                             <children>
-                                <Label text="LEGEND" textFill="#bbbbbb">
-                                    <font>
-                                        <Font name="System Bold" size="12.0" />
-                                    </font>
-                                    <VBox.margin>
-                                        <Insets bottom="5.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                    <Rectangle fill="RED" height="15" width="30" stroke="BLACK" strokeWidth="1"/>
-                                    <Label text="Admin Transition" textFill="WHITE" style="-fx-font-size: 12;" />
-                                </HBox>
-                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                    <Rectangle fill="BLUE" height="15" width="30" stroke="BLACK" strokeWidth="1"/>
-                                    <Label text="User Transition" textFill="WHITE" style="-fx-font-size: 12;" />
-                                </HBox>
+                                <VBox spacing="8.0">
+                                    <Label text="TRANSITIONS" textFill="#4da6ff">
+                                        <font>
+                                            <Font name="System Bold" size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <Rectangle fill="BLUE" height="12" width="25" stroke="BLACK" strokeWidth="1"/>
+                                        <Label text="User (Standard)" textFill="WHITE" style="-fx-font-size: 11;" />
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <Rectangle fill="RED" height="12" width="25" stroke="BLACK" strokeWidth="1"/>
+                                        <Label text="Admin" textFill="WHITE" style="-fx-font-size: 11;" />                                    </HBox>
+                                </VBox>
 
-                                <Label text="Click on a placed transition to change its type" textFill="#888888" wrapText="true" style="-fx-font-size: 10; -fx-font-style: italic;">
+                                <Region prefHeight="1" style="-fx-background-color: rgba(255,255,255,0.1);" />
+
+                                <VBox spacing="8.0">
+                                    <Label text="PLACES" textFill="#4da6ff">
+                                        <font>
+                                            <Font name="System Bold" size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <StackPane>
+                                            <Circle fill="#3498db" radius="10" stroke="red" strokeWidth="0.5" />
+                                            <Circle fill="BLACK" radius="4" />
+                                        </StackPane>
+                                        <Label text="Initial State" textFill="WHITE" style="-fx-font-size: 11;" />
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <StackPane>
+                                            <Circle fill="#3498db" radius="10" stroke="red" strokeWidth="0.5" />
+                                        </StackPane>
+                                        <Label text="Final State" textFill="WHITE" style="-fx-font-size: 11;" />
+                                    </HBox>
+                                </VBox>
+
+                                <Label text="Right-click on elements to change their properties." textFill="#888888" wrapText="true" style="-fx-font-size: 10; -fx-font-style: italic;">
                                     <VBox.margin>
                                         <Insets top="5.0" />
                                     </VBox.margin>
@@ -95,9 +120,7 @@
                         <Button fx:id="yourNetsButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToMainView" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="← Back to Dashboard">
                             <font> <Font name="System Bold" size="14.0" /> </font>
                         </Button>
-                        <Button fx:id="helpButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Help">
-                            <font> <Font size="15.0" /> </font>
-                        </Button>
+
                         <Button fx:id="logoutButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleLogout" prefHeight="40.0" prefWidth="210.0" style="-fx-background-color: rgba(196, 30, 58, 0.2); -fx-text-fill: #ff6b6b; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #c41e3a; -fx-border-radius: 8;" text="Logout">
                             <font> <Font name="System Bold" size="14.0" /> </font>
                             <VBox.margin> <Insets top="10.0" /> </VBox.margin>
