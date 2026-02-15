@@ -10,36 +10,144 @@
     -fx-background-color: rgba(0, 0, 0, 0.7);
 }
 
-/* Buttons */
-.back-button {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-text-fill: white;
-    -fx-background-radius: 30;
-    -fx-cursor: hand;
-    -fx-border-color: rgba(255, 255, 255, 0.2);
-    -fx-border-radius: 30;
-    -fx-font-weight: bold;
-}
-
+/*********************
+    TASTO CREATE
+ ***************/
 .btn-create {
+    /* BASE: Verde Solido */
     -fx-background-color: #45a45f;
     -fx-text-fill: white;
     -fx-background-radius: 20;
     -fx-cursor: hand;
+
+    /* un bordo trasparente di 2px.*/
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+
+    /* Pulizia */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
+.btn-create:hover {
+    /* HOVER: Il verde diventa più luminoso (effetto luce) */
+    -fx-background-color: derive(#45a45f, 10%);
+
+    /* HOVER: Appare un bordo verde molto chiaro.*/
+    -fx-border-color: derive(#45a45f, 40%);
+}
+
+.btn-create:pressed {
+    /* PRESSED: effetto ombra */
+    -fx-background-color: derive(#45a45f, -10%);
+
+    /* Il bordo sparisce o diventa scuro per simulare la pressione */
+    -fx-border-color: transparent;
+}
+
+/*****************************+
+        TASTO EDIT
+ **************************/
 .btn-edit {
     -fx-background-color: #4da6ff;
     -fx-text-fill: white;
     -fx-background-radius: 20;
     -fx-cursor: hand;
+
+    /* un bordo trasparente di 2px.*/
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+
+    /* Pulizia */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
+.btn-edit:hover {
+    /* HOVER: Il blu diventa più luminoso (effetto luce) */
+    -fx-background-color: derive(#4da6ff, 10%);
+
+    /* HOVER: Appare un bordo verde molto chiaro.*/
+    -fx-border-color: derive(#4da6ff, 40%);
+}
+
+.btn-edit:pressed {
+    /* PRESSED: effetto ombra */
+    -fx-background-color: derive(#4da6ff, -10%);
+
+    /* Il bordo sparisce o diventa scuro per simulare la pressione */
+    -fx-border-color: transparent;
+}
+
+/***************+
+    TASTO DELETE
+ *************/
 .btn-delete {
     -fx-background-color: rgba(196, 30, 58, 0.8);
     -fx-text-fill: white;
     -fx-background-radius: 20;
     -fx-cursor: hand;
+
+    /* un bordo trasparente di 2px.*/
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+
+    /* Pulizia */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.btn-delete:hover {
+    /* HOVER: Il rosso diventa più luminoso (effetto luce) */
+    -fx-background-color: derive(rgba(196, 30, 58, 0.8), 10%);
+
+    /* HOVER: Appare un bordo verde molto chiaro.*/
+    -fx-border-color: derive(rgba(196, 30, 58, 0.8), 40%);
+}
+
+.btn-edit:pressed {
+    /* PRESSED: effetto ombra */
+    -fx-background-color: derive(rgba(196, 30, 58, 0.8), -10%);
+
+    /* Il bordo sparisce o diventa scuro per simulare la pressione */
+    -fx-border-color: transparent;
+}
+
+/*****************
+    TASTO BACK
+******************/
+.back-button {
+    /* BASE: Trasparente (10% visibile) e bordo sfumato */
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+
+    /* Altri stili strutturali */
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+
+    /* Importante per evitare bordi blu indesiderati */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.back-button:hover {
+    /* HOVER: Aumentiamo l'opacità dello sfondo (dal 10% al 30%) */
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+
+    /* HOVER: Il bordo diventa quasi bianco solido (80%) */
+    -fx-border-color: rgba(255, 255, 255, 0.8);
+}
+
+.back-button:pressed {
+    /* PRESSED: Quando clicchi, diventa un po' più scuro/trasparente per feedback */
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* ListViews */

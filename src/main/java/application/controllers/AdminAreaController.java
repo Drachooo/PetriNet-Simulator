@@ -53,6 +53,11 @@ public class AdminAreaController implements Initializable {
     @FXML private ImageView backgroundImage;
     @FXML private StackPane rootStackPane;
 
+    @FXML private Button editNetButton;
+    @FXML private Button deleteNetButton;
+    @FXML private Button viewComputationButton;
+    @FXML private Button deleteComputationButton;
+
     private final Timeline errorClearer = new Timeline(
             new KeyFrame(Duration.seconds(3), e -> {
                 if (errorLabel != null) {
@@ -137,6 +142,31 @@ public class AdminAreaController implements Initializable {
             }
             KeyEvent.consume();
         });
+
+        // Disable action buttons by default
+        editNetButton.setDisable(true);
+        deleteNetButton.setDisable(true);
+
+        // Enable buttons only when a row is selected in the table
+        myNetsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            boolean hasSelection = newSelection != null;
+            editNetButton.setDisable(!hasSelection);
+            deleteNetButton.setDisable(!hasSelection);
+        });
+
+
+
+        viewComputationButton.setDisable(true);
+        deleteComputationButton.setDisable(true);
+
+        // Enable buttons only when a row is selected in the table
+        computationsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            boolean hasSelection = newSelection != null;
+            viewComputationButton.setDisable(!hasSelection);
+            deleteComputationButton.setDisable(!hasSelection);
+        });
+
+
     }
 
     /**
