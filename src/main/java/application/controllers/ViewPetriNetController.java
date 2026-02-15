@@ -82,6 +82,9 @@ public class ViewPetriNetController implements Initializable {
 
     private ComputationViewObserver viewObserver;
 
+    // Track the currently open Help stage
+    private Stage currentHelpStage;
+
     /**
      * Sets the primary stage for this controller.
      *
@@ -343,14 +346,29 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Opens the help dialog.
+     * Opens the help dialog in a separate window so the user doesn't lose their state.
      *
      * @param event The action event
      * @throws IOException if navigation fails
      */
     @FXML
-    public void goToHelp(ActionEvent event) throws IOException {
-        // TODO: Implement help dialog
+    void goToHelp(ActionEvent event) throws IOException {
+        if (currentHelpStage != null && currentHelpStage.isShowing()) {
+            currentHelpStage.toFront();
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HelpView.fxml"));
+        Parent root = loader.load();
+
+        HelpViewController controller = loader.getController();
+        controller.setCurrentUser(currentUser);
+
+        currentHelpStage = new Stage();
+        currentHelpStage.setTitle("Petri Net Help");
+        currentHelpStage.setScene(new Scene(root));
+        currentHelpStage.setAlwaysOnTop(true);
+        currentHelpStage.show();
     }
 
 
