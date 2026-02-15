@@ -370,7 +370,6 @@ public class ViewPetriNetController implements Initializable {
         currentHelpStage.show();
     }
 
-
     @FXML
     void goToExploreNets(ActionEvent event) throws IOException{
         NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
