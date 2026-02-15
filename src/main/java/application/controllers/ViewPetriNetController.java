@@ -82,6 +82,9 @@ public class ViewPetriNetController implements Initializable {
 
     private ComputationViewObserver viewObserver;
 
+    // Track the currently open Help stage
+    private Stage currentHelpStage;
+
     /**
      * Sets the primary stage for this controller.
      *
@@ -119,7 +122,7 @@ public class ViewPetriNetController implements Initializable {
 
         this.currentUser = user;
         this.currentComputation = computation;
-        this.currentNet = petriNetRepository.getPetriNets().get(computation.getPetriNetId());
+        this.currentNet = computation.getPetriNetSnapshot();
 
         if (this.currentNet == null) {
             throw new EntityNotFoundException("Petri Net with ID " + computation.getPetriNetId() +
@@ -131,13 +134,10 @@ public class ViewPetriNetController implements Initializable {
             adminAreaButton.setManaged(user.isAdmin());
         }
 
-        try {
-            // Load coordinate layout
-            this.coordinates = PetriNetCoordinates.loadFromFile(
-                    "data/coords/" + currentNet.getId() + "_coords.json"
-            );
-        } catch (IOException e) {
-            showError("Coordinate file not found. Using default layout.");
+        // Load coordinates from the computation snapshot
+        this.coordinates = computation.getCoordinatesSnapshot();
+
+        if (this.coordinates == null) {
             this.coordinates = new PetriNetCoordinates();
         }
 
@@ -343,16 +343,32 @@ public class ViewPetriNetController implements Initializable {
     }
 
     /**
-     * Opens the help dialog.
+     * Opens the help dialog in a separate window so the user doesn't lose their state.
      *
      * @param event The action event
      * @throws IOException if navigation fails
      */
     @FXML
-    public void goToHelp(ActionEvent event) throws IOException {
-        // TODO: Implement help dialog
-    }
+    void goToHelp(ActionEvent event) throws IOException {
+        if (currentHelpStage != null && currentHelpStage.isShowing()) {
+            currentHelpStage.toFront();
+            return;
+        }
 
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HelpView.fxml"));
+        Parent root = loader.load();
+
+        HelpViewController controller = loader.getController();
+        controller.setCurrentUser(currentUser);
+
+        controller.setExternalWindow(true);
+
+        currentHelpStage = new Stage();
+        currentHelpStage.setTitle("Petri Net Help");
+        currentHelpStage.setScene(new Scene(root));
+        currentHelpStage.setAlwaysOnTop(true);
+        currentHelpStage.show();
+    }
 
     @FXML
     void goToExploreNets(ActionEvent event) throws IOException{

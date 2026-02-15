@@ -218,11 +218,12 @@ public class AdminAreaController implements Initializable {
             }
         });
 
-        // Formatter per la lista delle Computazioni
+        // Formatter per la lista delle Computazioni nell'Admin Area
         computationsListView.setCellFactory(lv -> new ListCell<Computation>() {
             @Override
             protected void updateItem(Computation comp, boolean empty) {
                 super.updateItem(comp, empty);
+
                 if (empty || comp == null) {
                     setText(null);
                     setGraphic(null);
@@ -231,40 +232,42 @@ public class AdminAreaController implements Initializable {
                     User user = userRepository.getUserById(comp.getUserId());
 
                     if (net != null && user != null) {
+                        // 1. Parte del testo Normale
+                        Text infoText = new Text(net.getName() + " - Run by: " + user.getEmail() + " - Status: ");
+                        infoText.setFill(Color.WHITE);
 
-                        Text infoText = new Text(net.getName() + " - Run by: " + user.getEmail() +  " - Status: ");
-                        infoText.setFill(Color.WHITE); //colore base testo
-
+                        // 2. Parte dello Status (che sarà Bold)
                         Text statusText = new Text();
                         String statusStr = comp.getStatus().toString();
 
-                        //Controllo se necessario intervento ADMIN
                         boolean adminActionRequired = false;
                         if ("RUNNING".equalsIgnoreCase(statusStr) || "ACTIVE".equalsIgnoreCase(statusStr)) {
-                            try{
-                               adminActionRequired = processService.getEnabledTransitions(comp.getId())
-                                       .stream()
-                                       .anyMatch(t -> t.getType() == Type.ADMIN);
-                           }catch(Exception e){
+                            try {
+                                // Controlla se nella computazione ci sono transizioni di tipo ADMIN abilitate
+                                adminActionRequired = processService.getEnabledTransitions(comp.getId())
+                                        .stream()
+                                        .anyMatch(t -> t.getType() == Type.ADMIN);
+                            } catch (Exception e) {
                                 adminActionRequired = false;
                             }
                         }
 
-                        //Messaggio di stato adattato
-                        //String displayStatus = statusStr;
+                        // 3. Logica Colori e Testo Bold
                         if (adminActionRequired) {
-                            statusText.setText("ACTIVE - Admin intervention required");
+                            statusText.setText("ACTIVE (Admin Req.)");
                             statusText.setFill(Color.LIGHTGREEN);
                         } else if ("COMPLETED".equalsIgnoreCase(statusStr)) {
                             statusText.setText("COMPLETED");
-                            statusText.setFill(Color.RED);
+                            statusText.setFill(Color.TOMATO);
                         } else {
                             statusText.setText(statusStr);
                             statusText.setFill(Color.WHITE);
                         }
 
+                        // Applichiamo il GRASSETTO
                         statusText.setStyle("-fx-font-weight: bold;");
 
+                        // 4. Composizione finale
                         TextFlow flow = new TextFlow(infoText, statusText);
                         setGraphic(flow);
                         setText(null);
@@ -274,7 +277,6 @@ public class AdminAreaController implements Initializable {
                         setTextFill(Color.WHITE);
                         setGraphic(null);
                     }
-
                 }
             }
         });

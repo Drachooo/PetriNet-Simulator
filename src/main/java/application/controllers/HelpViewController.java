@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 
 import java.io.IOException;
@@ -28,6 +29,11 @@ public class HelpViewController implements Initializable {
     @FXML private WebView rolesWebView;
     @FXML private WebView rulesWebView;
     @FXML private WebView exampleWebView;
+
+    // Flag per capire se la finestra è aperta come popup esterno
+    private boolean isExternalWindow = false;
+
+    @FXML private VBox sideBarHelp; // Assicurati che l'ID corrisponda al FXML
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -212,4 +218,28 @@ public class HelpViewController implements Initializable {
     void handleLogout(ActionEvent event) throws IOException {
         NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
     }
+
+    /**
+     * Configura la vista per comportarsi come una finestra popup isolata.
+     * Nasconde la sidebar di navigazione.
+     *
+     * @param isExternal true se aperta come finestra utility.
+     */
+    public void setExternalWindow(boolean isExternal) {
+        this.isExternalWindow = isExternal;
+
+        if (isExternal) {
+            // Nasconde la barra laterale se esiste
+            if (sideBarHelp != null) {
+                sideBarHelp.setVisible(false);
+                sideBarHelp.setManaged(false);
+            }
+            // Se hai un bottone admin specifico fuori dalla sidebar, nascondi anche quello
+            if (adminAreaButton != null) {
+                adminAreaButton.setVisible(false);
+                adminAreaButton.setManaged(false);
+            }
+        }
+    }
+
 }
