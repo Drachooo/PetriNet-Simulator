@@ -1,0 +1,132 @@
+/* =============================================================================
+   MAIN-VIEW.CSS - Stile specifico per la Dashboard principale
+   ============================================================================= */
+
+/* --- SIDEBAR --- */
+.sidebar {
+    -fx-background-color: rgba(20, 20, 20, 0.5);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 0 1 0 0;
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-header {
+    -fx-text-fill: #888888;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dddddd;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 15px;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: white;
+}
+
+/* --- STAT CARDS --- */
+.stat-card {
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-background-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 15;
+}
+
+.stat-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.stat-value {
+    -fx-text-fill: white;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+}
+
+/* --- TABLE VIEW (Dark Mode) --- */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-base: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.1) transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #aaaaaa;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: rgba(30, 30, 30, 0.8);
+    -fx-text-fill: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: rgba(40, 40, 40, 0.8);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -fx-color-primary; /* Preso dal global.css */
+}
+
+/* --- CONTROLLI --- */
+.round-control {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+}
+
+.action-button {
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 0 20 0 20;
+}
+
+.label-title-large {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Stile per il pulsante Logout nella Sidebar */
+.btn-logout {
+    /* Sfondo rosso semitrasparente (come l'avevi nell'originale) */
+    -fx-background-color: rgba(196, 30, 58, 0.2);
+
+    /* Colore del testo (rosso chiaro) */
+    -fx-text-fill: #ff6b6b;
+
+    /* Bordo rosso solido */
+    -fx-border-color: #c41e3a;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+
+    /* Arrotondamento angoli */
+    -fx-background-radius: 8;
+
+    /* Font e cursore */
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}

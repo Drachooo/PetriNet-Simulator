@@ -20,6 +20,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
@@ -47,19 +48,15 @@ import javafx.scene.paint.Color;
  */
 public class ViewPetriNetController implements Initializable {
 
-    @FXML
-    private Pane drawingPane;
-    @FXML
-    private Label netNameLabel;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private Label messageLabel; // Displays success/error messages
+    @FXML private Pane drawingPane;
+    @FXML private Label netNameLabel;
+    @FXML private Label statusLabel;
+    @FXML private Label messageLabel; // Displays success/error messages
 
-    @FXML
-    private StackPane rootStackPane;
-    @FXML
-    private ImageView backgroundImage;
+    @FXML private StackPane rootStackPane;
+    @FXML private ImageView backgroundImage;
+
+    @FXML private Button adminAreaButton;
 
     // Timeline to auto-clear messages after 3 seconds
     private final Timeline errorClearer = new Timeline(
@@ -127,6 +124,11 @@ public class ViewPetriNetController implements Initializable {
         if (this.currentNet == null) {
             throw new EntityNotFoundException("Petri Net with ID " + computation.getPetriNetId() +
                     " not found for computation " + computation.getId());
+        }
+
+        if(adminAreaButton != null){
+            adminAreaButton.setVisible(user.isAdmin());
+            adminAreaButton.setManaged(user.isAdmin());
         }
 
         try {
@@ -351,6 +353,23 @@ public class ViewPetriNetController implements Initializable {
     public void goToHelp(ActionEvent event) throws IOException {
         // TODO: Implement help dialog
     }
+
+
+    @FXML
+    void goToExploreNets(ActionEvent event) throws IOException{
+        NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
+    }
+
+    @FXML
+    void goToAdminArea(ActionEvent event) throws IOException{
+        NavigationHelper.navigate(event, "/fxml/AdminArea.fxml", currentUser);
+    }
+
+    @FXML
+    void handleLogout(ActionEvent event) throws IOException{
+        NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
+    }
+
 
     /**
      * Displays a success message to the user.

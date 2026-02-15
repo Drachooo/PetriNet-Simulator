@@ -81,6 +81,7 @@ public class AdminAreaController implements Initializable {
             errorLabel.setText("");
         }
 
+        //Listener per interazione con propria rete
         computationsListView.setOnKeyPressed((keyEvent -> {
             if(keyEvent.getCode() == KeyCode.DELETE){
 
@@ -98,10 +99,20 @@ public class AdminAreaController implements Initializable {
                         DeleteComputation();
                     }
                 }
-                keyEvent.consume();
+            }else if (keyEvent.getCode() == KeyCode.ENTER){
+                if(computationsListView.getSelectionModel().getSelectedItem() != null){
+                    try{
+                        handleViewComputation( new ActionEvent(computationsListView, null));
+                    }catch(IOException e){
+                        showError("Errore nell'apertura dei dettagli: " + e.getMessage());
+                    }
+                }
             }
+            keyEvent.consume();
         }));
 
+
+        //Listener per Modifica reti admin
         myNetsListView.setOnKeyPressed(KeyEvent ->{
             if(KeyEvent.getCode() == KeyCode.DELETE){
                 if(myNetsListView.getSelectionModel().getSelectedItem() != null){
@@ -115,8 +126,16 @@ public class AdminAreaController implements Initializable {
                         deleteSelectedNet();
                     }
                 }
-                KeyEvent.consume();
+            }else if(KeyEvent.getCode() == KeyCode.ENTER){
+                if(myNetsListView.getSelectionModel().getSelectedItem() != null){
+                    try{
+                        handleEditNet(new ActionEvent(myNetsListView, null));
+                    }catch (IOException e){
+                        showError("Errore nell'apertura dell'editor");
+                    }
+                }
             }
+            KeyEvent.consume();
         });
     }
 
@@ -158,7 +177,7 @@ public class AdminAreaController implements Initializable {
      * are displayed using formatted strings.
      */
     private void setupListViewFormatters() {
-        // Formatter for the Petri Nets list
+        // Formatter per la lista delle Petri Nets
         myNetsListView.setCellFactory(lv -> new ListCell<PetriNet>() {
             @Override
             protected void updateItem(PetriNet net, boolean empty) {
@@ -167,7 +186,7 @@ public class AdminAreaController implements Initializable {
             }
         });
 
-        // Formatter for the Computations list
+        // Formatter per la lista delle Computazioni
         computationsListView.setCellFactory(lv -> new ListCell<Computation>() {
             @Override
             protected void updateItem(Computation comp, boolean empty) {
@@ -179,27 +198,33 @@ public class AdminAreaController implements Initializable {
                     User user = userRepository.getUserById(comp.getUserId());
 
                     if (net != null && user != null) {
-                        setText(net.getName() + " - Run by: " + user.getEmail() + " - Status: " + comp.getStatus());
+                        String statusStr = comp.getStatus().toString();
+
+                        //Controllo se necessario intervento ADMIN
+                        boolean adminActionRequired = false;
+                        if ("RUNNING".equalsIgnoreCase(statusStr) || "ACTIVE".equalsIgnoreCase(statusStr)) {
+                            adminActionRequired = processService.getEnabledTransitions(comp.getId())
+                                    .stream()
+                                    .anyMatch(t -> t.getType() == Type.ADMIN);
+                        }
+
+                        //Messaggio di stato adattato
+                        String displayStatus = statusStr;
+                        if (adminActionRequired) {
+                            displayStatus = "ACTIVE - Admin intervention required";
+                            setTextFill(Color.GREEN);
+                        } else if ("COMPLETED".equalsIgnoreCase(statusStr)) {
+                            setTextFill(Color.RED);
+                        } else {
+                            setTextFill(Color.WHITE);
+                        }
+
+                        setText(net.getName() + " - Run by: " + user.getEmail() + " - Status: " + displayStatus);
                     } else {
                         setText("Loading data...");
-                    }
-
-                    String statusStr = comp.getStatus().toString();
-
-                    if("COMPLETED".equalsIgnoreCase(statusStr)){
-                        setTextFill(Color.RED);
-                    } else if ("RUNNING".equalsIgnoreCase(statusStr) || "ACTIVE".equalsIgnoreCase(statusStr)){
-
-                        boolean adminActionRequired = processService.getEnabledTransitions(comp.getId()).stream().anyMatch(t -> t.getType() == Type.ADMIN);
-
-                        if(adminActionRequired){
-                            setTextFill(Color.ORANGE);
-                        }else{
-                            setTextFill(Color.LIMEGREEN);
-                        }
-                    } else {
                         setTextFill(Color.WHITE);
                     }
+
                 }
             }
         });

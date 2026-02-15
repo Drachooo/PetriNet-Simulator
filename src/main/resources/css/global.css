@@ -1,0 +1,55 @@
+/* =============================================================================
+   GLOBAL.CSS - Fondamenta dell'applicazione
+   ============================================================================= */
+
+.root {
+    /* --- PALETTE COLORI --- */
+    -fx-color-primary: #4da6ff;       /* Azzurro */
+    -fx-color-success: #45a45f;       /* Verde */
+    -fx-color-danger: #c41e3a;        /* Rosso */
+    -fx-color-bg-dark: rgba(20, 20, 20, 0.75); /* Sfondo Card */
+    -fx-color-text-white: #ffffff;
+
+    /* Font Base */
+    -fx-font-family: "Segoe UI", "System", sans-serif;
+}
+
+/* --- RESET & BASE --- */
+.button {
+    -fx-cursor: hand;
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    /* Reset essenziale per rimuovere padding/bordi di default JavaFX */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.text-field {
+    -fx-background-radius: 5;
+    -fx-font-size: 14px;
+    -fx-padding: 8 10 8 10;
+}
+
+/* --- COMPONENTI CONDIVISI --- */
+
+/* Bottone Verde Standard (Usabile ovunque) */
+.btn-success {
+    -fx-background-color: -fx-color-success;
+    -fx-text-fill: white;
+    -fx-font-size: 16px; /* Dimensione standard, sovrascrivibile */
+}
+
+.btn-success:hover {
+    -fx-background-color: derive(-fx-color-success, 15%);
+}
+
+/* Pillola Errore */
+.label-error-pill {
+    -fx-background-color: -fx-color-danger;
+    -fx-background-radius: 25;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-padding: 5 15 5 15;
+}
