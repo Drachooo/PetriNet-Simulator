@@ -1,33 +1,29 @@
-/* =============================================================================
-   AUTH.CSS - Stili per Login e Register
-   ============================================================================= */
-
-/* La Card Centrale */
+/* Main card container */
 .card-panel {
-    -fx-background-color: -fx-color-bg-dark; /* Variabile dal global */
+    -fx-background-color: -fx-color-bg-dark;
     -fx-background-radius: 25;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);
 }
 
-/* Titoli Grandi (Welcome back / Create account) */
+/* Header titles */
 .label-title-large {
     -fx-text-fill: -fx-color-text-white;
     -fx-font-size: 35px;
     -fx-font-weight: bold;
 }
 
-/* Testi informativi bianchi */
+/* Informational text */
 .label-white {
     -fx-text-fill: -fx-color-text-white;
     -fx-font-size: 19px;
     -fx-font-weight: bold;
 }
 
-/* Bottone Verde GRANDE (Specifico per l'auth) */
+/* Primary authentication button */
 .btn-auth-action {
     -fx-background-color: -fx-color-success;
     -fx-text-fill: white;
-    -fx-font-size: 22px; /* Più grande del normale */
+    -fx-font-size: 22px;
     -fx-padding: 10 20 10 20;
 }
 
@@ -35,11 +31,11 @@
     -fx-background-color: derive(-fx-color-success, 15%);
 }
 
-/* Bottone Occhio Password */
+/* Password visibility toggle button */
 .btn-eye {
     -fx-background-color: #FFFFFF;
     -fx-cursor: hand;
-    -fx-padding: 0; /* Fondamentale per l'icona */
+    -fx-padding: 0;
     -fx-background-radius: 0;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -50,10 +46,10 @@
 }
 
 .btn-eye:pressed {
-    -fx-background-color: #FFFFFFF;
+    -fx-background-color: #FFFFFF;
 }
 
-/* Link Rosso */
+/* Danger/Secondary link */
 .link-danger {
     -fx-text-fill: -fx-color-danger;
     -fx-font-size: 20px;
