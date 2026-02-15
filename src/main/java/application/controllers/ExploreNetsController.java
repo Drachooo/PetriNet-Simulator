@@ -124,6 +124,31 @@ public class ExploreNetsController implements Initializable {
         }
         // Get all nets *except* the user's own (Req 2.1)
         List<PetriNet> availableNets = processService.getAvailableNetsForUser(currentUser.getId());
+
+        //ordinamento delle net visualizzate
+        availableNets.sort((net1, net2) ->{
+            String name1 = net1.getName();
+            String name2 = net2.getName();
+
+            // Se entrambi i nomi iniziano con "NP", proviamo a ordinare per numero
+            if (name1.startsWith("NP") && name2.startsWith("NP")) {
+                try {
+                    //Togliamo "NP" e prendiamo solo il numero intero
+                    int num1 = Integer.parseInt(name1.substring(2));
+                    int num2 = Integer.parseInt(name2.substring(2));
+                    return Integer.compare(num1, num2);
+                } catch (NumberFormatException e) {
+                    //Se per caso c'è "NP-Test", torniamo all'ordine alfabetico
+                    return name1.compareToIgnoreCase(name2);
+                }
+            }
+
+            // Per tutti gli altri casi (nomi diversi), ordine alfabetico standard
+            return name1.compareToIgnoreCase(name2);
+
+        });
+
+
         availableNetsListView.setItems(FXCollections.observableArrayList(availableNets));
     }
 

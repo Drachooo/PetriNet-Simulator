@@ -212,6 +212,12 @@ public class MainViewController implements Initializable {
     }
 
     private void refreshDashboardData() {
+
+        //se l'user non è ancora attivo, esce
+        if(currentUser == null){
+            return;
+        }
+
         if (errorLabel != null) errorLabel.setText("");
         int yourComps = processService.getComputationsForUser(currentUser.getId()).size();
         yourComputationsCountLabel.setText(String.valueOf(yourComps));
