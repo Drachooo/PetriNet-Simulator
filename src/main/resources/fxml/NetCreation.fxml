@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -18,11 +21,13 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
 <StackPane fx:id="rootStackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.NetCreationController">
-    <children>
+    <stylesheets>
+        <URL value="@../css/global.css" />
+        <URL value="@../css/netCreation.css" />
+    </stylesheets>
 
+    <children>
         <ImageView fx:id="backgroundImage" pickOnBounds="true">
             <effect>
                 <GaussianBlur radius="10.0" />
@@ -35,133 +40,115 @@
         <Region style="-fx-background-color: rgba(0, 0, 0, 0.7);" />
 
         <BorderPane>
-
             <left>
-                <VBox prefWidth="250.0" style="-fx-background-color: rgba(20, 20, 20, 0.5); -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
+                <VBox prefWidth="250.0" styleClass="creation-sidebar" BorderPane.alignment="CENTER">
                     <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
                     </padding>
                     <children>
                         <Label text="Net Creation" textFill="WHITE">
-                            <font>
-                                <Font name="System Bold" size="22.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets bottom="40.0" />
-                            </VBox.margin>
+                            <font> <Font name="System Bold" size="22.0" /> </font>
+                            <VBox.margin> <Insets bottom="40.0" /> </VBox.margin>
                         </Label>
 
                         <VBox spacing="10.0">
-                            <Button fx:id="adminAreaButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToAdminArea" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Admin Area">
+                            <Button fx:id="adminAreaButton" alignment="BASELINE_LEFT" onAction="#goToAdminArea" prefHeight="45.0" prefWidth="210.0" styleClass="side-nav-button" text="Admin Area">
                                 <font> <Font size="15.0" /> </font>
                             </Button>
-                            <Button fx:id="exploreNetsButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToExploreNets" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Explore Nets">
+                            <Button fx:id="exploreNetsButton" alignment="BASELINE_LEFT" onAction="#goToExploreNets" prefHeight="45.0" prefWidth="210.0" styleClass="side-nav-button" text="Explore Nets">
                                 <font> <Font size="15.0" /> </font>
                             </Button>
+   
+                           <Button fx:id="helpButton" alignment="BASELINE_LEFT" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" styleClass="side-nav-button" text="Help">
+                               <font> <Font size="15.0" /> </font>
+                           </Button>
                         </VBox>
 
-                        <Button fx:id="helpButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="Help">
-                            <font> <Font size="15.0" /> </font>
-                        </Button>
-
-                        <VBox spacing="15.0" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 15; -fx-padding: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;">
-                            <VBox.margin>
-                                <Insets top="20.0" bottom="10.0"/>
-                            </VBox.margin>
+                        <VBox spacing="15.0" styleClass="legend-box">
+                            <VBox.margin> <Insets bottom="10.0" top="20.0" /> </VBox.margin>
                             <children>
                                 <VBox spacing="8.0">
                                     <Label text="TRANSITIONS" textFill="#4da6ff">
-                                        <font>
-                                            <Font name="System Bold" size="11.0" />
-                                        </font>
+                                        <font> <Font name="System Bold" size="11.0" /> </font>
                                     </Label>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                        <Rectangle fill="BLUE" height="12" width="25" stroke="BLACK" strokeWidth="1"/>
-                                        <Label text="User (Standard)" textFill="WHITE" style="-fx-font-size: 11;" />
+                                        <Rectangle fill="BLUE" height="12" stroke="BLACK" strokeWidth="1" width="25" />
+                                        <Label style="-fx-font-size: 11;" text="User (Standard)" textFill="WHITE" />
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                        <Rectangle fill="RED" height="12" width="25" stroke="BLACK" strokeWidth="1"/>
-                                        <Label text="Admin" textFill="WHITE" style="-fx-font-size: 11;" />                                    </HBox>
+                                        <Rectangle fill="RED" height="12" stroke="BLACK" strokeWidth="1" width="25" />
+                                        <Label style="-fx-font-size: 11;" text="Admin" textFill="WHITE" />
+                                    </HBox>
                                 </VBox>
 
                                 <Region prefHeight="1" style="-fx-background-color: rgba(255,255,255,0.1);" />
 
                                 <VBox spacing="8.0">
                                     <Label text="PLACES" textFill="#4da6ff">
-                                        <font>
-                                            <Font name="System Bold" size="11.0" />
-                                        </font>
+                                        <font> <Font name="System Bold" size="11.0" /> </font>
                                     </Label>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                         <StackPane>
                                             <Circle fill="#3498db" radius="10" stroke="red" strokeWidth="0.5" />
                                             <Circle fill="BLACK" radius="4" />
                                         </StackPane>
-                                        <Label text="Initial State" textFill="WHITE" style="-fx-font-size: 11;" />
+                                        <Label style="-fx-font-size: 11;" text="Initial State" textFill="WHITE" />
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                         <StackPane>
                                             <Circle fill="#3498db" radius="10" stroke="red" strokeWidth="0.5" />
                                         </StackPane>
-                                        <Label text="Final State" textFill="WHITE" style="-fx-font-size: 11;" />
+                                        <Label style="-fx-font-size: 11;" text="Final State" textFill="WHITE" />
                                     </HBox>
                                 </VBox>
 
-                                <Label text="Right-click on elements to change their properties." textFill="#888888" wrapText="true" style="-fx-font-size: 10; -fx-font-style: italic;">
-                                    <VBox.margin>
-                                        <Insets top="5.0" />
-                                    </VBox.margin>
+                                <Label style="-fx-font-size: 10; -fx-font-style: italic;" text="Right-click on elements to change their properties." textFill="#888888" wrapText="true">
+                                    <VBox.margin> <Insets top="5.0" /> </VBox.margin>
                                 </Label>
                             </children>
                         </VBox>
 
                         <Region VBox.vgrow="ALWAYS" />
 
-                        <Button fx:id="yourNetsButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToMainView" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand;" text="← Back to Dashboard">
+                        <Button fx:id="yourNetsButton" alignment="BASELINE_LEFT" onAction="#goToMainView" prefHeight="45.0" prefWidth="210.0" styleClass="side-nav-button" text="← Back to Dashboard">
                             <font> <Font name="System Bold" size="14.0" /> </font>
                         </Button>
 
-                        <Button fx:id="logoutButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleLogout" prefHeight="40.0" prefWidth="210.0" style="-fx-background-color: rgba(196, 30, 58, 0.2); -fx-text-fill: #ff6b6b; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #c41e3a; -fx-border-radius: 8;" text="Logout">
-                            <font> <Font name="System Bold" size="14.0" /> </font>
-                            <VBox.margin> <Insets top="10.0" /> </VBox.margin>
-                        </Button>
+                        <Button fx:id="logoutButton" alignment="CENTER" onAction="#handleLogout" prefHeight="40.0" prefWidth="210.0" styleClass="side-logout-button" text="Logout" />
                     </children>
                 </VBox>
             </left>
 
             <center>
                 <BorderPane BorderPane.alignment="CENTER">
-                    <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                    </padding>
+                    <padding> <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /> </padding>
 
                     <top>
-                        <HBox alignment="CENTER_LEFT" prefHeight="60.0" spacing="15.0" style="-fx-background-color: rgba(255, 255, 255, 0.08); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;">
-                            <padding>
-                                <Insets left="20.0" right="20.0" />
-                            </padding>
-                            <BorderPane.margin>
-                                <Insets bottom="20.0" />
-                            </BorderPane.margin>
+                        <HBox alignment="CENTER_LEFT" prefHeight="60.0" spacing="15.0" styleClass="creation-toolbar">
+                            <padding> <Insets left="20.0" right="20.0" /> </padding>
+                            <BorderPane.margin> <Insets bottom="20.0" /> </BorderPane.margin>
 
                             <fx:define>
                                 <ToggleGroup fx:id="toolsGroup" />
                             </fx:define>
 
                             <children>
-                                <ToggleButton fx:id="placeButton" onAction="#drawPlace" toggleGroup="$toolsGroup" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;" text="Place">
+                                <ToggleButton fx:id="placeButton" onAction="#drawPlace" styleClass="tool-button" text="Place">
                                     <graphic> <Circle fill="#3498db" radius="8" /> </graphic>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="toolsGroup" />
+                           </toggleGroup>
                                 </ToggleButton>
 
-                                <ToggleButton fx:id="transitionButton" onAction="#drawTransition" toggleGroup="$toolsGroup" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;" text="Transition">
+                                <ToggleButton fx:id="transitionButton" onAction="#drawTransition" styleClass="tool-button" text="Transition" toggleGroup="$toolsGroup">
                                     <graphic> <Rectangle fill="blue" height="10" width="20" /> </graphic>
                                 </ToggleButton>
 
-                                <ToggleButton fx:id="arcButton" onAction="#drawArc" toggleGroup="$toolsGroup" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;" text="Arc">
+                                <ToggleButton fx:id="arcButton" onAction="#drawArc" styleClass="tool-button" text="Arc" toggleGroup="$toolsGroup">
                                     <graphic> <Line endX="20" endY="5" startX="0" startY="5" stroke="#2ecc71" strokeWidth="2" /> </graphic>
                                 </ToggleButton>
 
-                                <ToggleButton fx:id="deleteButton" onAction="#deleteMode" toggleGroup="$toolsGroup" style="-fx-background-color: rgba(196, 30, 58, 0.2); -fx-text-fill: #ff6b6b; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: #c41e3a; -fx-border-radius: 10;" text="Delete Mode" />
+                                <ToggleButton fx:id="deleteButton" onAction="#deleteMode" styleClass="delete-mode-button" text="Delete Mode" toggleGroup="$toolsGroup" />
 
                                 <Region HBox.hgrow="ALWAYS" />
 
@@ -170,18 +157,16 @@
                                     <HBox.margin> <Insets right="20.0" /> </HBox.margin>
                                 </Label>
 
-                                <Button fx:id="clearButton" onAction="#clearNet" style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;" text="Clear All">
-                                    <font> <Font name="System Bold" size="12.0" /> </font>
-                                </Button>
-                                <Button fx:id="saveButton" onAction="#savePetriNet" style="-fx-background-color: #45a45f; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold;" text="Save Net" />
+                                <Button fx:id="clearButton" onAction="#clearNet" styleClass="tool-button" text="Clear All" />
+                                <Button fx:id="saveButton" onAction="#savePetriNet" styleClass="btn-save-net" text="Save Net" />
                             </children>
                         </HBox>
                     </top>
 
                     <center>
-                        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" BorderPane.alignment="CENTER">
+                        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" styleClass="transparent-scroll-pane" BorderPane.alignment="CENTER">
                             <content>
-                                <Pane fx:id="drawingPane" prefHeight="2000.0" prefWidth="2000.0" style="-fx-background-color: #fcfcfc; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);" />
+                                <Pane fx:id="drawingPane" prefHeight="2000.0" prefWidth="2000.0" styleClass="drawing-canvas" />
                             </content>
                         </ScrollPane>
                     </center>

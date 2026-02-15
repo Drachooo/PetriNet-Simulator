@@ -1,0 +1,102 @@
+/* Sidebar and General Containers */
+.creation-sidebar {
+    -fx-background-color: rgba(20, 20, 20, 0.5);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 0 1 0 0;
+}
+
+.legend-box {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 15;
+    -fx-padding: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 15;
+}
+
+/* Toolbar Styling */
+.creation-toolbar {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 15;
+}
+
+/* Drawing Canvas */
+.drawing-canvas {
+    -fx-background-color: #fcfcfc;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0, 0, 5);
+}
+
+.transparent-scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+/* --- BUTTONS AND TOGGLES (FIXED) --- */
+
+.tool-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 10;
+    -fx-border-width: 1px; /* Bloccato per evitare resize */
+    -fx-font-size: 13px;    /* Dimensione fissa */
+}
+
+.tool-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-font-size: 13px; /* Ripetuto per sicurezza */
+}
+
+.tool-button:selected {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-border-color: #4da6ff;
+    -fx-font-size: 13px;
+}
+
+.delete-mode-button {
+    -fx-background-color: rgba(196, 30, 58, 0.2);
+    -fx-text-fill: #ff6b6b;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-border-color: #c41e3a;
+    -fx-border-radius: 10;
+    -fx-font-size: 13px;
+}
+
+.btn-save-net {
+    -fx-background-color: #45a45f;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Navigation & Sidebar Buttons */
+.side-nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dddddd;
+    -fx-cursor: hand;
+    -fx-font-size: 15px; /* Come definito nel tuo FXML */
+}
+
+.side-nav-button:hover {
+    -fx-text-fill: white;
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-font-size: 15px; /* Forza la stabilità */
+}
+
+.side-logout-button {
+    -fx-background-color: rgba(196, 30, 58, 0.2);
+    -fx-text-fill: #ff6b6b;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: #c41e3a;
+    -fx-border-radius: 8;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}

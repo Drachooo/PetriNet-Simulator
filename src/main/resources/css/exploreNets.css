@@ -1,0 +1,47 @@
+/* Container and Backgrounds */
+.explore-pane-container {
+    -fx-background-color: rgba(30, 30, 30, 0.6);
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 20;
+}
+
+/* Buttons */
+.back-button {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 30;
+    -fx-font-weight: bold;
+}
+
+.btn-start-computation {
+    -fx-background-color: #45a45f;
+    -fx-text-fill: white;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(69, 164, 95, 0.4), 10, 0, 0, 5);
+    -fx-font-weight: bold;
+}
+
+/* ListView */
+.explore-list-view {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: #2b2b2b;
+    -fx-control-inner-background-alt: #333333;
+}
+
+/* Labels */
+.header-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.instruction-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #aaaaaa;
+}

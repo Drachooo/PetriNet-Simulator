@@ -1,0 +1,28 @@
+/* Container for the Tab content */
+.help-tab-container {
+    -fx-background-color: #1e1e1e;
+    -fx-padding: 20;
+}
+
+/* Styled TextArea for documentation text */
+.help-text-area {
+    -fx-control-inner-background: #1e1e1e;
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-background-insets: 0;
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+}
+
+/* Label titles within tabs */
+.help-example-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* TabPane styling to maintain transparency */
+.tab-pane {
+    -fx-background-color: transparent;
+}
