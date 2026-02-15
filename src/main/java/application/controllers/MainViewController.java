@@ -308,9 +308,16 @@ public class MainViewController implements Initializable {
         NavigationHelper.navigate(event,"/fxml/AdminArea.fxml",currentUser);
     }
 
+    /**
+     * Navigates to the Help/Documentation view.
+     * Passes the current user to maintain session state and role-based access.
+     *
+     * @param event The action event triggered by clicking the Help button.
+     * @throws IOException If the FXML file for the Help View cannot be loaded.
+     */
     @FXML
-    void goToHelp(ActionEvent event) {
-        showError("Help section not implemented yet.");
+    void goToHelp(ActionEvent event) throws IOException {
+        NavigationHelper.navigate(event, "/fxml/HelpView.fxml", currentUser);
     }
 
     @FXML
@@ -438,4 +445,6 @@ public class MainViewController implements Initializable {
             System.err.println(error);
         }
     }
+
+
 }
