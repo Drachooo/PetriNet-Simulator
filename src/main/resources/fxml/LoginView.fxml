@@ -12,9 +12,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 
 <StackPane fx:id="rootStackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.LoginViewController">
+   <stylesheets>
+      <URL value="@../css/global.css" />
+      <URL value="@../css/login.css" />
+   </stylesheets>
+
    <children>
       <ImageView fx:id="backgroundImage" pickOnBounds="true">
          <image>
@@ -22,8 +28,10 @@
          </image>
          <effect>
             <GaussianBlur radius="5.0" />
-         </effect></ImageView>
-      <VBox alignment="CENTER" maxHeight="450.0" maxWidth="500.0" minHeight="450.0" minWidth="500.0" prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: rgba(20, 20, 20, 0.75); -fx-background-radius: 25;">
+         </effect>
+      </ImageView>
+
+      <VBox alignment="CENTER" maxHeight="450.0" maxWidth="500.0" minHeight="450.0" minWidth="500.0" prefHeight="450.0" prefWidth="500.0" styleClass="card-panel">
          <children>
             <HBox alignment="CENTER" prefHeight="115.0" prefWidth="600.0">
                <children>
@@ -34,11 +42,9 @@
                   </ImageView>
                </children>
             </HBox>
-            <Label prefHeight="45.0" prefWidth="255.0" text="Welcome back!" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="35.0" />
-               </font>
-            </Label>
+
+            <Label prefHeight="45.0" prefWidth="255.0" styleClass="label-title-large" text="Welcome back!" />
+
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
@@ -51,6 +57,7 @@
                         <TextField fx:id="emailTextField" prefHeight="40.0" prefWidth="232.0" promptText="name@example.com" />
                      </children>
                   </HBox>
+
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
@@ -62,7 +69,8 @@
                            <children>
                               <TextField fx:id="passwordTextVisible" prefHeight="40.0" prefWidth="232.0" promptText="Enter your password" visible="false" />
                               <PasswordField fx:id="passwordFieldHidden" prefHeight="40.0" prefWidth="232.0" promptText="Enter your password" />
-                              <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" StackPane.alignment="CENTER_RIGHT">
+
+                              <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="25.0" prefWidth="25.0" styleClass="btn-icon-white" StackPane.alignment="CENTER_RIGHT">
                                  <graphic>
                                     <StackPane prefHeight="150.0" prefWidth="200.0">
                                        <children>
@@ -87,36 +95,23 @@
                         <Insets top="10.0" />
                      </padding>
                   </HBox>
+
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Button fx:id="loginButton" defaultButton="true" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #45a45f;" text="Login">
-                                 <font>
-                                    <Font name="System Bold" size="22.0" />
-                                 </font>
-                              </Button>
+                              <Button fx:id="loginButton" defaultButton="true" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" styleClass="btn-success" text="Login" />
                            </children>
                         </HBox>
-                        <Label fx:id="errorLabel" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" minHeight="50.0" minWidth="190.0" style="-fx-background-color: #c41e3a; -fx-background-radius: 25; -fx-font-weight: bold;" text="Credenziali Errate" textAlignment="CENTER" visible="false">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
+
+                        <Label fx:id="errorLabel" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" minHeight="50.0" minWidth="190.0" styleClass="label-error-pill" text="Credenziali Errate" textAlignment="CENTER" visible="false" />
                      </children>
                   </StackPane>
+
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label prefHeight="26.0" prefWidth="186.0" text="Non hai un account?" textFill="WHITE">
-                           <font>
-                              <Font name="System Bold" size="19.0" />
-                           </font>
-                        </Label>
-                        <Hyperlink fx:id="registerButton" onAction="#goToRegisterView" style="-fx-underline: false;" text="Register" textFill="#c41e3a">
-                           <font>
-                              <Font name="System Bold Italic" size="20.0" />
-                           </font>
-                        </Hyperlink>
+                        <Label prefHeight="26.0" prefWidth="186.0" styleClass="label-white" text="Non hai un account?" />
+                        <Hyperlink fx:id="registerButton" onAction="#goToRegisterView" styleClass="link-danger" text="Register" />
                      </children>
                   </HBox>
                </children>

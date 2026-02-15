@@ -1,0 +1,34 @@
+/* =============================================================================
+   LOGIN.CSS - Stili specifici per LoginViewController
+   ============================================================================= */
+
+/* Pannello Card */
+.card-panel {
+    -fx-background-color: -fx-color-card-bg;
+    -fx-background-radius: 25;
+    /* Assicuriamoci che non ci siano bordi strani */
+    -fx-border-width: 0;
+    -fx-effect: null;
+}
+
+/* Titolo */
+.label-title-large {
+    -fx-text-fill: -fx-color-text-white;
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+}
+
+/* Testo bianco piccolo */
+.label-white {
+    -fx-text-fill: -fx-color-text-white;
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+}
+
+/* Bottone Occhio */
+.btn-icon-white {
+    -fx-background-color: #FFFFFF;
+    -fx-cursor: hand;
+    -fx-padding: 0; /* FONDAMENTALE: Rimuove lo spazio extra */
+    -fx-background-radius: 0;
+}
