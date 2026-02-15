@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 
 /**
  * Controller for the MainView.fxml (Main Dashboard).
- * Shows the user's active computations and manages navigation.
+ * Manages the user's active computations and main navigation.
  */
 public class MainViewController implements Initializable {
 
@@ -91,8 +91,6 @@ public class MainViewController implements Initializable {
             })
     );
 
-    // --- INITIALIZATION METHODS ---
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.sharedResources = SharedResources.getInstance();
@@ -103,6 +101,17 @@ public class MainViewController implements Initializable {
         mainTableView.setItems(tableData);
         setupComputationColumns();
 
+        // Disable action buttons by default
+        viewButton.setDisable(true);
+        deleteButton.setDisable(true);
+
+        // Enable buttons only when a row is selected in the table
+        mainTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            boolean hasSelection = newSelection != null;
+            viewButton.setDisable(!hasSelection);
+            deleteButton.setDisable(!hasSelection);
+        });
+
         if (errorLabel != null) errorLabel.setText("");
 
         if(backgroundImage != null && rootStackPane != null) {
@@ -111,20 +120,20 @@ public class MainViewController implements Initializable {
             backgroundImage.setPreserveRatio(false);
         }
 
-        // Listener per la ricerca delle net
+        // Search listener for filtering nets
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             filterTable(newValue);
         });
 
-        // Listener per filtrare nuovamente se l'utente cambia modalità mentre il testo è inserito
+        // Re-filter if the search mode changes while there is input text
         searchTypeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             filterTable(searchTextField.getText());
         });
 
         searchTypeComboBox.setItems(FXCollections.observableArrayList("Net Name", "Creator Name"));
-        searchTypeComboBox.getSelectionModel().selectFirst(); // Seleziona "Net Name" di default
+        searchTypeComboBox.getSelectionModel().selectFirst();
 
-        // Colore bianco del testo
+        // Set combo box text color to white
         searchTypeComboBox.setButtonCell(new ListCell<String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -140,10 +149,18 @@ public class MainViewController implements Initializable {
         });
     }
 
+    /**
+     * Initializes the controller with shared resources if not already set.
+     * * @param sharedResources The shared resources instance.
+     */
     public void setSharedResources(SharedResources sharedResources) {
         if (this.sharedResources == null) { this.initialize(null, null); }
     }
 
+    /**
+     * Sets the currently logged-in user and updates the UI accordingly.
+     * * @param currentUser The user currently logged in.
+     */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         initializeUIComponents();
@@ -158,7 +175,7 @@ public class MainViewController implements Initializable {
     }
 
     /**
-     * Configures the table to show Computations.
+     * Configures table columns and binds cell values for Computations.
      */
     private void setupComputationColumns() {
         tableTitleLabel.setText("My Computations");
@@ -172,16 +189,19 @@ public class MainViewController implements Initializable {
             PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
             return new SimpleStringProperty(net != null ? net.getName() : "Unknown Net");
         });
+
         column2.setCellValueFactory(cell -> {
             Computation comp = (Computation) cell.getValue();
             PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
             User admin = (net != null) ? userRepository.getUserById(net.getAdminId()) : null;
             return new SimpleStringProperty(admin != null ? admin.getEmail() : "Unknown");
         });
+
         column3.setCellValueFactory(cell -> {
             Computation comp = (Computation) cell.getValue();
             return new SimpleStringProperty(comp.getStartTime().format(formatter));
         });
+
         column4.setCellValueFactory(cell -> {
             Computation comp = (Computation) cell.getValue();
             return new SimpleStringProperty(comp.getStatus().toString());
@@ -211,18 +231,22 @@ public class MainViewController implements Initializable {
         });
     }
 
+    /**
+     * Refreshes dashboard statistics and the table data.
+     */
     private void refreshDashboardData() {
-
-        //se l'user non è ancora attivo, esce
         if(currentUser == null){
             return;
         }
 
         if (errorLabel != null) errorLabel.setText("");
+
         int yourComps = processService.getComputationsForUser(currentUser.getId()).size();
         yourComputationsCountLabel.setText(String.valueOf(yourComps));
+
         int totalNets = processService.getAvailableNetsForUser(currentUser.getId()).size();
         totalNetsCountLabel.setText(String.valueOf(totalNets));
+
         int totalUsers = userRepository.getAllUsers().size();
         totalUsersCountLabel.setText(String.valueOf(totalUsers));
 
@@ -234,9 +258,14 @@ public class MainViewController implements Initializable {
             if(t2 == null) return -1;
             return t2.compareTo(t1);
         });
+
         tableData.setAll(userComputations);
     }
 
+    /**
+     * Filters the table data based on the provided search key and selected mode.
+     * * @param searchKey The text to filter by.
+     */
     private void filterTable(String searchKey){
         if(searchKey == null || searchKey.isEmpty()){
             refreshDashboardData();
@@ -267,7 +296,7 @@ public class MainViewController implements Initializable {
         tableData.setAll(filteredList);
     }
 
-    // --- GESTORI DI EVENTI (Navigazione e Azione) ---
+    // --- EVENT HANDLERS ---
 
     @FXML
     void goToExploreNets(ActionEvent event) throws IOException {
@@ -286,31 +315,37 @@ public class MainViewController implements Initializable {
 
     @FXML
     void handleView(ActionEvent event) throws IOException {
-        Object selectedItem=mainTableView.getSelectionModel().getSelectedItem();
+        Object selectedItem = mainTableView.getSelectionModel().getSelectedItem();
+        // Fallback check, although the button should be disabled if nothing is selected
         if(!(selectedItem instanceof Computation)){
             showError("Please select a computation to view.");
             return;
         }
+
         Computation computation = (Computation) selectedItem;
         if(!computation.isActive()){
             showError("Cannot view a completed computation.");
             return;
         }
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
         Parent root = loader.load();
         ViewPetriNetController controller = loader.getController();
         controller.loadComputation(this.currentUser, computation);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
+
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.getScene().setRoot(root);
     }
 
     @FXML
     void handleDelete(ActionEvent event) {
-        Object selectedItem=mainTableView.getSelectionModel().getSelectedItem();
+        Object selectedItem = mainTableView.getSelectionModel().getSelectedItem();
+        // Fallback check, although the button should be disabled if nothing is selected
         if(!(selectedItem instanceof Computation)){
             showError("Please select a computation to delete.");
             return;
         }
+
         Computation selectedComp = (Computation) selectedItem;
         try {
             processService.deleteComputation(selectedComp.getId(), currentUser.getId());
@@ -325,11 +360,13 @@ public class MainViewController implements Initializable {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Edit Profile");
         dialog.setHeaderText("Change Username or Password");
+
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
-        grid.setHgap(10); grid.setVgap(10);
+        grid.setHgap(10);
+        grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField usernameField = new TextField();
@@ -338,6 +375,7 @@ public class MainViewController implements Initializable {
 
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("New Password");
+
         PasswordField confirmPasswordField = new PasswordField();
         confirmPasswordField.setPromptText("Repeat new password");
 
@@ -352,7 +390,7 @@ public class MainViewController implements Initializable {
         Optional<ButtonType> result = dialog.showAndWait();
 
         if(result.isPresent() && result.get() == saveButtonType) {
-            boolean changed = false;
+            boolean isChanged = false;
             String newPass = passwordField.getText();
             String confirmPass = confirmPasswordField.getText();
             String newUsername = usernameField.getText();
@@ -366,16 +404,18 @@ public class MainViewController implements Initializable {
                     return;
                 } else {
                     currentUser.setPassword(newPass);
-                    changed = true;
+                    isChanged = true;
                 }
             }
             if (!newUsername.isEmpty() && !newUsername.equals(currentUser.getUsername())) {
                 currentUser.setUsername(newUsername);
-                changed = true;
+                isChanged = true;
             }
-            if (changed) {
+
+            if (isChanged) {
                 userRepository.updateUser(currentUser);
                 welcomeLabel.setText("Welcome, " + currentUser.getUsername());
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setContentText("Profile updated successfully!");
