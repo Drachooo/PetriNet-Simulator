@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 // Imports needed for Jackson
+import application.repositories.PetriNetCoordinates;
 import com.fasterxml.jackson.annotation.*;
 
 /**
@@ -36,20 +37,41 @@ public class Computation {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime endTime; // Mutable: set on completion
 
+    /**
+     * A snapshot of the Petri net structure at the time the computation started.
+     * Ensures that subsequent changes by an Admin do not break this running computation.
+     */
+    @JsonProperty("petriNetSnapshot")
+    private final PetriNet petriNetSnapshot;
+
+    /**
+     * A snapshot of the visual coordinates at the time the computation started.
+     */
+    @JsonProperty("coordinatesSnapshot")
+    private final PetriNetCoordinates coordinatesSnapshot;
+
     // Holds the history of this computation
     private final List<ComputationStep> steps = new ArrayList<>();
 
-    /*Transient does not let jackson save on dislk*/
     private transient List<ComputationObserver> observers = new ArrayList<>();
 
     /**
      * Business constructor for starting a new computation.
-     * @param petriNetId The net being executed.
+     * @param petriNet The Petri net being executed (saved as an immutable snapshot).
+     * @param coords The snapshot of the visual coordinates.
      * @param userId The user executing the net.
      */
-    public Computation(String petriNetId, String userId) {
+    public Computation(PetriNet petriNet, PetriNetCoordinates coords, String userId) {
         this.id = "CO" + UUID.randomUUID().toString();
-        this.petriNetId = Objects.requireNonNull(petriNetId, "PetriNet ID cannot be null");
+
+        // Save the ID for convenience, but keep the entire net structure as a snapshot
+        Objects.requireNonNull(petriNet, "PetriNet cannot be null");
+        this.petriNetId = petriNet.getId();
+        this.petriNetSnapshot = petriNet;
+
+        // Save the coordinates snapshot
+        this.coordinatesSnapshot = coords;
+
         this.userId = Objects.requireNonNull(userId, "User ID cannot be null");
         this.status = ComputationStatus.ACTIVE;
         this.startTime = LocalDateTime.now();
@@ -59,6 +81,15 @@ public class Computation {
      * Constructor for Jackson deserialization.
      * @JsonCreator tells Jackson to use this constructor.
      * @JsonProperty maps JSON fields to parameters.
+     * @param id The computation ID.
+     * @param petriNetId The ID of the original Petri net.
+     * @param userId The user ID.
+     * @param status The computation status.
+     * @param startTime The start time.
+     * @param endTime The end time.
+     * @param steps The computation steps history.
+     * @param petriNetSnapshot The snapshot of the Petri net structure.
+     * @param coordinatesSnapshot The snapshot of the visual coordinates.
      */
     @JsonCreator
     public Computation(
@@ -68,9 +99,9 @@ public class Computation {
             @JsonProperty("status") ComputationStatus status,
             @JsonProperty("startTime") LocalDateTime startTime,
             @JsonProperty("endTime") LocalDateTime endTime,
-            @JsonProperty("steps") List<ComputationStep> steps)
-
-
+            @JsonProperty("steps") List<ComputationStep> steps,
+            @JsonProperty("petriNetSnapshot") PetriNet petriNetSnapshot,
+            @JsonProperty("coordinatesSnapshot") PetriNetCoordinates coordinatesSnapshot)
     {
         this.id = id;
         this.petriNetId = petriNetId;
@@ -78,12 +109,13 @@ public class Computation {
         this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.observers=new ArrayList<>();
+        this.petriNetSnapshot = petriNetSnapshot;
+        this.coordinatesSnapshot = coordinatesSnapshot;
+        this.observers = new ArrayList<>();
         if (steps != null) {
             this.steps.addAll(steps);
         }
     }
-
 
     //METHODS FOR PATTERN OBSERVER
     /**
@@ -172,6 +204,18 @@ public class Computation {
     public LocalDateTime getStartTime() { return startTime; }
     public LocalDateTime getEndTime() { return endTime; }
     public ComputationStatus getStatus() { return status; }
+
+    /**
+     * Gets the snapshot of the Petri net associated with this computation.
+     * @return The PetriNet snapshot.
+     */
+    public PetriNet getPetriNetSnapshot() { return petriNetSnapshot; }
+
+    /**
+     * Gets the snapshot of the visual coordinates associated with this computation.
+     * @return The PetriNetCoordinates snapshot.
+     */
+    public PetriNetCoordinates getCoordinatesSnapshot() { return coordinatesSnapshot; }
 
     @Override
     public String toString() {

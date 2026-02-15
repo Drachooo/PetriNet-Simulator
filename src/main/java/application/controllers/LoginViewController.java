@@ -85,9 +85,6 @@ public class LoginViewController implements Initializable {
     private void togglePasswordVisibility(ActionEvent event) {
         if (passwordTextVisible.isVisible()) {
 
-
-            passwordFieldHidden.setText(passwordTextVisible.getText());
-
             // Cambio della visibilità
             passwordTextVisible.setVisible(false);
             passwordFieldHidden.setVisible(true);
@@ -101,8 +98,6 @@ public class LoginViewController implements Initializable {
             //sposta il cursore alla fine del testo
             passwordFieldHidden.positionCaret(passwordFieldHidden.getText().length());
         }else {
-            passwordTextVisible.setText(passwordFieldHidden.getText());
-
             //Cambio visibilità
             passwordFieldHidden.setVisible(false);
             passwordTextVisible.setVisible(true);
@@ -111,7 +106,7 @@ public class LoginViewController implements Initializable {
             eyeClosed.setVisible(false);
             eyeOpen.setVisible(true);
 
-            // --- FIX: FORZA IL FOCUS SUL CAMPO ORA VISIBILE ---
+            // --- FORZA IL FOCUS SUL CAMPO ORA VISIBILE ---
             passwordTextVisible.requestFocus();
             //Sposta il cursore alla fine del testo
             passwordTextVisible.positionCaret(passwordTextVisible.getText().length());
