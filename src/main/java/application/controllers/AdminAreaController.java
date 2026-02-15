@@ -392,7 +392,8 @@ public class AdminAreaController implements Initializable {
     }
 
     /**
-     * Allows admin to view a computation and fire ADMIN Transitions
+     * Allows admin to view a computation and fire ADMIN Transitions.
+     * Also allows viewing completed computations in Read-Only mode.
      */
     @FXML
     void handleViewComputation(ActionEvent event) throws IOException {
@@ -403,15 +404,11 @@ public class AdminAreaController implements Initializable {
             return;
         }
 
-        if (!selectedComp.isActive()) {
-            showError("Cannot view a completed computation. Only active processes are viewable.");
-            return;
-        }
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
         Parent root = loader.load();
 
         ViewPetriNetController controller = loader.getController();
+
         controller.loadComputation(this.currentUser, selectedComp);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

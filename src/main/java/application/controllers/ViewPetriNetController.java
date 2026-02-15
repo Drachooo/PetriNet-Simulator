@@ -307,9 +307,8 @@ public class ViewPetriNetController implements Initializable {
         if (t == null) return;
 
         if (!currentComputation.isActive()) {
-            throw new InvalidComputationStateException(
-                    "Cannot fire transition: computation is " + currentComputation.getStatus()
-            );
+            showError("Computation is completed.");
+            return;
         }
 
         try {

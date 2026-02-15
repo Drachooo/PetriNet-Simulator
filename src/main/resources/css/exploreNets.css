@@ -1,4 +1,3 @@
-/* Container and Backgrounds */
 .explore-pane-container {
     -fx-background-color: rgba(30, 30, 30, 0.6);
     -fx-background-radius: 20;
@@ -6,7 +5,7 @@
     -fx-border-radius: 20;
 }
 
-/* Buttons */
+/* Fixed font-size on hover to prevent shrinking */
 .back-button {
     -fx-background-color: rgba(255, 255, 255, 0.1);
     -fx-text-fill: white;
@@ -15,6 +14,12 @@
     -fx-border-color: rgba(255, 255, 255, 0.2);
     -fx-border-radius: 30;
     -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.back-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-font-size: 14px;
 }
 
 .btn-start-computation {
@@ -24,16 +29,20 @@
     -fx-cursor: hand;
     -fx-effect: dropshadow(three-pass-box, rgba(69, 164, 95, 0.4), 10, 0, 0, 5);
     -fx-font-weight: bold;
+    -fx-font-size: 16px;
 }
 
-/* ListView */
+.btn-start-computation:hover {
+    -fx-background-color: #4eb368;
+    -fx-font-size: 16px;
+}
+
 .explore-list-view {
     -fx-background-color: transparent;
     -fx-control-inner-background: #2b2b2b;
     -fx-control-inner-background-alt: #333333;
 }
 
-/* Labels */
 .header-label {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
@@ -44,4 +53,11 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #aaaaaa;
+}
+
+/* Error label without glow or background */
+.label-error-pill {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ff6b6b;
+    -fx-effect: null;
 }
