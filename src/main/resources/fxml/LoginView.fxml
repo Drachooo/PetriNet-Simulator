@@ -115,7 +115,7 @@
 
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label prefHeight="26.0" prefWidth="186.0" styleClass="label-white" text="Non hai un account?" />
+                        <Label prefHeight="26.0" prefWidth="186.0" styleClass="label-white" text="You do not have an account?" />
                         <Hyperlink fx:id="registerButton" onAction="#goToRegisterView" styleClass="link-danger" text="Register" />
                      </children>
                   </HBox>
