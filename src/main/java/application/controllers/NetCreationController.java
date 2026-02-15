@@ -988,6 +988,8 @@ public class NetCreationController implements Initializable {
         HelpViewController controller = loader.getController();
         controller.setCurrentUser(currentUser);
 
+        controller.setExternalWindow(true);
+
         currentHelpStage = new Stage();
         currentHelpStage.setTitle("Petri Net Editor Help");
         currentHelpStage.setScene(new Scene(root));

@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox; // Aggiunto per la barra laterale
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,6 +23,11 @@ public class HelpViewController implements Initializable {
 
     private User currentUser;
     private SharedResources sharedResources;
+
+    // Flag to determine if this view is opened as a standalone popup
+    private boolean isExternalWindow = false;
+
+    @FXML private VBox sideBarHelp;
 
     @FXML private Button adminAreaButton;
     @FXML private StackPane rootStackPane;
@@ -57,10 +63,34 @@ public class HelpViewController implements Initializable {
         this.currentUser = currentUser;
 
         // Hides the Admin Area button if the user is not an administrator
-        boolean isAdmin = currentUser.isAdmin();
-        if (adminAreaButton != null) {
+        // (Only matters if it's NOT an external window)
+        if (!isExternalWindow && adminAreaButton != null) {
+            boolean isAdmin = currentUser.isAdmin();
             adminAreaButton.setVisible(isAdmin);
             adminAreaButton.setManaged(isAdmin);
+        }
+    }
+
+    /**
+     * Configures this view to act as an isolated popup window.
+     * Hides all navigation elements to prevent nested application states.
+     *
+     * @param isExternal true if opened as a modal/utility window.
+     */
+    public void setExternalWindow(boolean isExternal) {
+        this.isExternalWindow = isExternal;
+
+        if (isExternal) {
+            // Nasconde l'intera barra di navigazione laterale
+            if (sideBarHelp != null) {
+                sideBarHelp.setVisible(false);
+                sideBarHelp.setManaged(false);
+            }
+            // Nasconde specificamente il bottone admin se fuori dalla sidebar
+            if (adminAreaButton != null) {
+                adminAreaButton.setVisible(false);
+                adminAreaButton.setManaged(false);
+            }
         }
     }
 
@@ -74,6 +104,7 @@ public class HelpViewController implements Initializable {
      */
     @FXML
     void goToMainView(ActionEvent event) throws IOException {
+        if (isExternalWindow) return; // Safety check to prevent nested navigation
         NavigationHelper.navigate(event, "/fxml/MainView.fxml", currentUser);
     }
 
@@ -85,6 +116,7 @@ public class HelpViewController implements Initializable {
      */
     @FXML
     void goToExploreNets(ActionEvent event) throws IOException {
+        if (isExternalWindow) return; // Safety check
         NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
     }
 
@@ -97,6 +129,7 @@ public class HelpViewController implements Initializable {
      */
     @FXML
     void goToAdminArea(ActionEvent event) throws IOException {
+        if (isExternalWindow) return; // Safety check
         NavigationHelper.navigate(event, "/fxml/AdminArea.fxml", currentUser);
     }
 
@@ -108,6 +141,7 @@ public class HelpViewController implements Initializable {
      */
     @FXML
     void handleLogout(ActionEvent event) throws IOException {
+        if (isExternalWindow) return; // Safety check
         NavigationHelper.navigate(event, "/fxml/LoginView.fxml");
     }
 }
