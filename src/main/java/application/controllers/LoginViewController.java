@@ -83,30 +83,38 @@ public class LoginViewController implements Initializable {
 
     @FXML
     private void togglePasswordVisibility(ActionEvent event) {
-        isPasswordVisible = !isPasswordVisible;
+        if (passwordTextVisible.isVisible()) {
 
-        if(isPasswordVisible){
-            // Shows the visible password text field
-            passwordTextVisible.setVisible(true);
-            passwordFieldHidden.setVisible(false);
 
-            if(eyeOpen != null){
-                eyeOpen.setVisible(true);
-            }
-            if(eyeClosed != null){
-                eyeClosed.setVisible(false);
-            }
-        }else {
-            // Hides the visible password text field
+            passwordFieldHidden.setText(passwordTextVisible.getText());
+
+            // Cambio della visibilità
             passwordTextVisible.setVisible(false);
             passwordFieldHidden.setVisible(true);
 
-            if(eyeOpen != null){
-                eyeOpen.setVisible(false);
-            }
-            if(eyeClosed != null){
-                eyeClosed.setVisible(true);
-            }
+            // Cambio le icone occhio
+            eyeOpen.setVisible(false);
+            eyeClosed.setVisible(true);
+
+            //FORZA IL FOCUS SUL CAMPO ORA VISIBILE ---
+            passwordFieldHidden.requestFocus();
+            //sposta il cursore alla fine del testo
+            passwordFieldHidden.positionCaret(passwordFieldHidden.getText().length());
+        }else {
+            passwordTextVisible.setText(passwordFieldHidden.getText());
+
+            //Cambio visibilità
+            passwordFieldHidden.setVisible(false);
+            passwordTextVisible.setVisible(true);
+
+            //Cambio icone occhio
+            eyeClosed.setVisible(false);
+            eyeOpen.setVisible(true);
+
+            // --- FIX: FORZA IL FOCUS SUL CAMPO ORA VISIBILE ---
+            passwordTextVisible.requestFocus();
+            //Sposta il cursore alla fine del testo
+            passwordTextVisible.positionCaret(passwordTextVisible.getText().length());
         }
     }
 

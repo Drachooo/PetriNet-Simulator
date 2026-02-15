@@ -1,0 +1,63 @@
+/* =============================================================================
+   AUTH.CSS - Stili per Login e Register
+   ============================================================================= */
+
+/* La Card Centrale */
+.card-panel {
+    -fx-background-color: -fx-color-bg-dark; /* Variabile dal global */
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);
+}
+
+/* Titoli Grandi (Welcome back / Create account) */
+.label-title-large {
+    -fx-text-fill: -fx-color-text-white;
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+}
+
+/* Testi informativi bianchi */
+.label-white {
+    -fx-text-fill: -fx-color-text-white;
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+}
+
+/* Bottone Verde GRANDE (Specifico per l'auth) */
+.btn-auth-action {
+    -fx-background-color: -fx-color-success;
+    -fx-text-fill: white;
+    -fx-font-size: 22px; /* Più grande del normale */
+    -fx-padding: 10 20 10 20;
+}
+
+.btn-auth-action:hover {
+    -fx-background-color: derive(-fx-color-success, 15%);
+}
+
+/* Bottone Occhio Password */
+.btn-eye {
+    -fx-background-color: #FFFFFF;
+    -fx-cursor: hand;
+    -fx-padding: 0; /* Fondamentale per l'icona */
+    -fx-background-radius: 0;
+}
+
+.btn-eye:hover {
+    -fx-background-color: #f2f2f2;
+}
+
+/* Link Rosso */
+.link-danger {
+    -fx-text-fill: -fx-color-danger;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-underline: false;
+    -fx-border-color: transparent;
+}
+
+.link-danger:hover {
+    -fx-text-fill: derive(-fx-color-danger, 20%);
+    -fx-underline: true;
+}

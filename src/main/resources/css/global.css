@@ -1,75 +1,55 @@
 /* =============================================================================
-   GLOBAL.CSS - Variabili e Componenti Condivisi
+   GLOBAL.CSS - Fondamenta dell'applicazione
    ============================================================================= */
 
 .root {
-    /* Palette */
-    -fx-color-primary: #4da6ff;
-    -fx-color-success: #45a45f;
-    -fx-color-danger: #c41e3a;
-    -fx-color-card-bg: rgba(20, 20, 20, 0.75);
+    /* --- PALETTE COLORI --- */
+    -fx-color-primary: #4da6ff;       /* Azzurro */
+    -fx-color-success: #45a45f;       /* Verde */
+    -fx-color-danger: #c41e3a;        /* Rosso */
+    -fx-color-bg-dark: rgba(20, 20, 20, 0.75); /* Sfondo Card */
     -fx-color-text-white: #ffffff;
 
-    /* Font sicuro */
+    /* Font Base */
     -fx-font-family: "Segoe UI", "System", sans-serif;
 }
 
-/* INPUT TEXT FIELD */
-.text-field {
-    -fx-background-radius: 0; /* Se li volevi quadrati */
-    -fx-background-color: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10; /* Un po' di aria dentro il campo */
-}
-
-/* BOTTONI GENERICI */
-.btn {
+/* --- RESET & BASE --- */
+.button {
     -fx-cursor: hand;
-    -fx-background-insets: 0; /* Rimuove doppi bordi di default */
-    -fx-background-radius: 0; /* Reset raggio */
-    -fx-focus-color: transparent; /* Via il bordo blu */
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    /* Reset essenziale per rimuovere padding/bordi di default JavaFX */
+    -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
 }
 
-/* BOTTONE LOGIN (VERDE) */
+.text-field {
+    -fx-background-radius: 5;
+    -fx-font-size: 14px;
+    -fx-padding: 8 10 8 10;
+}
+
+/* --- COMPONENTI CONDIVISI --- */
+
+/* Bottone Verde Standard (Usabile ovunque) */
 .btn-success {
     -fx-background-color: -fx-color-success;
     -fx-text-fill: white;
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5; /* Qui avevi arrotondamento nel FXML? */
+    -fx-font-size: 16px; /* Dimensione standard, sovrascrivibile */
 }
 
 .btn-success:hover {
-    -fx-background-color: derive(-fx-color-success, 10%); /* Effetto luce */
+    -fx-background-color: derive(-fx-color-success, 15%);
 }
 
-/* LABEL ERRORE (PILLOLA ROSSA) */
+/* Pillola Errore */
 .label-error-pill {
     -fx-background-color: -fx-color-danger;
     -fx-background-radius: 25;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 15px;
-    -fx-padding: 5 15 5 15; /* Padding per dare forma alla pillola */
-}
-
-/* LINK REGISTER */
-.link-danger {
-    -fx-text-fill: -fx-color-danger;
     -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-font-style: italic;
-    -fx-underline: false;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-}
-
-.link-danger:visited {
-    -fx-text-fill: -fx-color-danger;
-}
-
-.link-danger:hover {
-    -fx-text-fill: derive(-fx-color-danger, 20%);
-    -fx-underline: true;
+    -fx-padding: 5 15 5 15;
 }
