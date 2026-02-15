@@ -130,3 +130,8 @@
     -fx-font-size: 14px;
     -fx-cursor: hand;
 }
+
+.btn-logout:hover {
+    -fx-background-color: #c41e3a;
+    -fx-text-fill: white;
+}

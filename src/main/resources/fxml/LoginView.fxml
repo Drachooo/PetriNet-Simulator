@@ -69,7 +69,7 @@
                               <TextField fx:id="passwordTextVisible" prefHeight="40.0" prefWidth="232.0" promptText="Enter your password" visible="false" />
                               <PasswordField fx:id="passwordFieldHidden" prefHeight="40.0" prefWidth="232.0" promptText="Enter your password" />
 
-                              <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="25.0" prefWidth="25.0" styleClass="btn-icon-white" StackPane.alignment="CENTER_RIGHT">
+                              <Button alignment="CENTER_RIGHT" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="25.0" prefWidth="25.0" styleClass="btn-eye" StackPane.alignment="CENTER_RIGHT">
                                  <graphic>
                                     <StackPane prefHeight="150.0" prefWidth="200.0">
                                        <children>
@@ -115,8 +115,11 @@
 
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label prefHeight="26.0" prefWidth="186.0" styleClass="label-white" text="You do not have an account?" />
-                        <Hyperlink fx:id="registerButton" onAction="#goToRegisterView" styleClass="link-danger" text="Register" />
+                        <Label prefHeight="26.0" prefWidth="180.0" styleClass="label-white" text="New around here?" />
+                        <Hyperlink fx:id="registerButton" onAction="#goToRegisterView" styleClass="link-danger" text="Register">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin></Hyperlink>
                      </children>
                   </HBox>
                </children>

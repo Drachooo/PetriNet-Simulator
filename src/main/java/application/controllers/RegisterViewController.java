@@ -104,24 +104,29 @@ public class RegisterViewController implements Initializable {
      */
     @FXML
     private void toggleMainPassword(ActionEvent event) {
-        isMainPasswordVisible = !isMainPasswordVisible;
+        if (passwordTextVisible.isVisible()) {
 
-        if (isMainPasswordVisible) {
             // Show password
-            if (passwordTextVisible != null) passwordTextVisible.setVisible(true);
-            if (passwordFieldHidden != null) passwordFieldHidden.setVisible(false);
-
-            // Icons: open visible, closed hidden
-            if (eyeOpenPassword != null) eyeOpenPassword.setVisible(true);
-            if (eyeClosedPassword != null) eyeClosedPassword.setVisible(false);
-        } else {
-            // Hide password
             if (passwordTextVisible != null) passwordTextVisible.setVisible(false);
             if (passwordFieldHidden != null) passwordFieldHidden.setVisible(true);
 
-            // Icons: open hidden, closed visible
+            // Icons: open visible, closed hidden
             if (eyeOpenPassword != null) eyeOpenPassword.setVisible(false);
             if (eyeClosedPassword != null) eyeClosedPassword.setVisible(true);
+
+            passwordTextVisible.requestFocus();
+            passwordTextVisible.positionCaret(passwordTextVisible.getText().length());
+        } else {
+            // Hide password
+            if (passwordTextVisible != null) passwordTextVisible.setVisible(true);
+            if (passwordFieldHidden != null) passwordFieldHidden.setVisible(false);
+
+            // Icons: open hidden, closed visible
+            if (eyeOpenPassword != null) eyeOpenPassword.setVisible(true);
+            if (eyeClosedPassword != null) eyeClosedPassword.setVisible(false);
+
+            passwordTextVisible.requestFocus();
+            passwordTextVisible.positionCaret(passwordTextVisible.getText().length());
         }
     }
 
@@ -133,24 +138,28 @@ public class RegisterViewController implements Initializable {
      */
     @FXML
     private void toggleConfirmPassword(ActionEvent event) {
-        isConfirmPasswordVisible = !isConfirmPasswordVisible;
-
-        if (isConfirmPasswordVisible) {
+        if (confirmPasswordFieldVisible.isVisible()) {
             // Show password
-            if (confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(true);
-            if (confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(false);
-
-            // Icons: open visible, closed hidden
-            if (eyeOpenConfirm != null) eyeOpenConfirm.setVisible(true);
-            if (eyeClosedConfirm != null) eyeClosedConfirm.setVisible(false);
-        } else {
-            // Hide password
             if (confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(false);
             if (confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(true);
 
-            // Icons: open hidden, closed visible
+            // Icons: open visible, closed hidden
             if (eyeOpenConfirm != null) eyeOpenConfirm.setVisible(false);
             if (eyeClosedConfirm != null) eyeClosedConfirm.setVisible(true);
+
+            confirmPasswordFieldHidden.requestFocus();
+            confirmPasswordFieldHidden.positionCaret(confirmPasswordFieldHidden.getText().length());
+        } else {
+            // Hide password
+            if (confirmPasswordFieldVisible != null) confirmPasswordFieldVisible.setVisible(true);
+            if (confirmPasswordFieldHidden != null) confirmPasswordFieldHidden.setVisible(false);
+
+            // Icons: open hidden, closed visible
+            if (eyeOpenConfirm != null) eyeOpenConfirm.setVisible(true);
+            if (eyeClosedConfirm != null) eyeClosedConfirm.setVisible(false);
+
+            confirmPasswordFieldVisible.requestFocus();
+            confirmPasswordFieldVisible.positionCaret(confirmPasswordFieldVisible.getText().length());
         }
     }
 

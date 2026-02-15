@@ -170,7 +170,7 @@
 
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                             <children>
-                                <Label prefHeight="26.0" prefWidth="186.0" styleClass="label-white" text="Hai già un account?" />
+                                <Label prefHeight="26.0" prefWidth="135.0" styleClass="label-white" text="Existing user?" />
                                 <Hyperlink fx:id="loginLink" onAction="#goToLoginView" styleClass="link-danger" text="Login" />
                             </children>
                         </HBox>

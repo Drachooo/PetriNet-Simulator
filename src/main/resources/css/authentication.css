@@ -41,10 +41,16 @@
     -fx-cursor: hand;
     -fx-padding: 0; /* Fondamentale per l'icona */
     -fx-background-radius: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .btn-eye:hover {
-    -fx-background-color: #f2f2f2;
+    -fx-background-color: #FFFFFF;
+}
+
+.btn-eye:pressed {
+    -fx-background-color: #FFFFFFF;
 }
 
 /* Link Rosso */
