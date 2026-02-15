@@ -16,6 +16,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -223,36 +225,54 @@ public class AdminAreaController implements Initializable {
                 super.updateItem(comp, empty);
                 if (empty || comp == null) {
                     setText(null);
+                    setGraphic(null);
                 } else {
                     PetriNet net = petriNetRepository.getPetriNets().get(comp.getPetriNetId());
                     User user = userRepository.getUserById(comp.getUserId());
 
                     if (net != null && user != null) {
+
+                        Text infoText = new Text(net.getName() + " - Run by: " + user.getEmail() +  " - Status: ");
+                        infoText.setFill(Color.WHITE); //colore base testo
+
+                        Text statusText = new Text();
                         String statusStr = comp.getStatus().toString();
 
                         //Controllo se necessario intervento ADMIN
                         boolean adminActionRequired = false;
                         if ("RUNNING".equalsIgnoreCase(statusStr) || "ACTIVE".equalsIgnoreCase(statusStr)) {
-                            adminActionRequired = processService.getEnabledTransitions(comp.getId())
-                                    .stream()
-                                    .anyMatch(t -> t.getType() == Type.ADMIN);
+                            try{
+                               adminActionRequired = processService.getEnabledTransitions(comp.getId())
+                                       .stream()
+                                       .anyMatch(t -> t.getType() == Type.ADMIN);
+                           }catch(Exception e){
+                                adminActionRequired = false;
+                            }
                         }
 
                         //Messaggio di stato adattato
-                        String displayStatus = statusStr;
+                        //String displayStatus = statusStr;
                         if (adminActionRequired) {
-                            displayStatus = "ACTIVE - Admin intervention required";
-                            setTextFill(Color.GREEN);
+                            statusText.setText("ACTIVE - Admin intervention required");
+                            statusText.setFill(Color.LIGHTGREEN);
                         } else if ("COMPLETED".equalsIgnoreCase(statusStr)) {
-                            setTextFill(Color.RED);
+                            statusText.setText("COMPLETED");
+                            statusText.setFill(Color.RED);
                         } else {
-                            setTextFill(Color.WHITE);
+                            statusText.setText(statusStr);
+                            statusText.setFill(Color.WHITE);
                         }
 
-                        setText(net.getName() + " - Run by: " + user.getEmail() + " - Status: " + displayStatus);
+                        statusText.setStyle("-fx-font-weight: bold;");
+
+                        TextFlow flow = new TextFlow(infoText, statusText);
+                        setGraphic(flow);
+                        setText(null);
+
                     } else {
                         setText("Loading data...");
                         setTextFill(Color.WHITE);
+                        setGraphic(null);
                     }
 
                 }
