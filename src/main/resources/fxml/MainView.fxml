@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -14,213 +16,122 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.control.ComboBox?>
 
 <StackPane fx:id="rootStackPane" prefHeight="824.0" prefWidth="1332.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.MainViewController">
+
+    <stylesheets>
+        <URL value="@../css/global.css" />
+        <URL value="@../css/mainView.css" />
+    </stylesheets>
+
     <children>
         <ImageView fx:id="backgroundImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
             <effect>
                 <GaussianBlur />
             </effect>
-         <image>
-            <Image url="@../images/sfondoBase.jpg" />
-         </image>
+            <image>
+                <Image url="@../images/sfondoBase.jpg" />
+            </image>
         </ImageView>
+
         <Region style="-fx-background-color: rgba(0, 0, 0, 0.7);" />
+
         <BorderPane>
             <left>
-                <VBox prefWidth="250.0" style="-fx-background-color: rgba(20, 20, 20, 0.5); -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
+                <VBox prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
                     <children>
-                        <Label text="PetriNet App" textFill="WHITE">
-                            <font>
-                                <Font name="System Bold" size="22.0" />
-                            </font>
-                        </Label>
-                        <Label text="MAIN MENU" textFill="#888888">
-                            <font>
-                                <Font name="System Bold" size="11.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets bottom="10.0" />
-                            </VBox.margin>
+                        <Label styleClass="sidebar-title" text="PetriNet App" />
+                        <Label styleClass="sidebar-header" text="MAIN MENU">
+                            <VBox.margin><Insets bottom="10.0" /></VBox.margin>
                         </Label>
 
-                        <VBox>
+                        <VBox spacing="5.0">
                             <children>
-                                <Button fx:id="exploreNetsButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" onAction="#goToExploreNets" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="Explore Nets">
-                                    <font>
-                                        <Font size="15.0" />
-                                    </font>
-                                </Button>
-                                <Button fx:id="adminAreaButton" alignment="BASELINE_CENTER" mnemonicParsing="false" onAction="#goToAdminArea" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="Admin Area">
-                                    <font>
-                                        <Font size="15.0" />
-                                    </font>
-                                </Button>
-
-                                <Button fx:id="editProfileButton" alignment="BASELINE_CENTER" mnemonicParsing="false" onAction="#handleEditProfile" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="Edit Profile">
-                                    <font>
-                                        <Font size="15.0" />
-                                    </font>
-                                </Button>
-                                <Button fx:id="helpButton" alignment="BASELINE_CENTER" mnemonicParsing="false" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" style="-fx-background-color: transparent; -fx-text-fill: #dddddd; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="Help">
-                                    <font>
-                                        <Font size="15.0" />
-                                    </font>
-                                </Button>
+                                <Button fx:id="exploreNetsButton" mnemonicParsing="false" onAction="#goToExploreNets" prefHeight="45.0" prefWidth="210.0" styleClass="nav-button" text="Explore Nets" />
+                                <Button fx:id="adminAreaButton" mnemonicParsing="false" onAction="#goToAdminArea" prefHeight="45.0" prefWidth="210.0" styleClass="nav-button" text="Admin Area" />
+                                <Button fx:id="editProfileButton" mnemonicParsing="false" onAction="#handleEditProfile" prefHeight="45.0" prefWidth="210.0" styleClass="nav-button" text="Edit Profile" />
+                                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#goToHelp" prefHeight="45.0" prefWidth="210.0" styleClass="nav-button" text="Help" />
                             </children>
                         </VBox>
 
-                        <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                        <Region VBox.vgrow="ALWAYS" />
 
-                        <Button fx:id="logout" alignment="CENTER" mnemonicParsing="false" onAction="#handleLogout" prefHeight="40.0" prefWidth="210.0" style="-fx-background-color: rgba(196, 30, 58, 0.2); -fx-text-fill: #ff6b6b; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #c41e3a; -fx-border-radius: 8;" text="Logout">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </Button>
+                        <Button fx:id="logout" mnemonicParsing="false" onAction="#handleLogout" prefHeight="40.0" prefWidth="210.0" styleClass="btn-logout" text="Logout" />
                     </children>
-                    <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
-                    </padding>
+                    <padding><Insets bottom="20.0" left="20.0" right="20.0" top="30.0" /></padding>
                 </VBox>
             </left>
+
             <center>
                 <VBox>
+                    <padding><Insets bottom="30.0" left="40.0" right="40.0" top="30.0" /></padding>
                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                        <VBox>
                             <children>
-                                <VBox>
-                                    <children>
-                                        <Label fx:id="welcomeLabel" text="Welcome back!" textFill="WHITE">
-                                            <font>
-                                                <Font name="System Bold" size="30.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text="Here is what's happening with your net" textFill="#aaaaaa">
-                                            <font>
-                                                <Font size="16.0" />
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                                <Region />
+                                <Label fx:id="welcomeLabel" styleClass="label-title-large" style="-fx-font-size: 30px;" text="Welcome back!" />
+                                <Label style="-fx-text-fill: #aaaaaa; -fx-font-size: 16px;" text="Here is what's happening with your net" />
                             </children>
-                        </HBox>
+                        </VBox>
+
                         <HBox spacing="25.0">
+                            <VBox.margin><Insets top="40.0" /></VBox.margin>
                             <children>
-                                <VBox style="-fx-background-color: rgba(255, 255, 255, 0.06); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;" HBox.hgrow="ALWAYS">
+                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                    <padding><Insets bottom="25.0" left="25.0" right="25.0" top="25.0" /></padding>
                                     <children>
-                                        <Label text="YOUR COMPUTATIONS" textFill="#888888">
-                                            <font>
-                                                <Font name="System Bold" size="12.0" />
-                                            </font></Label>
+                                        <Label styleClass="stat-label" text="YOUR COMPUTATIONS" />
                                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                                             <children>
-                                                <Label fx:id="yourComputationsCountLabel" text="0" textFill="WHITE">
-                                                    <font>
-                                                        <Font name="System Bold" size="40.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label text="Active" textFill="#45a45f">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
+                                                <Label fx:id="yourComputationsCountLabel" styleClass="stat-value" text="0" />
+                                                <Label style="-fx-text-fill: -fx-color-success; -fx-font-weight: bold;" text="Active" />
                                             </children>
                                         </HBox>
                                     </children>
-                                    <padding>
-                                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                                    </padding>
                                 </VBox>
-                                <VBox style="-fx-background-color: rgba(255, 255, 255, 0.06); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;" HBox.hgrow="ALWAYS">
+
+                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                    <padding><Insets bottom="25.0" left="25.0" right="25.0" top="25.0" /></padding>
                                     <children>
-                                        <Label text="AVAILABLE NETS" textFill="#888888">
-                                            <font>
-                                                <Font name="System Bold" size="12.0" />
-                                            </font></Label>
+                                        <Label styleClass="stat-label" text="AVAILABLE NETS" />
                                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                                             <children>
-                                                <Label fx:id="totalNetsCountLabel" text="0" textFill="WHITE">
-                                                    <font>
-                                                        <Font name="System Bold" size="40.0" />
-                                                    </font></Label>
-                                                <Label text="Global" textFill="#4da6ff">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font></Label>
-                                            </children>
-                                          </HBox>
-                                    </children>
-                                    <padding>
-                                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                                    </padding>
-                                </VBox>
-                                <VBox style="-fx-background-color: rgba(255, 255, 255, 0.06); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <Label text="TOTAL USERS" textFill="#888888">
-                                            <font>
-                                                <Font name="System Bold" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                            <children>
-                                                <Label fx:id="totalUsersCountLabel" text="0" textFill="WHITE">
-                                                    <font>
-                                                        <Font name="System Bold" size="40.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label text="Registered" textFill="#ffcc00">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
+                                                <Label fx:id="totalNetsCountLabel" styleClass="stat-value" text="0" />
+                                                <Label style="-fx-text-fill: -fx-color-primary; -fx-font-weight: bold;" text="Global" />
                                             </children>
                                         </HBox>
                                     </children>
-                                    <padding>
-                                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                                    </padding></VBox>
+                                </VBox>
+
+                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                    <padding><Insets bottom="25.0" left="25.0" right="25.0" top="25.0" /></padding>
+                                    <children>
+                                        <Label styleClass="stat-label" text="TOTAL USERS" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <Label fx:id="totalUsersCountLabel" styleClass="stat-value" text="0" />
+                                                <Label style="-fx-text-fill: #ffcc00; -fx-font-weight: bold;" text="Registered" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
                             </children>
-                            <VBox.margin>
-                                <Insets top="40.0" />
-                            </VBox.margin>
                         </HBox>
-                        <VBox spacing="15.0">
+
+                        <VBox spacing="15.0" VBox.vgrow="ALWAYS">
+                            <VBox.margin><Insets top="40.0" /></VBox.margin>
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="15.0">
                                     <children>
-                                        <Label fx:id="tableTitleLabel" text="My Computations List" textFill="WHITE">
-                                            <font>
-                                                <Font name="System Bold" size="20.0" />
-                                            </font>
-                                        </Label>
+                                        <Label fx:id="tableTitleLabel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" text="My Computations List" />
                                         <Region HBox.hgrow="ALWAYS" />
-
-                                        <ComboBox fx:id="searchTypeComboBox" prefHeight="35.0" prefWidth="125.0"
-                                                  promptText="Filter by..." style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 20; -fx-cursor: hand;">
-                                            <HBox.margin>
-                                                <Insets right="5.0" />
-                                            </HBox.margin>
-                                        </ComboBox>
-
-                                        <TextField fx:id="searchTextField" prefHeight="35.0" prefWidth="250.0" promptText="Search computation..." style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white; -fx-background-radius: 20; -fx-prompt-text-fill: #999;" />
-
-                                        <Button fx:id="viewButton" mnemonicParsing="false" onAction="#handleView" prefHeight="35.0" style="-fx-background-color: #4da6ff; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand; -fx-padding: 0 20 0 20;" text="View Details">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
-                                        </Button>
-
-                                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" prefHeight="35.0" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand; -fx-padding: 0 20 0 20;" text="Delete">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
-                                        </Button>
+                                        <ComboBox fx:id="searchTypeComboBox" prefHeight="35.0" prefWidth="125.0" styleClass="round-control" promptText="Filter by..." />
+                                        <TextField fx:id="searchTextField" prefHeight="35.0" prefWidth="250.0" styleClass="round-control" promptText="Search computation..." />
+                                        <Button fx:id="viewButton" onAction="#handleView" prefHeight="35.0" styleClass="action-button" style="-fx-background-color: -fx-color-primary;" text="View Details" />
+                                        <Button fx:id="deleteButton" onAction="#handleDelete" prefHeight="35.0" styleClass="action-button" style="-fx-background-color: -fx-color-danger;" text="Delete" />
                                     </children>
                                 </HBox>
-                                <TableView fx:id="mainTableView" style="-fx-base: #1e1e1e; -fx-control-inner-background: #1e1e1e; -fx-background-color: transparent; -fx-table-cell-border-color: transparent; -fx-control-inner-background-alt: #333333;" VBox.vgrow="ALWAYS">
+
+                                <TableView fx:id="mainTableView" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="column1" prefWidth="300.0" text="NET NAME" />
                                         <TableColumn fx:id="column2" prefWidth="75.0" text="CREATOR" />
@@ -231,19 +142,10 @@
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
                                 </TableView>
-                                <Label fx:id="errorLabel" textFill="#ff6b6b">
-                                    <font>
-                                        <Font name="System Bold" size="14.0" />
-                                    </font>
-                                </Label>
+                                <Label fx:id="errorLabel" styleClass="label-error-pill" visible="false" />
                             </children>
-                            <VBox.margin>
-                                <Insets top="40.0" />
-                            </VBox.margin></VBox>
+                        </VBox>
                     </children>
-                    <padding>
-                        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-                    </padding>
                 </VBox>
             </center>
         </BorderPane>
