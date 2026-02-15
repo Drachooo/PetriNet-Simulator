@@ -968,11 +968,31 @@ public class NetCreationController implements Initializable {
     }
 
     /**
-     * Shows the help dialog.
+     * Navigates to the Help/Documentation view.
+     * Passes the current user to maintain session state and role-based access.
+     *
+     * @param event The action event triggered by clicking the Help button.
+     * @throws IOException If the FXML file for the Help View cannot be loaded.
      */
     @FXML
-    private void goToHelp() {
-        showError("Help", "Not implemented yet.");
+    void goToHelp(ActionEvent event) throws IOException {
+        if(!isDirty) {
+            NavigationHelper.navigate(event, "/fxml/HelpView.fxml", currentUser);
+            return;
+        }
+        UnsavedChangesGuard.SaveChoice choice = UnsavedChangesGuard.promptUserForSaveConfirmation();
+        switch (choice) {
+            case SAVE_AND_CONTINUE:
+                if (savePetriNet(event)) {
+                    NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
+                }
+                break;
+            case DISCARD_AND_CONTINUE:
+                NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
+                break;
+            case CANCEL_EXIT:
+                break;
+        }
     }
 
     /**
