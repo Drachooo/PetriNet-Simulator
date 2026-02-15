@@ -69,6 +69,9 @@ public class NavigationHelper {
         else if (controller instanceof ExploreNetsController) {
             ((ExploreNetsController) controller).setCurrentUser(currentUser);
         }
+        else if (controller instanceof HelpViewController) {
+            ((HelpViewController) controller).setCurrentUser(currentUser);
+        }
         // To be extended as more controllers are implemented
 
         // Scene graph update
