@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -15,6 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
 
 <StackPane fx:id="rootStackPane" prefHeight="824.0" prefWidth="1332.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.HelpViewController">
 
@@ -78,37 +78,41 @@
 
                                 <Tab text="1. Introduction">
                                     <VBox spacing="10" styleClass="help-tab-container">
-                                        <TextArea editable="false" wrapText="true" VBox.vgrow="ALWAYS" styleClass="help-text-area"
-                                                  text="1. Introduction to Petri Nets&#10;&#10;1.1. Background on Petri Nets&#10;Petri nets are a mathematical modeling language used for the description of distributed systems. A Petri net is a directed bipartite graph consisting of places, transitions, and directed arcs. Places can contain tokens, and the distribution of tokens across the places represents the state (marking) of the system. Transitions represent events that can occur, changing the state of the system by moving tokens between places according to specific rules.&#10;&#10;1.1.1. Formal Definition&#10;The formal definition of a Petri net includes:&#10;• A set of places P = {p1, p2, ..., pn}&#10;• A set of transitions T = {t1, t2, ..., tm}&#10;• A set of arcs A ⊆ (P × T) U (T × P)&#10;• An initial marking M0: P → N, which assigns a non-negative integer number of tokens to each place.&#10;&#10;1.1.3. Special Places and Process Completion&#10;• Initial Place: Each Petri net must have exactly one designated initial place (p_init) with the following properties: The initial marking assigns exactly one token to this place. The initial place has no incoming arcs, and at least one outgoing arc.&#10;• Final Place: Each Petri net must have exactly one designated final place (p_final) with the following properties: The final place has at least one incoming arc, and no outgoing arcs.&#10;&#10;Process Completion: A computation on a Petri net is considered complete when a token is placed in the final place p_final. At this point, the computation is automatically closed and marked as completed in the system. A new computation on the same Petri net can only be started after the previous one has been completed or deleted." />
+                                        <WebView fx:id="introWebView" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
                                     </VBox>
                                 </Tab>
 
                                 <Tab text="2. Roles &amp; Permissions">
                                     <VBox spacing="10" styleClass="help-tab-container">
-                                        <TextArea editable="false" wrapText="true" VBox.vgrow="ALWAYS" styleClass="help-text-area"
-                                                  text="2. System Roles and Permissions&#10;&#10;The system features two main roles: administrators who design Petri nets, and end users who execute processes modeled by these nets.&#10;&#10;2.1. Administrator Role&#10;Administrators have the following capabilities and restrictions:&#10;• Design and manage their own Petri nets with places and transitions&#10;• Define initial and final places for each of their Petri nets&#10;• Partition transitions in their Petri nets into administrator-executable and user-executable categories&#10;• View and manage all process executions related to their own Petri nets&#10;• Delete computations related to their own Petri nets&#10;• Fire only administrator-designated transitions in computations of their own Petri nets&#10;• Cannot act as users of their own Petri nets (an administrator cannot create a computation instance of their own Petri net)&#10;&#10;Note: Administrators only have administrative privileges over the Petri nets they have created. They may participate as a regular user in Petri nets created by other administrators.&#10;&#10;2.2. End User Role&#10;End users have the following capabilities and restrictions:&#10;• Subscribe to processes (Petri nets) created by any administrator&#10;• Create and manage computation instances of Petri nets they have subscribed to&#10;• Fire only user-designated transitions in their computation instances&#10;• Cannot fire administrator-designated transitions under any circumstances&#10;• View the history of executed transitions with timestamps&#10;• Delete their own computations&#10;• Have at most one active computation instance per Petri net" />
+                                        <WebView fx:id="rolesWebView" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
                                     </VBox>
                                 </Tab>
 
                                 <Tab text="3. Execution Rules">
                                     <VBox spacing="10" styleClass="help-tab-container">
-                                        <TextArea editable="false" wrapText="true" VBox.vgrow="ALWAYS" styleClass="help-text-area"
-                                                  text="3. Execution Rules &amp; Semantics&#10;&#10;1.1.2. Semantics of Petri Nets&#10;The operational semantics of Petri nets define how the system evolves:&#10;• Enabling Rule: A transition t ∈ T is enabled if each of its input places contains at least one token.&#10;• Firing Rule: When an enabled transition fires, it removes one token from each of its input places, and it adds one token to each of its output places.&#10;&#10;2.3. Transition Execution Rules&#10;The system enforces strict rules regarding who can execute which transitions:&#10;• Administrator transitions can only be fired by the administrator who created the Petri net.&#10;• User transitions can only be fired by users (non-administrators) who have created a computation instance.&#10;• A person acting as an administrator for one Petri net may act as a user for Petri nets created by other administrators.&#10;• The system must strictly enforce these role-based permissions for transition execution.&#10;&#10;3.3. Process Execution Constraints&#10;• The system shall track the current marking of each active computation.&#10;• The system shall allow only one active computation per user per Petri net.&#10;• Users shall be able to start a new computation only after completing any previous computation on the same Petri net.&#10;• Users may have multiple computations active simultaneously if they are on different Petri nets." />
+                                        <WebView fx:id="rulesWebView" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
                                     </VBox>
                                 </Tab>
 
                                 <Tab text="4. Example">
-                                    <VBox alignment="CENTER" spacing="15" styleClass="help-tab-container">
+                                    <VBox spacing="15" styleClass="help-tab-container">
+
                                         <Label styleClass="help-example-title" text="Graphical Example of Petri Net Execution" />
 
-                                        <ImageView fx:id="exampleImage" fitHeight="350.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
-                                            <image>
-                                                <Image url="@../images/petriNetExample.png" />
-                                            </image>
-                                        </ImageView>
+                                        <HBox spacing="25.0" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <ImageView fx:id="exampleImage" fitHeight="450.0" fitWidth="550.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../images/petriNetExample.png" />
+                                                    </image>
+                                                    <HBox.margin>
+                                                        <Insets top="10.0" />
+                                                    </HBox.margin>
+                                                </ImageView>
 
-                                        <TextArea editable="false" wrapText="true" VBox.vgrow="ALWAYS" styleClass="help-text-area"
-                                                  text="7.2. Execution Sequence Example&#10;Let us walk through a typical execution sequence for the Petri net shown in the figure above:&#10;&#10;1. Initial state: A token is in the initial place p_init.&#10;2. The administrator fires transition t1 (admin transition), moving the token to place p2.&#10;3. The administrator fires transition t2 (admin transition), which: consumes the token from place p2, and produces one token in place p3 and one token in place p4.&#10;4. At this point, the computation state has tokens in places p3 and p4.&#10;5. The user can now fire transition t3 (user transition), moving the token from place p4 to place p5.&#10;6. In parallel, the user can fire transition t4 (user transition), moving the token from place p3 to place p6.&#10;7. The user then fires transition t5 (user transition), moving the token from place p5 to place p7.&#10;8. At this point, both execution paths have completed the user portion, with tokens in places p6 and p7.&#10;9. Finally, the administrator fires transition t6 (admin transition), which: consumes tokens from both places p6 and p7, and produces one token in the final place p_final.&#10;10. When the token reaches p_final, the computation is automatically marked as completed.&#10;&#10;Note: If the admin doesn't fire their transitions, the user cannot proceed. Similarly, if the user doesn't complete their transitions, the admin cannot finalize the process." />
+                                                <WebView fx:id="exampleWebView" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                        </HBox>
                                     </VBox>
                                 </Tab>
 

@@ -73,7 +73,7 @@
 
                         <HBox alignment="CENTER_RIGHT">
                             <children>
-                                <Button fx:id="startComputationButton" mnemonicParsing="false" onAction="#handleStartComputation" prefHeight="45.0" styleClass="btn-start-computation" text="Start New Computation">
+                                <Button fx:id="startComputationButton" mnemonicParsing="false" onAction="#handleStartComputation" prefHeight="45.0" minHeight="45.0" styleClass="btn-start-computation" text="Start New Computation">
                                     <font>
                                         <Font name="System Bold" size="16.0" />
                                     </font>
