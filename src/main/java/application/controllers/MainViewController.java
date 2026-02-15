@@ -219,7 +219,7 @@ public class MainViewController implements Initializable {
                     if ("COMPLETED".equalsIgnoreCase(status)) {
                         setTextFill(javafx.scene.paint.Color.RED);
                         setStyle("-fx-font-weight: bold;");
-                    } else if ("ACTIVE".equalsIgnoreCase(status)) {
+                    } else if ("ACTIVE".equalsIgnoreCase(status) || "RUNNING".equalsIgnoreCase(status)) {
                         setTextFill(javafx.scene.paint.Color.LIMEGREEN);
                         setStyle("-fx-font-weight: bold;");
                     } else {
@@ -330,10 +330,7 @@ public class MainViewController implements Initializable {
         }
 
         Computation computation = (Computation) selectedItem;
-        if(!computation.isActive()){
-            showError("Cannot view a completed computation.");
-            return;
-        }
+
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ViewPetriNet.fxml"));
         Parent root = loader.load();

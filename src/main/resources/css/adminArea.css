@@ -10,11 +10,18 @@
     -fx-background-color: rgba(0, 0, 0, 0.7);
 }
 
-/*********************
-    TASTO CREATE
- ***************/
+/* Buttons */
+.back-button {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 30;
+    -fx-font-weight: bold;
+}
+
 .btn-create {
-    /* BASE: Verde Solido */
     -fx-background-color: #45a45f;
     -fx-text-fill: white;
     -fx-background-radius: 20;
@@ -46,9 +53,6 @@
     -fx-border-color: transparent;
 }
 
-/*****************************+
-        TASTO EDIT
- **************************/
 .btn-edit {
     -fx-background-color: #4da6ff;
     -fx-text-fill: white;
@@ -81,9 +85,6 @@
     -fx-border-color: transparent;
 }
 
-/***************+
-    TASTO DELETE
- *************/
 .btn-delete {
     -fx-background-color: rgba(196, 30, 58, 0.8);
     -fx-text-fill: white;
