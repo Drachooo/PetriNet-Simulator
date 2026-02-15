@@ -38,7 +38,7 @@
 
         <BorderPane>
             <left>
-                <VBox prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+                <VBox fx:id="sideBarHelp" prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
                     <children>
                         <Label styleClass="sidebar-title" text="PetriNet App" />
                         <Label styleClass="sidebar-header" text="MAIN MENU">
