@@ -10,9 +10,11 @@ import application.ui.graphics.TransitionViewFactory;
 import application.ui.utils.UnsavedChangesGuard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.*;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.ImageCursor;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -87,7 +89,6 @@ public class NetCreationController implements Initializable {
 
     private SharedResources sharedResources;
     private User currentUser;
-    private Stage currentHelpStage;
     private Stage stage;
     private boolean isDirty = false;
 
@@ -967,34 +968,31 @@ public class NetCreationController implements Initializable {
     }
 
     /**
-     * Opens the Help/Documentation view in a separate popup window.
-     * Allows the user to consult the manual without losing the current drawing state
-     * or triggering the "unsaved changes" prompt.
+     * Navigates to the Help/Documentation view.
+     * Passes the current user to maintain session state and role-based access.
      *
      * @param event The action event triggered by clicking the Help button.
      * @throws IOException If the FXML file for the Help View cannot be loaded.
      */
     @FXML
     void goToHelp(ActionEvent event) throws IOException {
-        // If the help window is already open, just bring it to the front
-        if (currentHelpStage != null && currentHelpStage.isShowing()) {
-            currentHelpStage.toFront();
+        if(!isDirty) {
+            NavigationHelper.navigate(event, "/fxml/HelpView.fxml", currentUser);
             return;
         }
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HelpView.fxml"));
-        Parent root = loader.load();
-
-        HelpViewController controller = loader.getController();
-        controller.setCurrentUser(currentUser);
-
-        currentHelpStage = new Stage();
-        currentHelpStage.setTitle("Petri Net Editor Help");
-        currentHelpStage.setScene(new Scene(root));
-
-        // Keeps the help window on top of the drawing canvas
-        currentHelpStage.setAlwaysOnTop(true);
-        currentHelpStage.show();
+        UnsavedChangesGuard.SaveChoice choice = UnsavedChangesGuard.promptUserForSaveConfirmation();
+        switch (choice) {
+            case SAVE_AND_CONTINUE:
+                if (savePetriNet(event)) {
+                    NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
+                }
+                break;
+            case DISCARD_AND_CONTINUE:
+                NavigationHelper.navigate(event, "/fxml/ExploreNetsView.fxml", currentUser);
+                break;
+            case CANCEL_EXIT:
+                break;
+        }
     }
 
     /**

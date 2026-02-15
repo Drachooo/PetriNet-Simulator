@@ -1,4 +1,5 @@
 package application.logic;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -6,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
@@ -15,15 +17,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PetriNet {
-    private  String id;
-    private  String name;
-    private  String adminId;
-
-
-    /*Dico a Jackson di serializzare la stringa in questo modo*/
+    private String id;
+    private String name;
+    private String adminId;
 
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern= "dd-MM-yyyy HH:mm:ss")
-    private  LocalDateTime dateCreated;
+    private LocalDateTime dateCreated;
 
     private String initialPlaceId = null;
     private String finalPlaceId = null;
@@ -53,6 +52,58 @@ public class PetriNet {
         this.adminId = Objects.requireNonNull(adminId);
         this.dateCreated = LocalDateTime.now();
     }
+
+    // --- JACKSON SETTERS ---
+    // These are required so Jackson can reconstruct the object from JSON.
+    // They are kept private/package-private so business logic cannot misuse them.
+
+    @JsonSetter("id")
+    private void setId(String id) { this.id = id; }
+
+    @JsonSetter("name")
+    private void setName(String name) { this.name = name; }
+
+    @JsonSetter("adminId")
+    private void setAdminId(String adminId) { this.adminId = adminId; }
+
+    @JsonSetter("initialPlaceId")
+    private void setInitialPlaceId(String initialPlaceId) { this.initialPlaceId = initialPlaceId; }
+
+    @JsonSetter("finalPlaceId")
+    private void setFinalPlaceId(String finalPlaceId) { this.finalPlaceId = finalPlaceId; }
+
+    @JsonSetter("dateCreated")
+    private void setDateCreated(String dateCreatedStr) {
+        if (dateCreatedStr != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            this.dateCreated = LocalDateTime.parse(dateCreatedStr, formatter);
+        }
+    }
+
+    @JsonSetter("places")
+    private void setPlaces(Map<String, Place> parsedPlaces) {
+        if (parsedPlaces != null) {
+            this.places.clear();
+            this.places.putAll(parsedPlaces);
+        }
+    }
+
+    @JsonSetter("transitions")
+    private void setTransitions(Map<String, Transition> parsedTransitions) {
+        if (parsedTransitions != null) {
+            this.transitions.clear();
+            this.transitions.putAll(parsedTransitions);
+        }
+    }
+
+    @JsonSetter("arcs")
+    private void setArcs(Map<String, Arc> parsedArcs) {
+        if (parsedArcs != null) {
+            this.arcs.clear();
+            this.arcs.putAll(parsedArcs);
+        }
+    }
+    // --- END JACKSON SETTERS ---
 
     /**
      * Adds a Place element to the net definition.
