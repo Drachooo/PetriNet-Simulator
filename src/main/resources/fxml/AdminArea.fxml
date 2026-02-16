@@ -103,7 +103,7 @@
             </center>
 
             <bottom>
-                <Label fx:id="errorLabel" styleClass="label-error-pill" text="Error Message" visible="false" BorderPane.alignment="CENTER_LEFT">
+                <Label fx:id="errorLabel" styleClass="label-error-simple" text="Error Message" visible="false" BorderPane.alignment="CENTER_LEFT">
                     <padding>
                         <Insets top="15.0" />
                     </padding>

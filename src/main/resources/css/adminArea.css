@@ -174,3 +174,23 @@
     -fx-font-weight: bold;
     -fx-text-fill: #aaaaaa;
 }
+
+/* adminArea.css */
+
+.label-error-simple {
+    /* Rosso acceso (Tomato o #ff5555) per leggibilità su sfondo scuro */
+    -fx-text-fill: #ff5555;
+
+    /* Rimuove completamente lo sfondo */
+    -fx-background-color: transparent;
+
+    /* Nessun bordo */
+    -fx-border-color: transparent;
+
+    /* Font in grassetto */
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+
+    /* (Opzionale) Aggiunge una piccola ombra nera al testo per farlo risaltare sullo sfondo scuro */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 2, 0, 0, 1);
+}
