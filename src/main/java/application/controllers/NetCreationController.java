@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -23,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import application.ui.graphics.PlaceViewFactory;
 import javafx.animation.KeyFrame;
@@ -979,6 +981,9 @@ public class NetCreationController implements Initializable {
     void goToHelp(ActionEvent event) throws IOException {
         // Se la finestra è già aperta, portala in primo piano
         if (currentHelpStage != null && currentHelpStage.isShowing()) {
+            if (currentHelpStage.isIconified()) {
+                currentHelpStage.setIconified(false); // Se era ridotta a icona, riaprimela
+            }
             currentHelpStage.toFront();
             return;
         }
@@ -995,6 +1000,7 @@ public class NetCreationController implements Initializable {
         currentHelpStage.setTitle("Petri Net Editor Help");
         currentHelpStage.setScene(new Scene(root));
 
+        currentHelpStage.setMaximized(true);
         currentHelpStage.setAlwaysOnTop(true);
         currentHelpStage.show();
     }
