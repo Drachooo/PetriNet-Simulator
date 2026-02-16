@@ -379,7 +379,7 @@ public class MainViewController implements Initializable {
         passwordField.setPromptText("New Password");
 
         PasswordField confirmPasswordField = new PasswordField();
-        confirmPasswordField.setPromptText("Repeat new password");
+        confirmPasswordField.setPromptText("Repeat New Password");
 
         grid.add(new Label("Username:"), 0, 0);
         grid.add(usernameField, 1, 0);
@@ -401,7 +401,11 @@ public class MainViewController implements Initializable {
                 if (!newPass.equals(confirmPass)) {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Password Error");
-                    errorAlert.setHeaderText("Passwords do not match");
+
+                    errorAlert.setHeaderText(null);
+                    errorAlert.setContentText("Passwords do not match");
+
+
                     errorAlert.showAndWait();
                     return;
                 } else {
@@ -420,7 +424,9 @@ public class MainViewController implements Initializable {
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
-                alert.setContentText("Profile updated successfully!");
+                alert.setHeaderText(null);
+
+                alert.setContentText("Profile updated successfully");
                 alert.showAndWait();
             }
         }
