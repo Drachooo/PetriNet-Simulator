@@ -419,7 +419,7 @@ public class NetCreationController implements Initializable {
      * @param srcNode The source node
      * @param tgtNode The target node
      */
-    private void createArcBetween(Node srcNode, Node tgtNode) {
+    private boolean createArcBetween(Node srcNode, Node tgtNode) {
         String sourceId = placeMap.containsKey(srcNode)
                 ? placeMap.get(srcNode).getId()
                 : transitionMap.containsKey(srcNode)
@@ -432,7 +432,7 @@ public class NetCreationController implements Initializable {
                 ? transitionMap.get(tgtNode).getId()
                 : null;
 
-        if (sourceId == null || targetId == null) return;
+        if (sourceId == null || targetId == null) return false;
 
         try {
             Arc arc = new Arc(petriNet.getId(), sourceId, targetId);
@@ -441,11 +441,13 @@ public class NetCreationController implements Initializable {
             Line line = ArcViewFactory.createArcLine(srcNode, tgtNode);
             drawingPane.getChildren().add(line);
             arcMap.put(line, arc);
+            this.isDirty = true;
+            return true;
         } catch (IllegalArgumentException ex) {
             showError("Invalid arc", ex.getMessage());
+            return false;
         }
 
-        this.isDirty = true;
     }
 
     // --- State Management (Initial/Final Places) ---
@@ -572,14 +574,17 @@ public class NetCreationController implements Initializable {
                     // First click: select source, highlight valid targets
                     arcSourceNode = clicked;
                     highlightValidTargets(true);
-                    statusLabel.setText("Source selected, Click a valid Target");
+                    statusLabel.setText("Source selected, click a valid Target");
                 } else {
                     // Second click: select target, turn off highlighting
                     highlightValidTargets(false);
-                    createArcBetween(arcSourceNode, clicked);
+                    boolean success=createArcBetween(arcSourceNode, clicked);
                     arcSourceNode = null;
-                    statusLabel.setText("Tool: Arc Active (Click Source -> Click Target)");
-                    // Continue drawing until tool is changed
+
+                    if(success) {
+                        statusLabel.setText("Tool: Arc Active (Click Source -> Click Target)");
+                        // Continue drawing until tool is changed
+                    }
                 }
             }
             case DELETE -> {
