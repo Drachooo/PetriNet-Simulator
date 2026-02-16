@@ -313,8 +313,8 @@ public class ViewPetriNetController implements Initializable {
 
         try {
             // Observer pattern handles the flow:
-            // 1. ProcessService fires transition and calls notifyObservers()
-            // 2. Observer (this class) receives update notification
+            // 1. ProcessService fires transition, updates computation whjoch then calls notifyObservers()
+            // 2. Observer receives update notification
             // 3. Observer calls refreshState() to update the view
             processService.fireTransition(
                     currentComputation.getId(),
