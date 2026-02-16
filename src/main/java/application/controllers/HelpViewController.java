@@ -24,28 +24,24 @@ public class HelpViewController implements Initializable {
     @FXML private ImageView backgroundImage;
     @FXML private Button adminAreaButton;
 
-    // --- LE WEBVIEWS ---
     @FXML private WebView introWebView;
     @FXML private WebView rolesWebView;
     @FXML private WebView rulesWebView;
     @FXML private WebView exampleWebView;
 
-    // Flag per capire se la finestra è aperta come popup esterno
     private boolean isExternalWindow = false;
 
-    @FXML private VBox sideBarHelp; // Assicurati che l'ID corrisponda al FXML
+    @FXML private VBox sideBarHelp;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.sharedResources = SharedResources.getInstance();
 
-        // Setup background responsivo
         if (backgroundImage != null && rootStackPane != null) {
             backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
             backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
         }
 
-        // CARICAMENTO DEL TUO TESTO ORIGINALE
         loadHelpContent();
     }
 
@@ -58,7 +54,6 @@ public class HelpViewController implements Initializable {
     }
 
     private void loadHelpContent() {
-        // TAB 1: INTRODUCTION (Tuo testo originale)
         String introContent = getHtmlStyle() +
                 "<body>" +
                 "<h3>1. Introduction to Petri Nets</h3>" +
@@ -87,7 +82,6 @@ public class HelpViewController implements Initializable {
         introWebView.getEngine().loadContent(introContent);
 
 
-        // TAB 2: ROLES (Tuo testo originale)
         String rolesContent = getHtmlStyle() +
                 "<body>" +
                 "<h3>2. System Roles and Permissions</h3>" +
@@ -125,7 +119,6 @@ public class HelpViewController implements Initializable {
         rolesWebView.getEngine().loadContent(rolesContent);
 
 
-        // TAB 3: RULES (Tuo testo originale)
         String rulesContent = getHtmlStyle() +
                 "<body>" +
                 "<h3>3. Execution Rules & Semantics</h3>" +
@@ -156,7 +149,6 @@ public class HelpViewController implements Initializable {
         rulesWebView.getEngine().loadContent(rulesContent);
 
 
-        // TAB 4: EXAMPLE (Tuo testo originale)
         String exampleContent = getHtmlStyle() +
                 "<body>" +
                 "<h3>7.2. Execution Sequence Example</h3>" +
@@ -180,7 +172,7 @@ public class HelpViewController implements Initializable {
     }
 
     /**
-     * Stile CSS per il contenuto HTML
+     * CSS style for the HTML content.
      */
     private String getHtmlStyle() {
         return "<html><head><style>" +
@@ -220,21 +212,19 @@ public class HelpViewController implements Initializable {
     }
 
     /**
-     * Configura la vista per comportarsi come una finestra popup isolata.
-     * Nasconde la sidebar di navigazione.
+     * Configures the view to behave as an isolated popup window.
+     * Hides the navigation sidebar.
      *
-     * @param isExternal true se aperta come finestra utility.
+     * @param isExternal true if opened as a utility window.
      */
     public void setExternalWindow(boolean isExternal) {
         this.isExternalWindow = isExternal;
 
         if (isExternal) {
-            // Nasconde la barra laterale se esiste
             if (sideBarHelp != null) {
                 sideBarHelp.setVisible(false);
                 sideBarHelp.setManaged(false);
             }
-            // Se hai un bottone admin specifico fuori dalla sidebar, nascondi anche quello
             if (adminAreaButton != null) {
                 adminAreaButton.setVisible(false);
                 adminAreaButton.setManaged(false);
