@@ -69,19 +69,19 @@ public class HelpViewController implements Initializable {
                 "<h4>1.1.1. Formal Definition</h4>" +
                 "<p>The formal definition of a Petri net includes:</p>" +
                 "<ul>" +
-                "<li>A set of places <b>P = {p1, p2, ..., pn}</b></li>" +
-                "<li>A set of transitions <b>T = {t1, t2, ..., tm}</b></li>" +
+                "<li>A set of places <b>P = {p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>}</b></li>" +
+                "<li>A set of transitions <b>T = {t<sub>1</sub>, t<sub>2</sub>, ..., t<sub>m</sub>}</b></li>" +
                 "<li>A set of arcs <b>A ⊆ (P × T) U (T × P)</b></li>" +
-                "<li>An initial marking <b>M0: P → N</b>, which assigns a non-negative integer number of tokens to each place.</li>" +
+                "<li>A<sub>n</sub> initial marking <b>M<sub>0</sub>: P → N</b>, which assigns a non-negative integer number of tokens to each place.</li>" +
                 "</ul>" +
 
                 "<h4>1.1.3. Special Places and Process Completion</h4>" +
                 "<ul>" +
-                "<li><b>Initial Place:</b> Each Petri net must have exactly one designated initial place (p_init). The initial marking assigns exactly one token to this place. It has no incoming arcs, and at least one outgoing arc.</li>" +
-                "<li><b>Final Place:</b> Each Petri net must have exactly one designated final place (p_final). It has at least one incoming arc, and no outgoing arcs.</li>" +
+                "<li><b>Initial Place:</b> Each Petri net must have exactly one designated initial place (p<sub>init</sub>). The initial marking assigns exactly one token to this place. It has no incoming arcs, and at least one outgoing arc.</li>" +
+                "<li><b>Final Place:</b> Each Petri net must have exactly one designated final place (p<sub>final</sub>). It has at least one incoming arc, and no outgoing arcs.</li>" +
                 "</ul>" +
 
-                "<p style='color: tomato; border: 1px solid tomato; padding: 10px;'><b>Process Completion:</b> A computation is considered complete when a token is placed in the final place <b>p_final</b>. At this point, the computation is automatically closed and marked as completed.</p>" +
+                "<p style='color: tomato; border: 1px solid tomato; padding: 10px;'><b>Process Completion:</b> A computation is considered complete when a token is placed in the final place <b>p<sub>final</sub></b>. At this point, the computation is automatically closed and marked as completed.</p>" +
                 "</body>";
 
         introWebView.getEngine().loadContent(introContent);
@@ -162,16 +162,16 @@ public class HelpViewController implements Initializable {
                 "<h3>7.2. Execution Sequence Example</h3>" +
                 "<p>Let us walk through a typical execution sequence for the Petri net shown in the figure above:</p>" +
                 "<ol>" +
-                "<li><b>Initial state:</b> A token is in the initial place <i>p_init</i>.</li>" +
-                "<li>The administrator fires transition <b>t1</b> (admin transition), moving the token to place p2.</li>" +
-                "<li>The administrator fires transition <b>t2</b> (admin transition), which: consumes the token from place p2, and produces one token in place p3 and one token in place p4.</li>" +
-                "<li>At this point, the computation state has tokens in places p3 and p4.</li>" +
-                "<li>The user can now fire transition <b>t3</b> (user transition), moving the token from place p4 to place p5.</li>" +
-                "<li>In parallel, the user can fire transition <b>t4</b> (user transition), moving the token from place p3 to place p6.</li>" +
-                "<li>The user then fires transition <b>t5</b> (user transition), moving the token from place p5 to place p7.</li>" +
-                "<li>At this point, both execution paths have completed the user portion, with tokens in places p6 and p7.</li>" +
-                "<li>Finally, the administrator fires transition <b>t6</b> (admin transition), which: consumes tokens from both places p6 and p7, and produces one token in the final place <i>p_final</i>.</li>" +
-                "<li>When the token reaches <i>p_final</i>, the computation is automatically marked as completed.</li>" +
+                "<li><b>Initial state:</b> A token is in the initial place <i>p<sub>init</sub></i>.</li>" +
+                "<li>The administrator fires transition <b>t<sub>1</sub></b> (admin transition), moving the token to place p<sub>2</sub>.</li>" +
+                "<li>The administrator fires transition <b>t<sub>2</sub></b> (admin transition), which: consumes the token from place p<sub>2</sub>, and produces one token in place p<sub>3</sub> and one token in place p<sub>4</sub>.</li>" +
+                "<li>At this point, the computation state has tokens in places p<sub>3</sub> and p<sub>4</sub>.</li>" +
+                "<li>The user can now fire transition <b>t<sub>3</sub></b> (user transition), moving the token from place p<sub>4</sub> to place p<sub>5</sub>.</li>" +
+                "<li>In parallel, the user can fire transition <b>t<sub>4</sub></b> (user transition), moving the token from place p<sub>3</sub> to place p<sub>6</sub>.</li>" +
+                "<li>The user then fires transition <b>t<sub>5</sub></b> (user transition), moving the token from place p<sub>5</sub> to place p<sub>7</sub>.</li>" +
+                "<li>At this point, both execution paths have completed the user portion, with tokens in places p<sub>6</sub> and p<sub>7</sub>.</li>" +
+                "<li>Finally, the administrator fires transition <b>t<sub>6</sub></b> (admin transition), which: consumes tokens from both places p<sub>6</sub> and p<sub>7</sub>, and produces one token in the final place <i>p<sub>final</sub></i>.</li>" +
+                "<li>When the token reaches <i>p<sub>final</sub></i>, the computation is automatically marked as completed.</li>" +
                 "</ol>" +
                 "<p><i>Note: If the admin doesn't fire their transitions, the user cannot proceed. Similarly, if the user doesn't complete their transitions, the admin cannot finalize the process.</i></p>" +
                 "</body>";

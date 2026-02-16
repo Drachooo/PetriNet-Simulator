@@ -217,11 +217,9 @@ public class MainViewController implements Initializable {
                 } else {
                     setText(status);
                     if ("COMPLETED".equalsIgnoreCase(status)) {
-                        setTextFill(javafx.scene.paint.Color.RED);
-                        setStyle("-fx-font-weight: bold;");
+                        setStyle("-fx-text-fill: #ff5555; -fx-font-weight: bold;");
                     } else if ("ACTIVE".equalsIgnoreCase(status) || "RUNNING".equalsIgnoreCase(status)) {
-                        setTextFill(javafx.scene.paint.Color.LIMEGREEN);
-                        setStyle("-fx-font-weight: bold;");
+                        setStyle("-fx-text-fill: #00ff00; -fx-font-weight: bold;");
                     } else {
                         setTextFill(javafx.scene.paint.Color.WHITE);
                         setStyle("");
@@ -381,7 +379,7 @@ public class MainViewController implements Initializable {
         passwordField.setPromptText("New Password");
 
         PasswordField confirmPasswordField = new PasswordField();
-        confirmPasswordField.setPromptText("Repeat new password");
+        confirmPasswordField.setPromptText("Repeat New Password");
 
         grid.add(new Label("Username:"), 0, 0);
         grid.add(usernameField, 1, 0);
@@ -403,7 +401,11 @@ public class MainViewController implements Initializable {
                 if (!newPass.equals(confirmPass)) {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Password Error");
-                    errorAlert.setHeaderText("Passwords do not match");
+
+                    errorAlert.setHeaderText(null);
+                    errorAlert.setContentText("Passwords do not match");
+
+
                     errorAlert.showAndWait();
                     return;
                 } else {
@@ -422,7 +424,9 @@ public class MainViewController implements Initializable {
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
-                alert.setContentText("Profile updated successfully!");
+                alert.setHeaderText(null);
+
+                alert.setContentText("Profile updated successfully");
                 alert.showAndWait();
             }
         }
