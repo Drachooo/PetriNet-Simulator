@@ -154,6 +154,11 @@ public class AdminAreaController implements Initializable {
             boolean hasSelection = newSelection != null;
             editNetButton.setDisable(!hasSelection);
             deleteNetButton.setDisable(!hasSelection);
+
+            //Deseleziono la net attuale se seleziono net altra schermata
+            if(hasSelection){
+                computationsListView.getSelectionModel().clearSelection();
+            }
         });
 
 
@@ -166,6 +171,11 @@ public class AdminAreaController implements Initializable {
             boolean hasSelection = newSelection != null;
             viewComputationButton.setDisable(!hasSelection);
             deleteComputationButton.setDisable(!hasSelection);
+
+            //Deseleziono la net attuale se seleziono net altra schermata
+            if (hasSelection) {
+                myNetsListView.getSelectionModel().clearSelection();
+            }
         });
 
 
