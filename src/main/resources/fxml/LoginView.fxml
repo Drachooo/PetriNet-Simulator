@@ -101,11 +101,35 @@
                      </padding>
                   </HBox>
 
+
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <ImageView fitHeight="40.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/icona_lucchetto_white.png" />
+                           </image>
+                        </ImageView>
+                        <StackPane maxHeight="30.0" maxWidth="222.0" minHeight="40.0" minWidth="232.0" prefHeight="30.0" prefWidth="222.0">
+                           <children>
+                              <TextField prefHeight="40.0" prefWidth="232.0" />
+                           </children>
+                        </StackPane>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </HBox>
+
+
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Button fx:id="loginButton" defaultButton="true" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" styleClass="btn-success" text="Login" />
+                              <Button fx:id="loginButton" defaultButton="true" maxHeight="45.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="190.0" styleClass="btn-success" text="Login" >
+                                 <HBox.margin>
+                                    <Insets top="10.0" />
+                                 </HBox.margin>
+                              </Button>
                            </children>
                         </HBox>
 
@@ -115,7 +139,7 @@
 
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label prefHeight="26.0" prefWidth="180.0" styleClass="label-white" text="New around here?" />
+                        <Label prefHeight="26.0" prefWidth="220.0" styleClass="label-white" text="Don't have an account?" />
                         <Hyperlink fx:id="registerButton" onAction="#goToRegisterView" styleClass="link-danger" text="Register">
                            <HBox.margin>
                               <Insets />
