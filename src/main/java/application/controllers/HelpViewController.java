@@ -40,10 +40,7 @@ public class HelpViewController implements Initializable {
         this.sharedResources = SharedResources.getInstance();
 
         // Setup background responsivo
-        if (backgroundImage != null && rootStackPane != null) {
-            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
-            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
-        }
+        UIHelper.setupCenterCropBackground(rootStackPane, backgroundImage);
 
         // CARICAMENTO DEL TUO TESTO ORIGINALE
         loadHelpContent();

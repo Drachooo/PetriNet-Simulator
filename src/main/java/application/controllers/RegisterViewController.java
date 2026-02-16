@@ -74,11 +74,7 @@ public class RegisterViewController implements Initializable {
         this.sharedResources = SharedResources.getInstance();
         this.userRepository = sharedResources.getUserRepository();
 
-        if (backgroundImage != null && rootStackPane != null) {
-            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
-            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
-            backgroundImage.setPreserveRatio(false);
-        }
+        UIHelper.setupCenterCropBackground(rootStackPane, backgroundImage);
 
         if (errorLabel != null) {
             errorLabel.setVisible(false); // Starts hidden
@@ -95,6 +91,7 @@ public class RegisterViewController implements Initializable {
             confirmPasswordFieldVisible.textProperty().bindBidirectional(confirmPasswordFieldHidden.textProperty());
         }
     }
+
 
     /**
      * Toggles visibility of the main password field.
