@@ -133,7 +133,11 @@
                            </children>
                         </HBox>
 
-                        <Label fx:id="errorLabel" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" minHeight="50.0" minWidth="190.0" styleClass="label-error-pill" text="Credenziali Errate" textAlignment="CENTER" visible="false" />
+                        <Label fx:id="errorLabel" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" minHeight="50.0" minWidth="190.0" styleClass="label-error-pill" text="Credenziali Errate" textAlignment="CENTER" visible="false" >
+                           <StackPane.margin>
+                              <Insets top="10.0" />
+                           </StackPane.margin>
+                        </Label>
                      </children>
                   </StackPane>
 
