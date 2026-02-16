@@ -21,7 +21,7 @@ public class Main extends Application {
 
 
         Scene scene = new Scene(root);
-        primaryStage.setTitle("Applicazione Reti di Petri");
+        primaryStage.setTitle("Petri Net App");
         primaryStage.setScene(scene);
 
         primaryStage.setMaximized(true);
