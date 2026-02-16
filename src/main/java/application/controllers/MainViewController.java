@@ -114,11 +114,7 @@ public class MainViewController implements Initializable {
 
         if (errorLabel != null) errorLabel.setText("");
 
-        if(backgroundImage != null && rootStackPane != null) {
-            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
-            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
-            backgroundImage.setPreserveRatio(false);
-        }
+        UIHelper.setupCenterCropBackground(rootStackPane, backgroundImage);
 
         // Search listener for filtering nets
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {

@@ -76,12 +76,7 @@ public class AdminAreaController implements Initializable {
         this.petriNetRepository=sharedResources.getPetriNetRepository();
         this.userRepository=sharedResources.getUserRepository();
 
-        if(backgroundImage != null && rootStackPane != null) {
-            backgroundImage.fitWidthProperty().bind(rootStackPane.widthProperty());
-            backgroundImage.fitHeightProperty().bind(rootStackPane.heightProperty());
-
-            backgroundImage.setPreserveRatio(false);
-        }
+        UIHelper.setupCenterCropBackground(rootStackPane, backgroundImage);
 
         if (errorLabel != null) {
             errorLabel.setVisible(false);

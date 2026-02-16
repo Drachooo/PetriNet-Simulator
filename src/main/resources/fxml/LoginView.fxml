@@ -26,7 +26,7 @@
             <Image url="@../images/sfondoBase.jpg" />
          </image>
          <effect>
-            <GaussianBlur radius="5.0" />
+            <GaussianBlur radius="1.0" />
          </effect>
       </ImageView>
 
