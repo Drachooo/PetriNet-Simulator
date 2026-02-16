@@ -217,11 +217,9 @@ public class MainViewController implements Initializable {
                 } else {
                     setText(status);
                     if ("COMPLETED".equalsIgnoreCase(status)) {
-                        setTextFill(javafx.scene.paint.Color.RED);
-                        setStyle("-fx-font-weight: bold;");
+                        setStyle("-fx-text-fill: #ff5555; -fx-font-weight: bold;");
                     } else if ("ACTIVE".equalsIgnoreCase(status) || "RUNNING".equalsIgnoreCase(status)) {
-                        setTextFill(javafx.scene.paint.Color.LIMEGREEN);
-                        setStyle("-fx-font-weight: bold;");
+                        setStyle("-fx-text-fill: #00ff00; -fx-font-weight: bold;");
                     } else {
                         setTextFill(javafx.scene.paint.Color.WHITE);
                         setStyle("");

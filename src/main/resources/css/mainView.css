@@ -70,11 +70,16 @@
 .table-view .column-header .label {
     -fx-text-fill: #aaaaaa;
     -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    /*Padding per staccare il testo dal bordo */
+    -fx-padding: 0 0 0 10;
 }
 
 .table-row-cell {
     -fx-background-color: rgba(30, 30, 30, 0.8);
     -fx-text-fill: white;
+    /*Padding per staccare il testo dal bordo */
+    -fx-padding: 0 0 0 10;
 }
 
 .table-row-cell:odd {

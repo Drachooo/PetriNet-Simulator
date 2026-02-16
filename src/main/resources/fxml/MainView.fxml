@@ -68,7 +68,7 @@
                     <children>
                         <VBox>
                             <children>
-                                <Label fx:id="welcomeLabel" styleClass="label-title-large" style="-fx-font-size: 30px;" text="Welcome back!" />
+                                <Label fx:id="welcomeLabel" style="-fx-font-size: 30px;" styleClass="label-title-large" text="Welcome back!" />
                                 <Label style="-fx-text-fill: #aaaaaa; -fx-font-size: 16px;" text="Here is what's happening with your net" />
                             </children>
                         </VBox>
@@ -124,17 +124,17 @@
                                     <children>
                                         <Label fx:id="tableTitleLabel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" text="My Computations List" />
                                         <Region HBox.hgrow="ALWAYS" />
-                                        <ComboBox fx:id="searchTypeComboBox" prefHeight="35.0" prefWidth="125.0" styleClass="round-control" promptText="Filter by..." />
-                                        <TextField fx:id="searchTextField" prefHeight="35.0" prefWidth="250.0" styleClass="round-control" promptText="Search computation..." />
-                                        <Button fx:id="viewButton" onAction="#handleView" prefHeight="35.0" styleClass="action-button" style="-fx-background-color: -fx-color-primary;" text="View Details" />
-                                        <Button fx:id="deleteButton" onAction="#handleDelete" prefHeight="35.0" styleClass="action-button" style="-fx-background-color: -fx-color-danger;" text="Delete" />
+                                        <ComboBox fx:id="searchTypeComboBox" prefHeight="35.0" prefWidth="125.0" promptText="Filter by..." styleClass="round-control" />
+                                        <TextField fx:id="searchTextField" prefHeight="35.0" prefWidth="250.0" promptText="Search computation..." styleClass="round-control" />
+                                        <Button fx:id="viewButton" onAction="#handleView" prefHeight="35.0" style="-fx-background-color: -fx-color-primary;" styleClass="action-button" text="View Details" />
+                                        <Button fx:id="deleteButton" onAction="#handleDelete" prefHeight="35.0" style="-fx-background-color: -fx-color-danger;" styleClass="action-button" text="Delete" />
                                     </children>
                                 </HBox>
 
                                 <TableView fx:id="mainTableView" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="column1" prefWidth="300.0" text="NET NAME" />
-                                        <TableColumn fx:id="column2" prefWidth="75.0" text="CREATOR" />
+                                        <TableColumn fx:id="column2" prefWidth="150.0" text="CREATOR" />
                                         <TableColumn fx:id="column3" prefWidth="250.0" text="DATE STARTED" />
                                         <TableColumn fx:id="column4" prefWidth="150.0" text="STATUS" />
                                     </columns>
