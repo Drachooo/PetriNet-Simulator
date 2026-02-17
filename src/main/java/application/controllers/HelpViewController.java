@@ -74,7 +74,7 @@ public class HelpViewController implements Initializable {
                 "<li><b>Final Place:</b> Each Petri net must have exactly one designated final place (p<sub>final</sub>). It has at least one incoming arc, and no outgoing arcs.</li>" +
                 "</ul>" +
 
-                "<p style='color: tomato; border: 1px solid tomato; padding: 10px;'><b>Process Completion:</b> A computation is considered complete when a token is placed in the final place <b>p<sub>final</sub></b>. At this point, the computation is automatically closed and marked as completed.</p>" +
+                "<p style='color: tomato; border: 1px solid tomato; padding: 10px;'><b>Process Completion:</b> A computation is considered complete when a token is placed in the final place <b>p<sub>final</sub></b>. At this point, the computation is marked as completed.</p>" +
                 "</body>";
 
         introWebView.getEngine().loadContent(introContent);
