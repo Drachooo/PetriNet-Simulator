@@ -1,89 +1,73 @@
-# Petri Net Process Management Application
+# Petri Net Simulator
 
-> **Corso:** Ingegneria del Software - Anno Accademico 2024-2025  
-> **Progetto:** Simulatore di Reti di Petri con Controllo degli Accessi (RBAC)
+A Java-based Petri Net simulator built to formally define and execute distributed systems, featuring a strict Role-Based Access Control (RBAC) system. The application allows users to design network topologies and safely execute state transitions based on their assigned permissions.
 
-## 📄 Abstract
-Questo progetto implementa un sistema per la modellazione e l'esecuzione di processi distribuiti tramite **Reti di Petri**. Il sistema estende il modello classico introducendo un controllo degli accessi basato sui ruoli, distinguendo tra **Amministratori** (che progettano le reti) e **Utenti Finali** (che eseguono i processi).
+## 👥 System Roles
 
-## 🧩 Definizioni Formali
-Il sistema rispetta la definizione matematica di una Rete di Petri come una quadrupla $N = (P, T, A, M_0)$ dove:
-* **$P$**: Insieme finito di posti $\{p_1, p_2, ..., p_n\}$.
-* **$T$**: Insieme finito di transizioni $\{t_1, t_2, ..., t_m\}$.
-* **$A$**: Insieme di archi orientati (subset di $(P \times T) \cup (T \times P)$).
-* **$M_0$**: Marcatura iniziale che assegna un numero non negativo di token a ciascun posto.
+* **Administrator:** Designs the Petri Net by defining places, transitions, and directed arcs. Supervises global computations and executes admin-reserved transitions.
+* **End User:** Subscribes to available networks, starts computation instances, and interacts with the system by firing user-level transitions.
 
-### Regole di Semantica
-1.  **Abilitazione**: Una transizione $t$ è abilitata se ogni posto di input contiene almeno un token.
-2.  **Scatto (Firing)**: L'esecuzione di una transizione rimuove un token da ogni posto di input e ne aggiunge uno a ogni posto di output.
-3.  **Posti Speciali**:
-    * **$p_{init}$**: Unico posto iniziale con 1 token, nessun arco entrante, almeno un arco uscente.
-    * **$p_{final}$**: Unico posto finale, nessun arco uscente, almeno un arco entrante.
+## ✨ Key Features
 
----
+* **Graphical Modeling:** Visual creation of Petri Nets with structural validation, ensuring single initial (`p_init`) and final (`p_final`) places.
+* **Interactive Execution:** Automatic calculation of enabled transitions based on the current marking.
+* **Concurrency Management (Snapshots):** When a user starts a computation, the system creates a *Deep Copy* snapshot of the network using Jackson. This isolates the user's execution environment from any subsequent modifications made by the administrator.
+* **Local Persistence:** Network structures and computation histories are saved locally in JSON format, requiring no external database setup.
 
-## 👥 Ruoli e Permessi
+## 🏗️ Architecture & Design Patterns
 
-Il sistema gestisce due attori principali con permessi distinti.
+The project follows a strict **MVC (Model-View-Controller)** architecture, backed by a central Service Layer (`ProcessService`). 
 
-### 1. Amministratore (Administrator)
-* **Design**: Crea reti di Petri definendo posti, transizioni e archi.
-* **Partizionamento**: Definisce quali transizioni sono di tipo "Admin" e quali di tipo "User".
-* **Gestione**: Può visualizzare ed eliminare le computazioni relative alle proprie reti.
-* **Esecuzione**: Può scattare *solo* le transizioni designate come "Administrator".
-* **Restrizione**: Non può agire come utente (Subscriber) delle proprie reti.
+To handle complex business logic and UI decoupling, several **GoF Design Patterns** were implemented:
 
-### 2. Utente Finale (End User)
-* **Sottoscrizione**: Può iscriversi a reti create da altri amministratori.
-* **Istanziazione**: Avvia nuove computazioni (istanze di processo).
-* **Esecuzione**: Può scattare *solo* le transizioni designate come "User".
-* **Storico**: Visualizza la cronologia delle transizioni con timestamp.
-* **Vincoli**: Massimo una computazione attiva per rete di Petri.
+* **Singleton:** `SharedResources` ensures a single global access point for repositories.
+* **Strategy:** Handles the RBAC logic. `TransitionExecutionStrategy` dynamically applies either `AdminExecutionStrategy` or `UserExecutionStrategy` at runtime.
+* **Observer:** Keeps the JavaFX UI synchronized. The `Computation` class notifies `ComputationViewObserver` of state changes, completely decoupling the UI from the execution engine.
+* **Facade:** The `ProcessService` provides a unified interface, hiding the complexity of business rules, security checks, and JSON persistence from the JavaFX controllers.
+* **Simple Factory:** Classes like `PlaceViewFactory` and `TransitionViewFactory` encapsulate the dynamic generation and property binding of JavaFX graphical nodes.
 
----
+## 🛠️ Tech Stack
 
-## ⚙️ Funzionalità Chiave
+* **Language:** Java
+* **UI Framework:** JavaFX
+* **Build Tool:** Maven
+* **Serialization:** Jackson (JSON)
+* **Testing:** JUnit 5, Mockito
 
-### Gestione del Ciclo di Vita del Processo
-1.  **Avvio**: Il processo inizia con un token in $p_{init}$.
-2.  **Collaborazione**: L'esecuzione alterna transizioni Admin e User. Se un utente non completa le sue transizioni, l'admin non può procedere (e viceversa).
-3.  **Completamento**: Quando un token raggiunge $p_{final}$, la computazione è marcata automaticamente come completata.
+## 🚀 Setup & Run
 
-### Requisiti di Sistema
-* **Visualizzazione Grafica**: Mostra lo stato corrente (token nei posti).
-* **Filtraggio Transizioni**: L'utente vede abilitate solo le transizioni pertinenti al proprio ruolo.
-* **Log Cronologico**: Ogni step (transizione + marcatura risultante) è salvato con timestamp.
+The project uses Maven for dependency management and build automation.
 
----
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Drachooo/PetriNet-Simulator.git
+   cd PetriNet-Simulator
+   ```
 
-## 🗄️ Data Model
+2. **Build the project and run tests:**
+   ```bash
+   mvn clean install
+   ```
 
-Il database supporta le seguenti entità logiche:
+3. **Start the application:**
+   ```bash
+   mvn javafx:run
+   ```
 
-| Entità | Descrizione | Attributi Chiave |
-| :--- | :--- | :--- |
-| **PetriNet** | La definizione del processo | ID, Name, AdminID, $p_{init}$, $p_{final}$ |
-| **Place** | I nodi stato del grafo | ID, PetriNetID, Name |
-| **Transition** | I nodi evento del grafo | ID, PetriNetID, Type (Admin/User) |
-| **Arc** | Connessioni orientate | SourceID, TargetID |
-| **Computation** | Istanza di esecuzione | ID, UserID, PetriNetID, Status, Start/EndTime |
-| **Comp.Step** | Log dello storico | TransitionID, Timestamp, MarkingData |
+## 🧪 Testing
+
+The system's reliability is ensured by a suite of **70 automated tests**. Testing covers three critical areas:
+
+* **Structural Integrity:** Validates bipartite graph constraints and UUID generation.
+* **Execution Engine:** Verifies the firing rules, token consumption, and production within the `PetriNet` class.
+* **Security & Permissions:** Proves that the *Strategy* pattern correctly prevents administrators from bypassing constraints to fire user transitions on their own networks.
 
 ---
 
-## 🚀 Use Case Principali
+## ✍️ Authors
 
-### Administrator
-* **Create Petri Net**: Definizione della topologia e dei permessi.
-* **Manage Computations**: Monitoraggio ed eliminazione forzata di istanze.
+* **Luca Quaresima**
+* **Matteo Drago**
 
-### End User
-* **Subscribe**: Accesso a un processo esistente.
-* **Start Computation**: Creazione di un nuovo token in $p_{init}$.
-* **Execute Transition**: Scatto di una transizione disponibile.
-
----
-
-## 🛠️ Requisiti Non Funzionali
-* **Usabilità**: Interfaccia chiara per la visualizzazione delle transizioni abilitate.
-* **Sicurezza**: Strict enforcement dei permessi (un utente non può mai scattare transizioni admin).
+> *Developed for the Software Engineering course, University of Verona.*
+@
